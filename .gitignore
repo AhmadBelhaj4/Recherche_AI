@@ -1,0 +1,27 @@
+# Data (too large; document how to download in README instead)
+data/*.csv
+data/*.fasta
+data/*.fa
+data/*.tsv
+data/*.gz
+
+# Model checkpoints
+models/*.pt
+models/*.pth
+models/*.ckpt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
