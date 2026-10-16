@@ -1,0 +1,35 @@
+# ── Big files / data (never in Git) ──────────────────────────────────────────
+data/
+checkpoints/
+mlruns/
+
+# ── Python virtual environments ───────────────────────────────────────────────
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
+*.env.*
+
+# ── Model artefacts ───────────────────────────────────────────────────────────
+*.pt
+*.pth
+*.ckpt
+*.aln
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# NOTE: data_manifest/ is NOT ignored (tiny JSON checksums — belongs in Git)
+# NOTE: results/ and reports/ lightweight files go in Git (< 1 MB rule)

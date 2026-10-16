@@ -1,0 +1,4 @@
+# Data configuration
+# Used by src/paths.py and scripts/make_toy_data.py
+
+data_dir: toy          # "toy" uses ROOT/data/toy; any other value uses DATA from paths.py

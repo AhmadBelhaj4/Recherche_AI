@@ -4,6 +4,120 @@
 
 ---
 
+## 🎯 Project purpose
+
+We train small autoregressive models (LSTM + causal Transformer) on **VHH (nanobody) sequences** from the OAS database to learn how to generate novel, valid protein sequences.
+Later phases add discrete diffusion and Schrödinger bridges to achieve controlled generation toward desired properties.
+Deliverables: a reproducible ML pipeline, 10 000 generated sequences, and a full written report.
+
+---
+
+## ⚡ The 3 golden rules
+
+1. **Code lives in Git, edited in VS Code only.** Colab never holds the master copy of code.
+2. **Big files live on Google Drive, never in Git.** Data, checkpoints and MLflow runs stay on Drive; only a tiny `data_manifest/manifest.json` (sha256 hashes) goes in Git.
+3. **Colab is a disposable machine.** Any run can be rebuilt from: **Git commit + data version + config + seed**.
+
+---
+
+## 🚀 First-time setup (~30 min)
+
+```bash
+# 1. Clone and enter the repo
+git clone https://github.com/ahmad04bh/Recherche_AI.git
+cd Recherche_AI
+
+# 2. Create and activate a virtual environment
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS / Linux:
+source .venv/bin/activate
+
+# 3. Install CPU-only PyTorch (no GPU needed for local dev)
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# 4. Install runtime + dev dependencies
+pip install -r requirements.txt -r requirements-dev.txt
+
+# 5. Install pre-commit hooks (runs ruff + nbstripout on every commit)
+pre-commit install
+
+# 6. Generate toy data and run tests — both must be green ✅
+make toy && make test
+```
+
+> ⚠️ `src/train.py` is a stub for now — `make train` will raise `NotImplementedError` until Team B implements the training loop. This is expected.
+
+---
+
+## 👥 Who edits what
+
+| Team | Owns |
+|------|------|
+| **A (Data & Biology)** | `src/metrics.py`, `src/data_utils.py`, `project1/notebooks/NB01…`, `reports/`, `data_manifest/` |
+| **B (Models & Infra)** | `src/tokenizer.py`, `src/model.py`, `src/train.py`, `src/generate.py`, `src/tracking.py`, `src/paths.py`, `configs/`, `.github/workflows/ci.yml`, `Makefile`, `notebooks/colab_runner.ipynb` |
+| **Both leads** | `CONTRACT.md`, `tests/test_contract.py` (see `CODEOWNERS`) |
+
+---
+
+## 📁 Repository layout
+
+```
+Recherche_AI/
+├── CONTRACT.md                 # Team A/B interface contract (placeholder)
+├── Makefile                    # toy / test / lint / train targets
+├── requirements.txt            # runtime deps (no torch)
+├── requirements-dev.txt        # pytest, ruff, pre-commit, nbstripout
+├── pyproject.toml              # pytest markers + ruff config
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .github/
+│   ├── workflows/ci.yml        # GitHub Actions: lint → toy → test
+│   ├── pull_request_template.md
+│   └── CODEOWNERS
+├── configs/
+│   ├── data.yaml
+│   └── vhh_small.yaml          # tiny model, seed=42
+├── data_manifest/
+│   └── manifest.json           # sha256 of real data splits (tiny, in Git)
+├── src/
+│   ├── paths.py                # single path registry (Team B)
+│   ├── tokenizer.py            # stub (Team B)
+│   ├── model.py                # stub (Team B)
+│   ├── train.py                # stub (Team B)
+│   ├── generate.py             # stub (Team B)
+│   ├── tracking.py             # stub (Team B)
+│   ├── metrics.py              # stub (Team A)
+│   └── data_utils.py           # stub (Team A)
+├── scripts/
+│   ├── make_toy_data.py        # generates data/toy/ (run via `make toy`)
+│   └── verify_data.py          # sha256 verification
+├── tests/
+│   ├── test_contract.py        # contract tests (toy data)
+│   ├── test_tokenizer.py       # skipped stubs (Team B)
+│   └── test_metrics.py         # skipped stubs (Team A)
+├── notebooks/
+│   └── colab_runner.ipynb      # 3-cell Colab launcher
+├── results/                    # figures, CSV tables (< 1 MB → Git)
+├── reports/                    # PDF write-ups (< 1 MB → Git)
+└── project1/                   # Phase 1 notebooks and existing work
+```
+
+---
+
+## 🛠️ Useful commands
+
+```bash
+make toy           # generate data/toy/ (regenerated on each run)
+make test          # fast tests (no real data needed)
+make lint          # ruff check .
+make verify-data   # check sha256 of toy data
+make train         # launch training (stub for now)
+```
+
+---
+
 ## 🗺️ Vue d'ensemble du projet
 
 Ce dépôt regroupe l'ensemble des travaux de recherche en **génération de séquences protéiques** (notamment des VHH / nanobodies), organisés en **5 phases progressives** sur 12 à 18 mois.
@@ -142,44 +256,6 @@ résolution : Sinkhorn itéré / DSB algorithmique
 - ✅ **Benchmark reproductible** : seeds fixes, données versionnées, métriques standard
 - ✅ **Analyse théorique** : vérification empirique des propriétés de convergence/stabilité du schéma SB
 - ✅ **Perspective** : ce qui manque pour passer à l'échelle (complexité de Sinkhorn, noyaux, séquences longues)
-
----
-
-## 📁 Structure du dépôt
-
-```
-Recherche_AI/
-├── project1/                          # Phase 1 — Modèles autorégressifs
-│   ├── notebooks/
-│   │   ├── NB01_exploration_donnees.ipynb
-│   │   ├── NB02_tokenization_datasets_splits.ipynb
-│   │   ├── NB03_lstm_baseline.ipynb
-│   │   ├── NB04_transformer_causal.ipynb
-│   │   ├── NB05_generation_sampling.ipynb
-│   │   └── NB06_evaluation_metriques.ipynb
-│   ├── data/
-│   ├── models/
-│   ├── results/
-│   ├── requirements.txt
-│   └── GUIDE.md                       # Guide étape par étape Phase 1
-├── README.md
-└── Feuille de route 1 an.odt          # Feuille de route complète
-```
-
----
-
-## 🛠️ Installation
-
-```bash
-git clone https://github.com/AhmadBelhaj4/Recherche_AI.git
-cd Recherche_AI/project1
-pip install -r requirements.txt
-```
-
-**Dépendances principales :**
-- `torch >= 2.0`
-- `numpy`, `pandas`, `matplotlib`
-- `jupyter`
 
 ---
 

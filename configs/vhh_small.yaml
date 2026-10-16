@@ -1,0 +1,26 @@
+# Tiny model configuration — for local dev and CI
+# Team B owns this file; do not change without a PR.
+
+seed: 42
+
+model:
+  type: lstm              # "lstm" | "transformer"
+  vocab_size: 23          # 20 AA + <PAD> + <BOS> + <EOS>
+  embedding_dim: 64
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.1
+
+train:
+  batch_size: 32
+  max_epochs: 5
+  learning_rate: 1.0e-3
+  grad_clip: 1.0
+  log_every: 10           # steps
+
+generate:
+  num_sequences: 100
+  max_length: 130
+  temperature: 1.0
+  top_k: 0                # 0 = disabled
+  top_p: 0.9              # nucleus sampling
