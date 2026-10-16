@@ -1,4 +1,4 @@
-"""Generate ~200 fake VHH sequences for local development and CI.
+﻿"""Generate ~200 fake VHH sequences for local development and CI.
 
 Output layout
 -------------
@@ -94,13 +94,13 @@ def write_lines(path: Path, lines: list[str]) -> None:
 def main() -> None:
     rng = random.Random(SEED)
 
-    print(f"Generating {N_SEQUENCES} toy sequences (seed={SEED}) …")
+    print(f"Generating {N_SEQUENCES} toy sequences (seed={SEED}) ...")
     seqs = make_sequences(rng)
 
     TOY_DIR.mkdir(parents=True, exist_ok=True)
     unique_path = TOY_DIR / "vhh_unique.txt"
     write_lines(unique_path, seqs)
-    print(f"  wrote {len(seqs)} sequences → {unique_path}")
+    print(f"  wrote {len(seqs)} sequences -> {unique_path}")
 
     train, val, test = split(seqs, SPLIT_RATIOS, rng)
     split_files = {
@@ -111,12 +111,12 @@ def main() -> None:
     for fname, subset in split_files.items():
         p = SPLITS_DIR / fname
         write_lines(p, subset)
-        print(f"  wrote {len(subset):3d} sequences → {p}")
+        print(f"  wrote {len(subset):3d} sequences -> {p}")
 
     # Verify disjointness (sanity check)
-    assert set(train).isdisjoint(val), "train ∩ val is not empty!"
-    assert set(train).isdisjoint(test), "train ∩ test is not empty!"
-    assert set(val).isdisjoint(test), "val ∩ test is not empty!"
+    assert set(train).isdisjoint(val), "train n val is not empty!"
+    assert set(train).isdisjoint(test), "train n test is not empty!"
+    assert set(val).isdisjoint(test), "val n test is not empty!"
 
     # Write manifest
     manifest: dict = {
@@ -125,9 +125,11 @@ def main() -> None:
     }
     manifest_path = SPLITS_DIR / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    print(f"  wrote manifest → {manifest_path}")
-    print("Done ✓")
+    print(f"  wrote manifest -> {manifest_path}")
+    print("Done OK")
 
 
 if __name__ == "__main__":
     main()
+
+

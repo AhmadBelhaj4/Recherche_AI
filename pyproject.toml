@@ -6,6 +6,12 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# Exclude pre-existing notebooks and scripts that predate this scaffold.
+# They will be cleaned up in separate PRs by the respective teams.
+exclude = [
+    "project1/",
+    "notebooks/colab_runner.ipynb",  # sequential Colab imports by design
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
