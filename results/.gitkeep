@@ -1,3 +1,0 @@
-# This directory stores small result files: figures (PNG/PDF), CSV tables,
-# JSON summaries. Files under 1 MB and human-meaningful go here in Git.
-# Large outputs (checkpoints, MLflow runs) live on Google Drive.

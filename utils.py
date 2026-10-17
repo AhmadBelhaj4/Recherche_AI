@@ -1,25 +1,34 @@
-﻿"""
-utils.py - Shared utilities for notebooks NB01 to NB06.
-Contains tokenization, PyTorch Dataset, metrics, and seed helpers.
+"""utils.py - shared helpers for NB01..NB06.
+Tokenizer follows the professor's spec exactly: V = 23
+  ids 0-19 = the 20 amino acids (in the order of STANDARD_AA)
+  20 = <PAD>, 21 = <BOS>, 22 = <EOS>
 """
 
 import math
+import os
 import random
 import re
 from collections import Counter
-from typing import List, Tuple, Dict, Any
+from pathlib import Path
+from typing import Dict, List, Tuple
 
 import numpy as np
 import torch
-import torch.nn as nn
 from torch.utils.data import Dataset
 
 STANDARD_AA = "ACDEFGHIKLMNPQRSTVWY"
 AA_REGEX = re.compile(r"^[ACDEFGHIKLMNPQRSTVWY]+$")
 
+PAD_ID, BOS_ID, EOS_ID = 20, 21, 22
+VOCAB_SIZE = 23
+
+# Provisional bounds (see CONTRACT.md): to confirm from the real camelid VHH histogram
+MIN_LEN, MAX_LEN = 100, 140
+
+
+# ---------- reproducibility / environment ----------
 
 def set_seed(seed: int = 42) -> None:
-    """Set random seed across Python, NumPy, and PyTorch for exact reproducibility."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -28,56 +37,65 @@ def set_seed(seed: int = 42) -> None:
 
 
 def get_device() -> torch.device:
-    """Return CUDA device if available, else CPU."""
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class AminoAcidTokenizer:
-    """Character-level tokenizer for the 20 standard amino acids with special tokens."""
+def get_paths() -> Dict[str, Path]:
+    """Folders for raw / processed / models / results. Works locally and on Colab."""
+    if os.path.exists("/content"):  # Google Colab
+        base = Path("/content/drive/MyDrive/AI_Project_Shared")
+        if not base.exists():
+            raise FileNotFoundError(
+                "Drive folder not found. Run drive.mount('/content/drive') and make sure "
+                "the AI_Project_Shared shortcut is in My Drive."
+            )
+        return {k: base / k for k in ("raw", "processed", "models", "results")}
+    root = Path(__file__).resolve().parent
+    return {
+        "raw": root / "data" / "raw",
+        "processed": root / "data" / "processed",
+        "models": root / "models",
+        "results": root / "results",
+    }
 
-    PAD = "<PAD>"
-    BOS = "<BOS>"
-    EOS = "<EOS>"
-    UNK = "<UNK>"
+
+# ---------- tokenizer ----------
+
+class AminoAcidTokenizer:
+    """Exact tokenizer: 20 AA + PAD/BOS/EOS. No <UNK>: invalid input raises an error."""
 
     def __init__(self):
-        self.special_tokens = [self.PAD, self.BOS, self.EOS, self.UNK]
-        self.vocab = self.special_tokens + list(STANDARD_AA)
-        self.token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)}
-        self.id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)}
-
-        self.pad_id = self.token_to_id[self.PAD]
-        self.bos_id = self.token_to_id[self.BOS]
-        self.eos_id = self.token_to_id[self.EOS]
-        self.unk_id = self.token_to_id[self.UNK]
-
-    @property
-    def vocab_size(self) -> int:
-        return len(self.vocab)
+        self.aa_to_id = {aa: i for i, aa in enumerate(STANDARD_AA)}
+        self.id_to_aa = {i: aa for aa, i in self.aa_to_id.items()}
+        self.pad_id, self.bos_id, self.eos_id = PAD_ID, BOS_ID, EOS_ID
+        self.vocab_size = VOCAB_SIZE
 
     def encode(self, sequence: str, add_special_tokens: bool = True) -> List[int]:
-        """Convert amino-acid string to list of token IDs."""
-        ids = [self.token_to_id.get(ch, self.unk_id) for ch in sequence.strip().upper()]
+        if not AA_REGEX.match(sequence):
+            raise ValueError(f"Invalid sequence (only the 20 uppercase amino acids allowed): {sequence[:30]!r}")
+        ids = [self.aa_to_id[ch] for ch in sequence]
         if add_special_tokens:
-            ids = [self.bos_id] + ids + [self.eos_id]
+            ids = [BOS_ID] + ids + [EOS_ID]
         return ids
 
-    def decode(self, ids: List[int], skip_special_tokens: bool = True) -> str:
-        """Convert list of token IDs back to amino-acid string."""
-        tokens = []
+    def decode(self, ids) -> str:
+        """Stops at the first <EOS>; skips <PAD> and <BOS>."""
+        out = []
         for i in ids:
-            tok = self.id_to_token.get(i, self.UNK)
-            if skip_special_tokens and tok in self.special_tokens:
+            i = int(i)
+            if i == EOS_ID:
+                break
+            if i in (PAD_ID, BOS_ID):
                 continue
-            tokens.append(tok)
-        return "".join(tokens)
+            out.append(self.id_to_aa[i])  # KeyError on an invalid id: on purpose
+        return "".join(out)
 
+
+# ---------- dataset ----------
 
 class SequenceDataset(Dataset):
-    """PyTorch Dataset wrapping tokenized amino acid sequences."""
-
     def __init__(self, sequences: List[str], tokenizer: AminoAcidTokenizer):
-        self.data = [tokenizer.encode(seq, add_special_tokens=True) for seq in sequences]
+        self.data = [tokenizer.encode(s, add_special_tokens=True) for s in sequences]
 
     def __len__(self) -> int:
         return len(self.data)
@@ -86,34 +104,33 @@ class SequenceDataset(Dataset):
         return self.data[idx]
 
 
-def collate_fn(batch: List[List[int]], pad_id: int = 0) -> Tuple[torch.Tensor, torch.Tensor]:
-    """Pad sequences to max length in the batch. Returns (inputs, targets)."""
-    max_len = max(len(seq) for seq in batch)
-    padded = [seq + [pad_id] * (max_len - len(seq)) for seq in batch]
-    tensor = torch.tensor(padded, dtype=torch.long)
-    inputs = tensor[:, :-1]
-    targets = tensor[:, 1:]
-    return inputs, targets
+def collate_fn(batch: List[List[int]]) -> torch.Tensor:
+    """Right-pad with PAD_ID. Returns a (B, L) long tensor.
+    The shift (inputs = x[:, :-1], targets = x[:, 1:]) is done in the training loop."""
+    max_len = max(len(x) for x in batch)
+    padded = [x + [PAD_ID] * (max_len - len(x)) for x in batch]
+    return torch.tensor(padded, dtype=torch.long)
 
 
-def is_valid_sequence(seq: str, min_len: int = 100, max_len: int = 140) -> bool:
-    """Check if sequence has valid length and only standard 20 amino acids."""
-    if not (min_len <= len(seq) <= max_len):
-        return False
-    return bool(AA_REGEX.match(seq))
+# ---------- data checks ----------
 
+def is_valid_sequence(seq: str, min_len: int = MIN_LEN, max_len: int = MAX_LEN) -> bool:
+    return min_len <= len(seq) <= max_len and bool(AA_REGEX.match(seq))
+
+
+# ---------- metrics ----------
 
 def compute_nats_and_perplexity(total_nll: float, total_tokens: int) -> Tuple[float, float]:
-    """Compute nats/token and perplexity from total negative log likelihood and token count."""
+    """nats/token = sum NLL / number of real tokens. perplexity = exp(nats/token). No cap."""
     if total_tokens <= 0:
-        return float("nan"), float("nan")
-    nats_per_token = total_nll / total_tokens
-    perplexity = math.exp(min(nats_per_token, 100))
-    return nats_per_token, perplexity
+        raise ValueError("total_tokens must be > 0")
+    nats = total_nll / total_tokens
+    return nats, math.exp(nats)
 
 
 def compute_aa_composition(sequences: List[str]) -> Dict[str, float]:
-    """Calculate frequencies of the 20 standard amino acids across sequences."""
     counts = Counter("".join(sequences))
-    total = sum(counts[aa] for aa in STANDARD_AA) or 1
+    total = sum(counts[aa] for aa in STANDARD_AA)
+    if total == 0:
+        raise ValueError("No amino acids found: cannot compute composition")
     return {aa: counts[aa] / total for aa in STANDARD_AA}

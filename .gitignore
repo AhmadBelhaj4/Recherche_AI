@@ -1,25 +1,19 @@
-﻿# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-
-# Virtual environment
 .venv/
-venv/
-ENV/
-
-# Jupyter
 .ipynb_checkpoints/
+.pytest_cache/
 
-# Data & Model weights (never commit)
+# data and models never go in Git
 data/
+models/
 *.csv
+*.csv.gz
+*.gz
+*.fasta
 *.pt
 *.pth
-*.fasta
+*.ckpt
 
-# Run artifacts
-mlruns/
-checkpoints/
-results/generated/
+# generated results
+results/

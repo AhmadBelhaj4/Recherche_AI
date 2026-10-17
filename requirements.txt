@@ -1,6 +1,8 @@
-﻿torch
-pandas
+torch>=2.0
 numpy
+pandas
 matplotlib
 scipy
 biopython
+ipykernel
+pytest
