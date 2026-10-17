@@ -23,6 +23,7 @@ by discrete diffusion and Schrödinger bridges. Team of 4 (Team A: data, Team B:
     python -m venv .venv
     .venv\Scripts\activate
     pip install -r requirements.txt
+    nbstripout --install
     python -m pytest -v
 
 ## Colab (first cell of every heavy notebook)
@@ -31,7 +32,7 @@ by discrete diffusion and Schrödinger bridges. Team of 4 (Team A: data, Team B:
     drive.mount('/content/drive')
     import os
     if not os.path.exists('/content/Recherche_AI'):
-        !git clone https://github.com/ahmad04bh/Recherche_AI.git
+        !git clone https://github.com/AhmadBelhaj4/Recherche_AI.git
     %cd /content/Recherche_AI
     !git pull
     !pip install -q -r requirements.txt
