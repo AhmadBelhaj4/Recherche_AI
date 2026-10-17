@@ -1,5 +1,0 @@
-{
-  "data_version": "not-yet-generated",
-  "note": "This file will be populated after the first real data processing run on Colab. Run `make toy` for toy data (data/toy/splits/manifest.json).",
-  "sha256": {}
-}

@@ -126,10 +126,18 @@ def main() -> None:
     manifest_path = SPLITS_DIR / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"  wrote manifest -> {manifest_path}")
+    # Also save as CSVs for notebook compatibility
+    import pandas as pd
+    pd.DataFrame({"sequence": seqs}).to_csv(TOY_DIR / "vhh_clean.csv", index=False)
+    pd.DataFrame({"sequence": train}).to_csv(TOY_DIR / "train.csv", index=False)
+    pd.DataFrame({"sequence": val}).to_csv(TOY_DIR / "val.csv", index=False)
+    pd.DataFrame({"sequence": test}).to_csv(TOY_DIR / "test.csv", index=False)
+    print("  wrote CSV files -> vhh_clean.csv, train.csv, val.csv, test.csv")
     print("Done OK")
 
 
 if __name__ == "__main__":
     main()
+
 
 

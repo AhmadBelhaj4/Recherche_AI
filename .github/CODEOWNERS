@@ -1,6 +1,0 @@
-# CODEOWNERS
-# These files require review from BOTH team leads.
-# Replace @a-lead and @b-lead with real GitHub usernames before merging.
-
-/CONTRACT.md @a-lead @b-lead
-/tests/test_contract.py @a-lead @b-lead

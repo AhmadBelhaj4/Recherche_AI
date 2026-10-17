@@ -1,18 +1,10 @@
-# CONTRACT.md — Team Interface Contract
-
-> **Status:** Placeholder — Contract v1.0 is owned by Team B; paste the official text here.
-
-This file defines the interface between **Team A (Data & Biology)** and **Team B (Models & Infra)**.
-
-When the contract is finalised, replace this placeholder with the agreed items (C1, C2, …)
-covering topics such as:
-
-- File formats and paths Team A delivers to Team B
-- Expected columns, dtypes and units
-- sha256 verification procedure
-- Split ratios and disjointness guarantees
-- Vocabulary and tokenisation conventions
-
-**Owners:** @a-lead and @b-lead (GitHub usernames — replace placeholders with real ones).
-
-Any change to this file requires review from **both** leads (see `.github/CODEOWNERS`).
+﻿# Team Contract
+- Input column: "sequence" (string, uppercase, no gaps/dashes)
+- Allowed alphabet: ^[ACDEFGHIKLMNPQRSTVWY]+$ (20 amino acids only)
+- Length bounds: 100 <= length <= 140
+- Split strategy: Random 90% train, 5% val, 5% test (seed = 42)
+- Deliverable files (CSV, column 'sequence'):
+  1. vhh_clean.csv (all unique sequences)
+  2. train.csv (90% training split)
+  3. val.csv (5% validation split)
+  4. test.csv (5% test split)
