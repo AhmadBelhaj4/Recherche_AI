@@ -131,8 +131,11 @@ def make_loader(
 
 
 def shift(batch: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-    """Split a (B, L) batch into inputs (B, L-1) and targets (B, L-1)."""
-    return batch[:, :-1], batch[:, 1:]
+    """Split a (B, L) batch into inputs (B, L-1) and targets (B, L-1).
+
+    Returns contiguous tensors so that .view() works directly in loss computation.
+    """
+    return batch[:, :-1].contiguous(), batch[:, 1:].contiguous()
 
 
 # ---------- data checks ----------
