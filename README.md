@@ -54,3 +54,32 @@ Colab only pulls. Code is edited locally.
 3. Never overwrite a Drive file: create `processed/v2`, never edit `v1`.
 4. Every `processed/vN` has a `manifest.json` (made by `scripts/clean_data.py`).
 5. Clear notebook outputs before committing.
+
+## Run on Colab / Run locally
+
+### OAS data file
+
+Place the OAS file at **`data/raw/1287151_1_Paired_All.csv`** inside the repo root (NB01 now reads it from `PATHS["raw"]`). That is the only file that is not generated automatically.
+
+### Toy data (no OAS file needed)
+
+    python scripts/make_toy_data.py
+
+This creates `data/toy/` with 200 synthetic sequences and CSV splits that NB02–NB04 use as a fallback when the real CSVs are absent.
+
+### Run locally
+
+    python -m venv .venv
+    .venv\Scripts\activate        # Windows
+    pip install -r requirements.txt
+    python scripts/make_toy_data.py
+    python -m pytest -q
+
+### Run on Colab (Drive persistence, optional)
+
+If you want model checkpoints and results to persist on Google Drive, set `AI_PROJECT_DIR` before importing `utils`:
+
+    import os
+    os.environ["AI_PROJECT_DIR"] = "/content/drive/MyDrive/AI_Project_Shared"
+
+Without that variable, everything is written inside the cloned repo (fine for a single session). The bootstrap cell in every notebook handles the `git clone` automatically if the repo is not already present.
