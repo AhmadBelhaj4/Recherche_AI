@@ -14,7 +14,7 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import DataLoader, Dataset
 
 STANDARD_AA = "ACDEFGHIKLMNPQRSTVWY"
 AA_REGEX = re.compile(r"^[ACDEFGHIKLMNPQRSTVWY]+$")
@@ -41,22 +41,21 @@ def get_device() -> torch.device:
 
 
 def get_paths() -> Dict[str, Path]:
-    """Folders for raw / processed / models / results. Works locally and on Colab."""
-    if os.path.exists("/content"):  # Google Colab
-        base = Path("/content/drive/MyDrive/AI_Project_Shared")
-        if not base.exists():
-            raise FileNotFoundError(
-                "Drive folder not found. Run drive.mount('/content/drive') and make sure "
-                "the AI_Project_Shared shortcut is in My Drive."
-            )
-        return {k: base / k for k in ("raw", "processed", "models", "results")}
-    root = Path(__file__).resolve().parent
-    return {
-        "raw": root / "data" / "raw",
-        "processed": root / "data" / "processed",
-        "models": root / "models",
-        "results": root / "results",
+    """Folders for raw / processed / models / results.
+
+    Works locally and on Colab without requiring Google Drive.
+    Override the base directory with the AI_PROJECT_DIR environment variable.
+    """
+    base = Path(os.environ.get("AI_PROJECT_DIR", Path(__file__).resolve().parent))
+    paths = {
+        "raw":       base / "data" / "raw",
+        "processed": base / "data" / "processed",
+        "models":    base / "models",
+        "results":   base / "results",
     }
+    for p in paths.values():
+        p.mkdir(parents=True, exist_ok=True)
+    return paths
 
 
 # ---------- tokenizer ----------
@@ -110,6 +109,30 @@ def collate_fn(batch: List[List[int]]) -> torch.Tensor:
     max_len = max(len(x) for x in batch)
     padded = [x + [PAD_ID] * (max_len - len(x)) for x in batch]
     return torch.tensor(padded, dtype=torch.long)
+
+
+def make_loader(
+    sequences: List[str],
+    tokenizer: AminoAcidTokenizer,
+    batch_size: int = 64,
+    shuffle: bool = False,
+    seed: int = 42,
+) -> DataLoader:
+    """Build a DataLoader with a seeded Generator when shuffling."""
+    g = torch.Generator()
+    g.manual_seed(seed)
+    return DataLoader(
+        SequenceDataset(sequences, tokenizer),
+        batch_size=batch_size,
+        shuffle=shuffle,
+        collate_fn=collate_fn,
+        generator=g if shuffle else None,
+    )
+
+
+def shift(batch: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Split a (B, L) batch into inputs (B, L-1) and targets (B, L-1)."""
+    return batch[:, :-1], batch[:, 1:]
 
 
 # ---------- data checks ----------
