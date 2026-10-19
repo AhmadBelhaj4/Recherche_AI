@@ -1,0 +1,6 @@
+after checking the notebooks locally run this before puching to github 
+  nbstripout project1\notebooks\NB01_exploration_donnees.ipynb project1\notebooks\NB02_tokenization_datasets_splits.ipynb
+  git add -A
+
+before running notebook in colab run this 
+!rm -rf /content/Recherche_AI
