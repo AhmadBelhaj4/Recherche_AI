@@ -7,6 +7,7 @@ per sampling configuration, evaluated. Deliverables: report + 6 notebooks + gene
 |---|---|
 | NB01 | data exploration |
 | NB02 | tokenization, datasets, splits |
+| NB02b | bigram statistical baseline (Sprint 1) |
 | NB03 | LSTM baseline |
 | NB04 | causal transformer |
 | NB05 | generation / sampling |
