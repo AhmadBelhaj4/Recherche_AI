@@ -39,22 +39,28 @@ def set_seed(seed: int = 42) -> None:
 def get_device() -> torch.device:
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+def get_data_version() -> str:
+    """'v1' on Colab / real runs (AI_PROJECT_DIR set), 'toy' locally. Override with env DATA_VERSION."""
+    return os.environ.get("DATA_VERSION") or ("v1" if os.environ.get("AI_PROJECT_DIR") else "toy")
 
 def get_paths() -> Dict[str, Path]:
-    """Folders for raw / processed / models / results.
-
-    Works locally and on Colab without requiring Google Drive.
-    Override the base directory with the AI_PROJECT_DIR environment variable.
-    """
-    base = Path(os.environ.get("AI_PROJECT_DIR", Path(__file__).resolve().parent))
-    paths = {
-        "raw":       base / "data" / "raw",
-        "processed": base / "data" / "processed",
-        "models":    base / "models",
-        "results":   base / "results",
-    }
-    for p in paths.values():
-        p.mkdir(parents=True, exist_ok=True)
+    env = os.environ.get("AI_PROJECT_DIR")
+    if env:                                   # Colab: AI_Project_Shared
+        base = Path(env)
+        raw = base / "data" / "raw"
+        if not raw.is_dir():
+            raise FileNotFoundError(
+                f"AI_PROJECT_DIR={base} but {raw} does not exist. "
+                "Check that the Drive is mounted and the path is correct.")
+        paths = {"raw": raw, "processed": base / "data" / "processed",
+                 "models": base / "models", "results": base / "results"}
+    else:                                     # local: toy only, inside the repo
+        repo = Path(__file__).resolve().parent
+        toy = repo / "data" / "toy"
+        paths = {"raw": toy / "raw", "processed": toy / "processed",
+                 "models": repo / "models", "results": repo / "results"}
+    for k in ("processed", "models", "results"):
+        paths[k].mkdir(parents=True, exist_ok=True)
     return paths
 
 

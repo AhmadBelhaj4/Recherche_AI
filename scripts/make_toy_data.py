@@ -1,143 +1,103 @@
-﻿"""Generate ~200 fake VHH sequences for local development and CI.
+﻿"""Generate a small FAKE raw OAS-like file for local development and CI.
 
-Output layout
--------------
-data/toy/
-    vhh_unique.txt              one sequence per line
-    splits/
-        train_vhh.txt           90 % of sequences
-        val_vhh.txt              5 % of sequences
-        test_vhh.txt             5 % of sequences
-        manifest.json           sha256 of each split file
+Output (the only thing this script writes):
+    data/toy/raw/toy_oas_raw.csv
 
-Sequences are random strings over the 20 standard amino acids
-(``ACDEFGHIKLMNPQRSTVWY``), length 110–130, generated with a fixed seed.
-All splits are pairwise disjoint (no sequence appears in two splits).
+The file imitates a real OAS download on purpose, so the toy run exercises the
+same code path as the real run:
+  * line 1 = JSON metadata line, line 2 = CSV header (like OAS)
+  * column 'sequence_alignment_aa' + region / gene columns + junk columns
+  * deliberately DIRTY rows: duplicates, gaps '-', ambiguous 'X', too short,
+    too long, empty sequences  -> NB01 must remove them and report counts.
 
-Usage
------
-    python scripts/make_toy_data.py          # writes data/toy/
-    make toy                                 # same, via Makefile
+Everything after this (slim -> NB01 clean -> NB02 split) is produced by the
+pipeline itself into data/toy/processed/ (git-ignored, regenerable).
+
+Usage:  python scripts/make_toy_data.py
 """
-
 from __future__ import annotations
 
-import hashlib
 import json
 import random
-import sys
 from pathlib import Path
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+import pandas as pd
+
 SEED = 42
-N_SEQUENCES = 200
-MIN_LEN = 110
-MAX_LEN = 130
 AMINO_ACIDS = "ACDEFGHIKLMNPQRSTVWY"
-SPLIT_RATIOS = (0.90, 0.05, 0.05)  # train / val / test
+N_VALID = 200          # clean, unique, length 110-130
+N_DUP = 10             # exact duplicates of valid rows
+N_GAP = 8              # contain '-'  (valid once the gaps are removed)
+N_X = 6                # contain 'X'  (must be rejected)
+N_SHORT = 6            # length < 100
+N_LONG = 6             # length > 140
+N_EMPTY = 3            # empty sequence
 
-ROOT = Path(__file__).parent.parent.resolve()
-TOY_DIR = ROOT / "data" / "toy"
-SPLITS_DIR = TOY_DIR / "splits"
-
-
-def sha256_file(path: Path) -> str:
-    """Return the hex SHA-256 digest of a file."""
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(65536), b""):
-            h.update(chunk)
-    return h.hexdigest()
+ROOT = Path(__file__).resolve().parent.parent
+RAW_DIR = ROOT / "data" / "toy" / "raw"
 
 
-def make_sequences(rng: random.Random) -> list[str]:
-    """Generate N_SEQUENCES unique random VHH-like sequences."""
-    seen: set[str] = set()
-    seqs: list[str] = []
-    attempts = 0
-    while len(seqs) < N_SEQUENCES:
-        attempts += 1
-        if attempts > N_SEQUENCES * 100:
-            print(
-                f"WARNING: could only generate {len(seqs)} unique sequences.",
-                file=sys.stderr,
-            )
-            break
-        length = rng.randint(MIN_LEN, MAX_LEN)
-        seq = "".join(rng.choices(AMINO_ACIDS, k=length))
-        if seq not in seen:
-            seen.add(seq)
-            seqs.append(seq)
-    return seqs
+def rand_seq(rng: random.Random, lo: int, hi: int) -> str:
+    return "".join(rng.choices(AMINO_ACIDS, k=rng.randint(lo, hi)))
 
 
-def split(
-    seqs: list[str], ratios: tuple[float, float, float], rng: random.Random
-) -> tuple[list[str], list[str], list[str]]:
-    """Split a shuffled list into (train, val, test) with disjoint membership."""
-    shuffled = seqs[:]
-    rng.shuffle(shuffled)
-    n = len(shuffled)
-    n_train = int(round(n * ratios[0]))
-    n_val = int(round(n * ratios[1]))
-    train = shuffled[:n_train]
-    val = shuffled[n_train : n_train + n_val]
-    test = shuffled[n_train + n_val :]
-    return train, val, test
-
-
-def write_lines(path: Path, lines: list[str]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+def regions(seq: str) -> dict:
+    """Cut a sequence into fake FWR/CDR pieces (fixed offsets, toy only)."""
+    cuts = [0, 25, 33, 50, 58, 95, 105, len(seq)]
+    names = ["fwr1_aa", "cdr1_aa", "fwr2_aa", "cdr2_aa", "fwr3_aa", "cdr3_aa", "fwr4_aa"]
+    return {n: seq[cuts[i]:cuts[i + 1]] for i, n in enumerate(names)}
 
 
 def main() -> None:
     rng = random.Random(SEED)
+    seqs: list[str] = []
+    seen: set[str] = set()
+    while len(seqs) < N_VALID:
+        s = rand_seq(rng, 110, 130)
+        if s not in seen:
+            seen.add(s)
+            seqs.append(s)
 
-    print(f"Generating {N_SEQUENCES} toy sequences (seed={SEED}) ...")
-    seqs = make_sequences(rng)
+    rows = list(seqs)
+    rows += [rng.choice(seqs) for _ in range(N_DUP)]
+    for _ in range(N_GAP):
+        s = list(rng.choice(seqs))
+        for _ in range(3):
+            s.insert(rng.randrange(len(s)), "-")
+        rows.append("".join(s))
+    for _ in range(N_X):
+        s = list(rng.choice(seqs)); s[rng.randrange(len(s))] = "X"
+        rows.append("".join(s))
+    rows += [rand_seq(rng, 30, 90) for _ in range(N_SHORT)]
+    rows += [rand_seq(rng, 150, 200) for _ in range(N_LONG)]
+    rows += [""] * N_EMPTY
+    rng.shuffle(rows)
 
-    TOY_DIR.mkdir(parents=True, exist_ok=True)
-    unique_path = TOY_DIR / "vhh_unique.txt"
-    write_lines(unique_path, seqs)
-    print(f"  wrote {len(seqs)} sequences -> {unique_path}")
+    records = []
+    for i, s in enumerate(rows):
+        clean = s.replace("-", "")
+        rec = {"sequence_alignment_aa": s}
+        rec.update(regions(clean) if clean else {k: "" for k in
+                   ["fwr1_aa", "cdr1_aa", "fwr2_aa", "cdr2_aa", "fwr3_aa", "cdr3_aa", "fwr4_aa"]})
+        rec.update({
+            "v_call": rng.choice(["IGHV3-3*01", "IGHV3S53*01", "IGHV1S1*01"]),
+            "d_call": rng.choice(["IGHD1*01", "IGHD2*01"]),
+            "j_call": rng.choice(["IGHJ4*01", "IGHJ6*01"]),
+            "productive": "T", "locus": "IGH", "junction_aa": clean[95:105],
+            # junk columns: must disappear in the slim step
+            "sequence": "ACGT" * 10, "rev_comp": "F", "v_score": round(rng.random() * 300, 1),
+            "junk_a": i, "junk_b": "x", "junk_c": "",
+        })
+        records.append(rec)
 
-    train, val, test = split(seqs, SPLIT_RATIOS, rng)
-    split_files = {
-        "train_vhh.txt": train,
-        "val_vhh.txt": val,
-        "test_vhh.txt": test,
-    }
-    for fname, subset in split_files.items():
-        p = SPLITS_DIR / fname
-        write_lines(p, subset)
-        print(f"  wrote {len(subset):3d} sequences -> {p}")
-
-    # Verify disjointness (sanity check)
-    assert set(train).isdisjoint(val), "train n val is not empty!"
-    assert set(train).isdisjoint(test), "train n test is not empty!"
-    assert set(val).isdisjoint(test), "val n test is not empty!"
-
-    # Write manifest
-    manifest: dict = {
-        "data_version": "toy",
-        "sha256": {fname: sha256_file(SPLITS_DIR / fname) for fname in split_files},
-    }
-    manifest_path = SPLITS_DIR / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    print(f"  wrote manifest -> {manifest_path}")
-    # Also save as CSVs for notebook compatibility
-    import pandas as pd
-    pd.DataFrame({"sequence": seqs}).to_csv(TOY_DIR / "vhh_clean.csv", index=False)
-    pd.DataFrame({"sequence": train}).to_csv(TOY_DIR / "train.csv", index=False)
-    pd.DataFrame({"sequence": val}).to_csv(TOY_DIR / "val.csv", index=False)
-    pd.DataFrame({"sequence": test}).to_csv(TOY_DIR / "test.csv", index=False)
-    print("  wrote CSV files -> vhh_clean.csv, train.csv, val.csv, test.csv")
-    print("Done OK")
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    out = RAW_DIR / "toy_oas_raw.csv"
+    meta = {"Run": "TOY", "Species": "toy", "Isotype": "Missing_c_domain", "Total": len(records)}
+    with open(out, "w", encoding="utf-8", newline="") as f:
+        f.write(json.dumps(meta) + "\n")
+    pd.DataFrame(records).to_csv(out, mode="a", index=False)
+    print(f"wrote {len(records)} rows -> {out}")
 
 
 if __name__ == "__main__":
     main()
-
-
-
