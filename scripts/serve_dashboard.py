@@ -19,6 +19,13 @@ import urllib.parse
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 DASHBOARD_DIR = ROOT / "dashboard"
 
 
@@ -56,6 +63,7 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
 
             result = self._handle_generation(payload)
             self._send_json(result)
+            return
         elif parsed.path == "/api/upload_checkpoint":
             query = urllib.parse.parse_qs(parsed.query)
             model_id = query.get("model_id", ["default"])[0]
@@ -94,9 +102,10 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
             config_path = ROOT / "results" / "runs" / model_id / "config.json"
 
             if checkpoint_path and checkpoint_path.exists():
-                print(f"⚡ Inférence active avec checkpoint : {checkpoint_path}")
                 device = torch.device("cpu")
-                state_dict = torch.load(checkpoint_path, map_location=device)
+                print(f"[Inference] Active PyTorch checkpoint: {checkpoint_path}")
+                raw_ckpt = torch.load(checkpoint_path, map_location=device)
+                state_dict = raw_ckpt["state_dict"] if isinstance(raw_ckpt, dict) and "state_dict" in raw_ckpt else raw_ckpt
 
                 # Initialize appropriate architecture
                 if "lstm" in model_id.lower():
@@ -104,7 +113,9 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                 else:
                     # Transformer
                     num_layers = 4
-                    if config_path.exists():
+                    if isinstance(raw_ckpt, dict) and "config" in raw_ckpt:
+                        num_layers = raw_ckpt["config"].get("num_layers", 4)
+                    elif config_path.exists():
                         cfg = json.loads(config_path.read_text(encoding="utf-8"))
                         mc = cfg.get("model_config", {})
                         num_layers = mc.get("num_layers", 4)
@@ -140,7 +151,8 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                 return {"sequence": seq, "finished": dones[0] if dones else True, "backend": "pytorch"}
 
         except Exception as err:
-            pass
+            import traceback
+            traceback.print_exc()
 
         # Check if pre-computed samples from Colab GPU exist in metrics.json
         metrics_file = ROOT / "results" / "runs" / model_id / "metrics.json"

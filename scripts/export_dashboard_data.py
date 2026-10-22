@@ -39,6 +39,7 @@ def read_csv(path: Path) -> list[dict] | None:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--output", default=str(ROOT / "dashboard" / "data.json"))
+    ap.add_argument("--include-toy", action="store_true", help="Include toy dataset runs")
     args = ap.parse_args()
 
     runs_dir = ROOT / "results" / "runs"
@@ -51,6 +52,10 @@ def main():
             if not run_path.is_dir():
                 continue
             run_id = run_path.name
+
+            # Skip toy runs if not requested
+            if not args.include_toy and "toy" in run_id.lower():
+                continue
             config = read_json(run_path / "config.json")
             metrics = read_json(run_path / "metrics.json")
             history = read_csv(run_path / "history.csv")
@@ -112,6 +117,8 @@ def main():
     baselines = []
     if baseline_dir.is_dir():
         for bp in sorted(baseline_dir.glob("*.json")):
+            if not args.include_toy and "toy" in bp.name.lower():
+                continue
             data = read_json(bp)
             if data:
                 data["run_id"] = bp.stem

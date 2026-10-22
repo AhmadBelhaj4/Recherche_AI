@@ -190,10 +190,10 @@ const state = {
   data: DEFAULT_DATA,
   activeTab: 'overview',
   activeCurveMetric: 'val_nats',
-  selectedCompareA: 'transformer-notebook-toy',
-  selectedCompareB: 'lstm-notebook-toy',
-  selectedAdvisorRun: 'transformer-notebook-toy',
-  curvesVisibleModels: new Set(['transformer-notebook-toy', 'lstm-notebook-toy', 'toy-test']),
+  selectedCompareA: 'transformer-notebook-srr',
+  selectedCompareB: 'lstm-notebook-srr',
+  selectedAdvisorRun: 'transformer-notebook-srr',
+  curvesVisibleModels: new Set(['transformer-notebook-srr', 'lstm-notebook-srr']),
   generationHistory: [],
   backendOnline: false,
   charts: {
@@ -218,8 +218,15 @@ async function loadData() {
     const res = await fetch('data.json', { cache: 'no-cache' });
     if (res.ok) {
       const json = await res.json();
+      // Only keep real Colab models (filter out any toy runs)
+      if (json.models) {
+        json.models = json.models.filter(m => !m.run_id.toLowerCase().includes('toy'));
+      }
+      if (json.baselines) {
+        json.baselines = json.baselines.filter(b => !b.run_id.toLowerCase().includes('toy'));
+      }
       state.data = json;
-      updateBackendStatus(true, 'Data Loaded');
+      updateBackendStatus(true, 'Colab GPU Models Loaded');
     } else {
       updateBackendStatus(false, 'Using Embedded Data');
     }
@@ -410,6 +417,28 @@ function initEventListeners() {
     fileInput.addEventListener('change', handleImportFiles);
   }
 
+  // Phase F Evaluation Controls
+  const evalModelSelect = document.getElementById('eval-model-select');
+  if (evalModelSelect) {
+    evalModelSelect.addEventListener('change', () => {
+      renderEvalMetricsTab();
+    });
+  }
+
+  const btnExportEval = document.getElementById('btn-export-eval-json');
+  if (btnExportEval) {
+    btnExportEval.addEventListener('click', () => {
+      const evals = state.data.generation_evaluations || {};
+      const blob = new Blob([JSON.stringify(evals, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'biolm_generation_evaluations.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
   // Playground Controls
   initPlaygroundControls();
 }
@@ -441,6 +470,7 @@ function renderAllViews() {
   renderCurvesChart();
   renderComparisonView();
   renderAdvisorView();
+  renderEvalMetricsTab();
   // Generate initial sequence in playground
   runPlaygroundGeneration();
 }
@@ -625,7 +655,15 @@ function populateSelectDropdowns() {
   if (advSelect) advSelect.innerHTML = models.map(m => `<option value="${m.run_id}" ${m.run_id === state.selectedAdvisorRun ? 'selected' : ''}>${m.run_id}</option>`).join('');
   if (playSelect) {
     const currentVal = playSelect.value;
-    playSelect.innerHTML = buildOptions(currentVal || (models[0]?.run_id || 'toy-test'));
+    playSelect.innerHTML = buildOptions(currentVal || (models[0]?.run_id || 'transformer-notebook-srr'));
+  }
+
+  const evalSelect = document.getElementById('eval-model-select');
+  const evals = state.data.generation_evaluations || {};
+  const evalIds = Object.keys(evals);
+  if (evalSelect && evalIds.length > 0) {
+    const curEval = evalSelect.value;
+    evalSelect.innerHTML = evalIds.map(id => `<option value="${id}" ${id === curEval ? 'selected' : ''}>${id} (${id.includes('transformer') ? 'Transformer (SRR)' : 'LSTM (SRR)'})</option>`).join('');
   }
 
   // Populate checkboxes for training curves
@@ -1620,3 +1658,128 @@ function initSimulator() {
 
   updateSim();
 }
+
+// ==========================================
+// 12. GENERATION QUALITY & SAMPLING BENCHMARK (PHASE F)
+// ==========================================
+function renderEvalMetricsTab() {
+  const evalSelect = document.getElementById('eval-model-select');
+  const evaluations = state.data.generation_evaluations || {};
+  const modelIds = Object.keys(evaluations);
+
+  if (modelIds.length === 0) {
+    const tbody = document.getElementById('eval-strategies-tbody');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 2.5rem; color: var(--text-tertiary);">No generation benchmark data found. Run <code>python scripts/evaluate_generation.py --all</code> to generate benchmarks.</td></tr>';
+    }
+    return;
+  }
+
+  // Populate dropdown if not populated
+  if (evalSelect && evalSelect.children.length === 0) {
+    evalSelect.innerHTML = modelIds.map(id => `<option value="${id}">${id} (${id.includes('transformer') ? 'Transformer (SRR)' : 'LSTM (SRR)'})</option>`).join('');
+  }
+
+  const selectedModel = evalSelect?.value || modelIds[0];
+  const modelEval = evaluations[selectedModel];
+  if (!modelEval) return;
+
+  // Update top KPI cards based on stochastic samplers (e.g. topk10_T08 or nucleus_p95_T10)
+  const repConfig = modelEval['topk10_T08'] || modelEval['nucleus_p95_T10'] || Object.values(modelEval)[0];
+  if (repConfig) {
+    const elVal = document.getElementById('eval-kpi-validity');
+    const elUniq = document.getElementById('eval-kpi-uniqueness');
+    const elCys = document.getElementById('eval-kpi-cys');
+    const elGravy = document.getElementById('eval-kpi-gravy');
+
+    if (elVal) elVal.textContent = (repConfig.validity_rate * 100).toFixed(1) + '%';
+    if (elUniq) elUniq.textContent = (repConfig.uniqueness_rate * 100).toFixed(1) + '%';
+    if (elCys) elCys.textContent = (repConfig.canonical_cysteine_rate * 100).toFixed(1) + '%';
+    if (elGravy) elGravy.textContent = repConfig.mean_gravy.toFixed(2);
+  }
+
+  // Populate comparative table
+  const tbody = document.getElementById('eval-strategies-tbody');
+  if (!tbody) return;
+
+  const configMeta = {
+    'greedy': { name: 'Greedy (Argmax)', params: 'T=1.0, k=0, p=1.0 (Argmax deterministic)', badge: 'tag-lstm' },
+    'topk10_T08': { name: 'Top-k Filtering', params: 'T=0.8, k=10, p=1.0 (Truncated top-10)', badge: 'tag-transformer' },
+    'nucleus_p95_T10': { name: 'Nucleus Sampling', params: 'T=1.0, top-p=0.95 (High Diversity)', badge: 'tag-transformer' },
+    'nucleus_p80_T12': { name: 'Nucleus Sampling', params: 'T=1.2, top-p=0.80 (High Temperature)', badge: 'tag-transformer' }
+  };
+
+  tbody.innerHTML = Object.entries(modelEval).map(([cfgKey, cfgData]) => {
+    const meta = configMeta[cfgKey] || { name: cfgKey, params: '—', badge: 'tag-transformer' };
+    const sampleSeq = cfgData.sample_sequences?.[0] || '—';
+    const shortSeq = sampleSeq.length > 30 ? sampleSeq.slice(0, 15) + '...' + sampleSeq.slice(-12) : sampleSeq;
+
+    return `
+      <tr>
+        <td>
+          <span style="font-weight: 700; color: var(--text-primary);">${cfgKey}</span>
+        </td>
+        <td>
+          <span class="tag-type ${meta.badge}" style="font-size: 0.72rem; margin-bottom: 2px;">${meta.name}</span>
+          <div style="font-size: 0.75rem; color: var(--text-tertiary);">${meta.params}</div>
+        </td>
+        <td class="metric-val ${cfgData.validity_rate >= 0.99 ? 'best' : ''}">
+          ${(cfgData.validity_rate * 100).toFixed(1)}%
+        </td>
+        <td class="metric-val ${cfgData.uniqueness_rate >= 0.9 ? 'best' : (cfgData.uniqueness_rate < 0.1 ? 'danger' : '')}">
+          ${(cfgData.uniqueness_rate * 100).toFixed(1)}%
+        </td>
+        <td>
+          <span style="font-family: var(--font-mono); font-weight: 600; color: var(--color-cyan);">${cfgData.levenshtein_diversity.toFixed(3)}</span>
+        </td>
+        <td>
+          <span style="font-family: var(--font-mono); font-weight: 600;">${cfgData.kmer_jaccard_similarity.toFixed(3)}</span>
+        </td>
+        <td>
+          <span style="font-family: var(--font-mono); font-weight: 600; color: ${Math.abs(cfgData.kl_divergence) < 0.05 ? 'var(--color-emerald)' : 'var(--text-primary)'};">
+            ${cfgData.kl_divergence.toFixed(4)}
+          </span>
+        </td>
+        <td class="metric-val best">
+          ${(cfgData.novelty_rate * 100).toFixed(1)}%
+        </td>
+        <td>
+          <span style="font-family: var(--font-mono); color: var(--color-amber); font-weight: 600;">${cfgData.mean_gravy.toFixed(2)}</span>
+        </td>
+        <td>
+          <span class="history-seq" title="Click to copy: ${sampleSeq}" style="cursor: pointer; max-width: 190px; display: inline-block; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;" onclick="copyToClipboard('${sampleSeq}', 'Sequence copied to clipboard!')">
+            ${shortSeq}
+          </span>
+        </td>
+        <td>
+          <button class="btn btn-secondary btn-xs" onclick="downloadConfigFasta('${selectedModel}', '${cfgKey}')" title="Download FASTA file">
+            📥 FASTA (${cfgData.n_sequences || 50})
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+window.downloadConfigFasta = function(modelId, cfgKey) {
+  const modelEval = state.data.generation_evaluations?.[modelId]?.[cfgKey];
+  if (!modelEval || !modelEval.sample_sequences) {
+    alert('No sequences found for this configuration.');
+    return;
+  }
+  const fastaLines = modelEval.sample_sequences.map((s, idx) => `>${modelId}_${cfgKey}_${idx} len=${s.length}\n${s}`).join('\n');
+  const blob = new Blob([fastaLines], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${modelId}_${cfgKey}.fasta`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.copyToClipboard = function(text, msg) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert(msg || 'Copied to clipboard!');
+  });
+};
+

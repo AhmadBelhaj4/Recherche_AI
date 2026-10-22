@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-10-22T21:07:55.929330",
+  "exported_at": "2026-10-22T21:26:05.581419",
   "models": [
     {
       "run_id": "lstm-notebook-srr",
@@ -110,244 +110,6 @@
       "model_type": "lstm",
       "data_version": "real",
       "n_params": 431104,
-      "sample_generations": []
-    },
-    {
-      "run_id": "lstm-notebook-toy",
-      "type": "neural",
-      "config": null,
-      "metrics": {
-        "best_epoch": 10,
-        "best_val_nats": 3.0805457163665255,
-        "best_val_ppl": 21.770279552978796,
-        "final_train_nats": 3.09275709148907,
-        "final_train_ppl": 22.037754397191325,
-        "epochs_run": 10,
-        "train_seconds": 6.24
-      },
-      "history": [
-        {
-          "epoch": 1.0,
-          "train_nats": 3.1340129939174974,
-          "train_ppl": 22.96595711249338,
-          "val_nats": 3.1324170276558716,
-          "val_ppl": 22.929333452612372,
-          "lr": 3e-05,
-          "seconds": 0.7646129131317139
-        },
-        {
-          "epoch": 2.0,
-          "train_nats": 3.1332274921682064,
-          "train_ppl": 22.947924396299637,
-          "val_nats": 3.1310737616020985,
-          "val_ppl": 22.89855393451886,
-          "lr": 6e-05,
-          "seconds": 0.6074800491333008
-        },
-        {
-          "epoch": 3.0,
-          "train_nats": 3.1316605081805085,
-          "train_ppl": 22.9119935251218,
-          "val_nats": 3.128963590534201,
-          "val_ppl": 22.85028501426012,
-          "lr": 9e-05,
-          "seconds": 0.6208713054656982
-        },
-        {
-          "epoch": 4.0,
-          "train_nats": 3.1293314249291138,
-          "train_ppl": 22.85869168105774,
-          "val_nats": 3.1261424756608154,
-          "val_ppl": 22.785912579055836,
-          "lr": 0.00012,
-          "seconds": 0.636427640914917
-        },
-        {
-          "epoch": 5.0,
-          "train_nats": 3.12631384412444,
-          "train_ppl": 22.789817700484562,
-          "val_nats": 3.1225483473315174,
-          "val_ppl": 22.704164080444507,
-          "lr": 0.00015,
-          "seconds": 0.688535213470459
-        },
-        {
-          "epoch": 6.0,
-          "train_nats": 3.122480481255145,
-          "train_ppl": 22.702623290195337,
-          "val_nats": 3.118093519849677,
-          "val_ppl": 22.603245899786526,
-          "lr": 0.00018,
-          "seconds": 0.599555253982544
-        },
-        {
-          "epoch": 7.0,
-          "train_nats": 3.117793374273987,
-          "train_ppl": 22.59646265356507,
-          "val_nats": 3.112525182543886,
-          "val_ppl": 22.47773317531157,
-          "lr": 0.00021,
-          "seconds": 0.5704100131988525
-        },
-        {
-          "epoch": 8.0,
-          "train_nats": 3.1117926911357814,
-          "train_ppl": 22.461274457557558,
-          "val_nats": 3.105300275234564,
-          "val_ppl": 22.315918887095027,
-          "lr": 0.00024,
-          "seconds": 0.6579334735870361
-        },
-        {
-          "epoch": 9.0,
-          "train_nats": 3.1039423184110033,
-          "train_ppl": 22.28563539925642,
-          "val_nats": 3.095356914283192,
-          "val_ppl": 22.095123195445748,
-          "lr": 0.00027,
-          "seconds": 0.5435011386871338
-        },
-        {
-          "epoch": 10.0,
-          "train_nats": 3.09275709148907,
-          "train_ppl": 22.037754397191325,
-          "val_nats": 3.0805457163665255,
-          "val_ppl": 21.770279552978796,
-          "lr": 0.0003,
-          "seconds": 0.5523035526275635
-        }
-      ],
-      "test_metrics": null,
-      "model_type": "lstm",
-      "data_version": "toy",
-      "n_params": 431104,
-      "sample_generations": []
-    },
-    {
-      "run_id": "toy-lstm",
-      "type": "neural",
-      "config": {
-        "run_id": "toy-lstm",
-        "data_version": "toy",
-        "seed": 42,
-        "lr": 0.001,
-        "batch_size": 32,
-        "epochs": 2,
-        "warmup": 100,
-        "weight_decay": 0.01,
-        "patience": 3,
-        "n_train": 180,
-        "n_val": 10,
-        "model_config": {
-          "model": "lstm",
-          "embed_dim": 128,
-          "hidden_dim": 256,
-          "num_layers": 1
-        },
-        "n_params": 431104,
-        "device": "cpu"
-      },
-      "metrics": {
-        "best_epoch": 2,
-        "best_val_nats": 3.1263111474727605,
-        "best_val_ppl": 22.78975624436725,
-        "epochs_run": 2,
-        "n_params": 431104,
-        "train_seconds": 1.24763822555542
-      },
-      "history": [
-        {
-          "epoch": 1.0,
-          "train_nats": 3.1336728539742067,
-          "train_ppl": 22.95814680151819,
-          "val_nats": 3.131119673438761,
-          "val_ppl": 22.899605273321175,
-          "lr": 6e-05,
-          "seconds": 0.6282148361206055
-        },
-        {
-          "epoch": 2.0,
-          "train_nats": 3.130690555542852,
-          "train_ppl": 22.889780750979078,
-          "val_nats": 3.1263111474727605,
-          "val_ppl": 22.78975624436725,
-          "lr": 0.00012,
-          "seconds": 0.5752789974212646
-        }
-      ],
-      "test_metrics": null,
-      "model_type": "lstm",
-      "n_params": 431104,
-      "data_version": "toy",
-      "sample_generations": []
-    },
-    {
-      "run_id": "toy-test",
-      "type": "neural",
-      "config": {
-        "run_id": "toy-test",
-        "data_version": "toy",
-        "seed": 42,
-        "lr": 0.0006,
-        "batch_size": 32,
-        "epochs": 3,
-        "warmup": 5,
-        "weight_decay": 0.01,
-        "patience": 3,
-        "n_train": 180,
-        "n_val": 10,
-        "model_config": {
-          "model": "transformer",
-          "embed_dim": 128,
-          "num_heads": 4,
-          "num_layers": 4,
-          "dim_feedforward": 512,
-          "dropout": 0.1
-        },
-        "n_params": 821888,
-        "device": "cpu"
-      },
-      "metrics": {
-        "best_epoch": 3,
-        "best_val_nats": 3.0312417240466103,
-        "best_val_ppl": 20.722948803710615,
-        "epochs_run": 3,
-        "n_params": 821888,
-        "train_seconds": 19.2491135597229
-      },
-      "history": [
-        {
-          "epoch": 1.0,
-          "train_nats": 3.098599495220891,
-          "train_ppl": 22.166884704108426,
-          "val_nats": 3.0478588532208435,
-          "val_ppl": 21.070181738061777,
-          "lr": 0.0006,
-          "seconds": 7.669440031051636
-        },
-        {
-          "epoch": 2.0,
-          "train_nats": 3.042533570954907,
-          "train_ppl": 20.95827530404559,
-          "val_nats": 3.035686502156477,
-          "val_ppl": 20.815262718378985,
-          "lr": 0.00036254490366893717,
-          "seconds": 4.52157735824585
-        },
-        {
-          "epoch": 3.0,
-          "train_nats": 3.033411603631208,
-          "train_ppl": 20.76796392829002,
-          "val_nats": 3.0312417240466103,
-          "val_ppl": 20.722948803710615,
-          "lr": 6.784570929496595e-05,
-          "seconds": 6.8901526927948
-        }
-      ],
-      "test_metrics": null,
-      "model_type": "transformer",
-      "n_params": 821888,
-      "data_version": "toy",
       "sample_generations": []
     },
     {
@@ -505,162 +267,6 @@
       "data_version": "real",
       "n_params": 821888,
       "sample_generations": []
-    },
-    {
-      "run_id": "transformer-notebook-toy",
-      "type": "neural",
-      "config": null,
-      "metrics": {
-        "best_epoch": 15,
-        "best_val_nats": 3.0285865223340394,
-        "best_val_ppl": 20.667998179337385,
-        "final_train_nats": 3.0286668836607062,
-        "final_train_ppl": 20.669659153828785,
-        "epochs_run": 15,
-        "train_seconds": 74.31
-      },
-      "history": [
-        {
-          "epoch": 1.0,
-          "train_nats": 3.1509985536906613,
-          "train_ppl": 23.359378532534514,
-          "val_nats": 3.1479549330987693,
-          "val_ppl": 23.28838953360984,
-          "lr": 1.8e-05,
-          "seconds": 4.891505002975464
-        },
-        {
-          "epoch": 2.0,
-          "train_nats": 3.138746369935059,
-          "train_ppl": 23.074921303911445,
-          "val_nats": 3.1253838466000805,
-          "val_ppl": 22.76863307879225,
-          "lr": 3.6e-05,
-          "seconds": 4.6930763721466064
-        },
-        {
-          "epoch": 3.0,
-          "train_nats": 3.1177649697304033,
-          "train_ppl": 22.595820820472316,
-          "val_nats": 3.100680913917474,
-          "val_ppl": 22.21307132254759,
-          "lr": 5.399999999999999e-05,
-          "seconds": 4.750077962875366
-        },
-        {
-          "epoch": 4.0,
-          "train_nats": 3.0967518600509925,
-          "train_ppl": 22.12596620119505,
-          "val_nats": 3.0818943026760492,
-          "val_ppl": 21.799658459481414,
-          "lr": 7.2e-05,
-          "seconds": 4.703451871871948
-        },
-        {
-          "epoch": 5.0,
-          "train_nats": 3.082173362040382,
-          "train_ppl": 21.80574270720746,
-          "val_nats": 3.069204507478309,
-          "val_ppl": 21.52477306666244,
-          "lr": 8.999999999999999e-05,
-          "seconds": 4.675533771514893
-        },
-        {
-          "epoch": 6.0,
-          "train_nats": 3.0708121698641726,
-          "train_ppl": 21.559405465829517,
-          "val_nats": 3.0602688423754034,
-          "val_ppl": 21.333291683962603,
-          "lr": 0.00010799999999999998,
-          "seconds": 4.598686695098877
-        },
-        {
-          "epoch": 7.0,
-          "train_nats": 3.0619458434327265,
-          "train_ppl": 21.36909765160406,
-          "val_nats": 3.0537536965925143,
-          "val_ppl": 21.194753965372847,
-          "lr": 0.00012599999999999997,
-          "seconds": 4.9433183670043945
-        },
-        {
-          "epoch": 8.0,
-          "train_nats": 3.0546663305760084,
-          "train_ppl": 21.214105847362834,
-          "val_nats": 3.0489887179050648,
-          "val_ppl": 21.09400164640031,
-          "lr": 0.000144,
-          "seconds": 4.6968488693237305
-        },
-        {
-          "epoch": 9.0,
-          "train_nats": 3.048004125268682,
-          "train_ppl": 21.073242868854177,
-          "val_nats": 3.044904929000202,
-          "val_ppl": 21.008033853153787,
-          "lr": 0.00016199999999999998,
-          "seconds": 4.821619987487793
-        },
-        {
-          "epoch": 10.0,
-          "train_nats": 3.043202149598692,
-          "train_ppl": 20.972292244515838,
-          "val_nats": 3.0409726688609764,
-          "val_ppl": 20.925587006491234,
-          "lr": 0.00017999999999999998,
-          "seconds": 5.22705340385437
-        },
-        {
-          "epoch": 11.0,
-          "train_nats": 3.0389649598692032,
-          "train_ppl": 20.88361666351583,
-          "val_nats": 3.0374595266469937,
-          "val_ppl": 20.85220142589499,
-          "lr": 0.000198,
-          "seconds": 5.216471195220947
-        },
-        {
-          "epoch": 12.0,
-          "train_nats": 3.0363425416457055,
-          "train_ppl": 20.828922832998288,
-          "val_nats": 3.034602352262409,
-          "val_ppl": 20.792708082020358,
-          "lr": 0.00021599999999999996,
-          "seconds": 4.9769978523254395
-        },
-        {
-          "epoch": 13.0,
-          "train_nats": 3.0338399048465656,
-          "train_ppl": 20.77686077761069,
-          "val_nats": 3.031988924409806,
-          "val_ppl": 20.738438784922348,
-          "lr": 0.00023399999999999997,
-          "seconds": 5.513530969619751
-        },
-        {
-          "epoch": 14.0,
-          "train_nats": 3.0309857841511936,
-          "train_ppl": 20.71764565303393,
-          "val_nats": 3.0300610213629944,
-          "val_ppl": 20.69849560126728,
-          "lr": 0.00025199999999999995,
-          "seconds": 5.549670457839966
-        },
-        {
-          "epoch": 15.0,
-          "train_nats": 3.0286668836607062,
-          "train_ppl": 20.669659153828785,
-          "val_nats": 3.0285865223340394,
-          "val_ppl": 20.667998179337385,
-          "lr": 0.00026999999999999995,
-          "seconds": 5.054112672805786
-        }
-      ],
-      "test_metrics": null,
-      "model_type": "transformer",
-      "data_version": "toy",
-      "n_params": 821888,
-      "sample_generations": []
     }
   ],
   "baselines": [
@@ -685,33 +291,169 @@
       "date_utc": "2026-10-19T19:33:06+00:00",
       "run_id": "bigram_SRR3544218_a1",
       "type": "baseline"
-    },
-    {
-      "model": "bigram",
-      "data_version": "toy",
-      "seed": 42,
-      "alpha": 1.0,
-      "n_params": 483,
-      "max_len": 160,
-      "n_train": 180,
-      "n_val": 10,
-      "val_nats": 3.0249984003098858,
-      "val_ppl": 20.59397176719663,
-      "sample_generations": [
-        "SKTQCYSSDLIWQTKFNCTPSHYVSELAEQRYHILEDLFQKTRHTTIGQDFASQRSLNDDQLNSPMMGAKFKTFCGGPMSQITEACRLEMDRLIHPICDYWRGYSRLGCWMEGNEVSRLPNQCKALHDDNEWPHNAYLSCMLWPLGHMKATVDNDQGPRS",
-        "DWFANITTHYGMFWEAK",
-        "VSVWNHSPICRGWGDTDEPVEHSYLDAFDQDMQNFTRSDDWKGLQYGWANPCDKYNWTLSADTSFMPVPKHKPVLFFRTCCPDTGDWEGDDACEANQIHMVVAEFGNKAIMCTAWDVWYTSPSDNMVLIQGDLKFIIHIRHYWMHNVQTMPGRFQVDPCR",
-        "CWEYTNSSYGNDPENNLMSSLNWDDDQKSQHWSGHHEDWLIRNWTLIYRYDVQDNQAKTGLKGWTC",
-        "VGTC"
-      ],
-      "date_utc": "2026-10-19T19:16:36+00:00",
-      "run_id": "bigram_toy_a1",
-      "type": "baseline"
     }
   ],
   "references": {
     "uniform_ppl": 20.0,
     "ln_23": 3.1355,
     "bigram_val_ppl_real": 11.83
+  },
+  "generation_evaluations": {
+    "lstm-notebook-srr": {
+      "greedy": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 0.02,
+        "levenshtein_diversity": 0.0,
+        "kmer_jaccard_similarity": 1.0,
+        "kl_divergence": 0.0292,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.456,
+        "mean_net_charge": -1.9,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 126.0,
+        "sample_sequences": [
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\greedy.fasta"
+      },
+      "topk10_T08": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2926,
+        "kmer_jaccard_similarity": 0.3405,
+        "kl_divergence": -0.0054,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.379,
+        "mean_net_charge": 0.28,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 123.8,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCAASGYASSRYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPGYGDSWPEDHFDHWCRGRGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSGYCMGWFRQTPGKEREGVAAISSGGPATYYADSVKGRFTISRDNAKNTVYLQMNSLKSEDTALYYCATGYGSSSLSTPRGQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\topk10_T08.fasta"
+      },
+      "nucleus_p95_T10": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.3637,
+        "kmer_jaccard_similarity": 0.2578,
+        "kl_divergence": -0.0105,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.376,
+        "mean_net_charge": -0.58,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.5,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCALSPYASSKRCMGWFRQAPGKERERVATILIDGSGTYYADSVKGRFTISQDSAKKTVYLEMNNLKPEDTAMYYCAADWHGADCDEGSWHFDHWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQPPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRMATILTDASTFWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSGGPARYADSVKGRFTISRDNAKNTLYLQMNSLKAEDTAVYYCAAVESDPFLSLSGGRGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\nucleus_p95_T10.fasta"
+      },
+      "nucleus_p80_T12": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.325,
+        "kmer_jaccard_similarity": 0.3095,
+        "kl_divergence": -0.0099,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.386,
+        "mean_net_charge": -0.58,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 125.3,
+        "sample_sequences": [
+          "VQLVESGGGSVQPGGSLRLSCVASGFRISSRCVAWFRQAPGKEREGVAVIDSDGTIKYADSVKGRFTISKDKAKDTVYLQMNSLKPEDTAMYSCKTFGRWRGYDCYEGSWCSDVGCRTRGPRSPSP",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDRTYYTDAVKGRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAAVESERLLGYSGSLYCGGRWYEYWGRGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\nucleus_p80_T12.fasta"
+      }
+    },
+    "transformer-notebook-srr": {
+      "greedy": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 0.02,
+        "levenshtein_diversity": 0.0,
+        "kmer_jaccard_similarity": 1.0,
+        "kl_divergence": 0.0117,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.461,
+        "mean_net_charge": 0.2,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 122.0,
+        "sample_sequences": [
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\greedy.fasta"
+      },
+      "topk10_T08": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2767,
+        "kmer_jaccard_similarity": 0.3744,
+        "kl_divergence": -0.0022,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.378,
+        "mean_net_charge": -0.1,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 123.5,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCAASGYAYSSYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPLARDLVGSGPADVGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSSYCMGWFRQAPGKEREGVAAVDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLCSSLTRDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAISSGGPYTYYADSVKGRFTISQDNAKTTVYLQMNSLKPEDTAMYYCAADSRRYCSGGYCYTTVERGYWGQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\topk10_T08.fasta"
+      },
+      "nucleus_p95_T10": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.3118,
+        "kmer_jaccard_similarity": 0.3171,
+        "kl_divergence": -0.0096,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.366,
+        "mean_net_charge": -0.52,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.4,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCALSPRASSKNCMGWFRQAPGKERERVATILSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGRWIGYDCYSGSWSSDHGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGVTKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGYQYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSNYCMGWFRQTPGKEREGVASISSIDGSTYYADSVKGRFTISQDNAKTTVFLQMNSLKSEDTALYYCAVEGSGAYCSLRALPLGYWDQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\nucleus_p95_T10.fasta"
+      },
+      "nucleus_p80_T12": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2953,
+        "kmer_jaccard_similarity": 0.3552,
+        "kl_divergence": -0.0069,
+        "novelty_rate": 1.0,
+        "mean_gravy": -0.368,
+        "mean_net_charge": 0.19,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.5,
+        "sample_sequences": [
+          "VQLVESGGGSVQAGGSLRLSCVASGHRYSSYCMAWFRQVPGKEREGVAVIDSDGLAKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAAPLWIGYTCLEGSDYNYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAIDSDGRTDYVASVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGTFRYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDGTTYYADSVKGRFTISQDNAKKSVFLQMNSLKSEDTALYYCAAEIPRLLELEGPYNYWGQGTQVTVS"
+        ],
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\nucleus_p80_T12.fasta"
+      }
+    }
   }
 }
