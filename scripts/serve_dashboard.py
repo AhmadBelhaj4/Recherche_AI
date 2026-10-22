@@ -90,10 +90,11 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
             from models import LSTMLM, CausalTransformerLM
             from sampling import generate
 
-            checkpoint_path = ROOT / "models" / model_id / "best.pt"
+            checkpoint_path = self._find_checkpoint(model_id)
             config_path = ROOT / "results" / "runs" / model_id / "config.json"
 
-            if checkpoint_path.exists():
+            if checkpoint_path and checkpoint_path.exists():
+                print(f"⚡ Inférence active avec checkpoint : {checkpoint_path}")
                 device = torch.device("cpu")
                 state_dict = torch.load(checkpoint_path, map_location=device)
 
@@ -155,6 +156,38 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
         # Markov Fallback
         seq = self._markov_generate(prompt=prompt, max_len=max_len)
         return {"sequence": seq, "finished": True, "backend": "markov_fallback"}
+
+    def _find_checkpoint(self, model_id: str) -> Path | None:
+        """Find best.pt in local models/ or on mounted Google Drive on Windows."""
+        # 1. Local path
+        local_path = ROOT / "models" / model_id / "best.pt"
+        if local_path.exists():
+            return local_path
+
+        # 2. Check virtual Windows drive letters for Google Drive for Desktop (G:, H:, etc.)
+        for letter in "GHIJKLMNOPQRSTUVWXYZFED":
+            try:
+                root_drive = Path(f"{letter}:/")
+                if root_drive.exists():
+                    for sub in ["Mon Drive", "My Drive", ""]:
+                        cand = root_drive / sub / "recherche_ai_models" / model_id / "best.pt"
+                        if cand.exists():
+                            print(f"🔍 Checkpoint trouvé directement sur Google Drive Windows : {cand}")
+                            return cand
+            except (PermissionError, OSError):
+                continue
+
+        # 3. Check User Profile folder (Google Drive, OneDrive)
+        for folder_name in ["Google Drive", "GoogleDrive", "Drive", "OneDrive"]:
+            try:
+                cand = Path.home() / folder_name / "recherche_ai_models" / model_id / "best.pt"
+                if cand.exists():
+                    print(f"🔍 Checkpoint trouvé dans {folder_name} : {cand}")
+                    return cand
+            except (PermissionError, OSError):
+                continue
+
+        return None
 
     def _markov_generate(self, prompt: str, max_len: int) -> str:
         """Lightweight Markov chain protein generator from baseline data."""
