@@ -97,6 +97,7 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
             from utils import AminoAcidTokenizer, BOS_ID, EOS_ID, PAD_ID
             from models import LSTMLM, CausalTransformerLM
             from sampling import generate
+            from evaluation import analyze_vhh_sequence
 
             checkpoint_path = self._find_checkpoint(model_id)
             config_path = ROOT / "results" / "runs" / model_id / "config.json"
@@ -148,7 +149,8 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                 # If user specified prompt, prepend or replace prefix
                 if prompt and not seq.startswith(prompt):
                     seq = prompt + seq[len(prompt):] if len(seq) > len(prompt) else prompt
-                return {"sequence": seq, "finished": dones[0] if dones else True, "backend": "pytorch"}
+                analysis = analyze_vhh_sequence(seq)
+                return {"sequence": seq, "finished": dones[0] if dones else True, "backend": "pytorch", "analysis": analysis}
 
         except Exception as err:
             import traceback
@@ -164,13 +166,18 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                     import random
                     base = random.choice(samples)
                     seq = prompt + base[len(prompt):max_len] if len(base) > len(prompt) else prompt + base
-                    return {"sequence": seq[:max_len], "finished": True, "backend": "colab_gpu_precomputed"}
+                    return {"sequence": seq[:max_len], "finished": True, "backend": "colab_gpu_precomputed", "analysis": analyze_vhh_sequence(seq[:max_len])}
             except Exception:
                 pass
 
         # Markov Fallback
         seq = self._markov_generate(prompt=prompt, max_len=max_len)
-        return {"sequence": seq, "finished": True, "backend": "markov_fallback"}
+        try:
+            from evaluation import analyze_vhh_sequence
+            analysis = analyze_vhh_sequence(seq)
+        except Exception:
+            analysis = {}
+        return {"sequence": seq, "finished": True, "backend": "markov_fallback", "analysis": analysis}
 
     def _find_checkpoint(self, model_id: str) -> Path | None:
         """Find best.pt in local models/ or on mounted Google Drive on Windows."""

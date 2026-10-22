@@ -131,3 +131,16 @@ def test_evaluate_sequences_full():
     assert report["canonical_cysteine_rate"] == 1.0
     assert "mean_gravy" in report
     assert "mean_net_charge" in report
+
+
+def test_analyze_vhh_sequence():
+    from evaluation import analyze_vhh_sequence
+    seq = "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADLVTGGNWRSIDHWSYWGQGTQV"
+    diag = analyze_vhh_sequence(seq)
+    assert diag["is_valid"] is True
+    assert diag["has_canonical_cysteines"] is True
+    assert diag["has_fr2_hallmarks"] is True
+    assert diag["cdr3_length"] > 0
+    assert diag["vhh_quality_score"] >= 80
+    assert "Highly Soluble" in diag["solubility_status"]
+

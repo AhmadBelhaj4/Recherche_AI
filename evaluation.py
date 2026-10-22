@@ -341,3 +341,69 @@ def evaluate_sequences(
         "canonical_cysteine_rate": physchem["canonical_cysteine_rate"],
         "mean_length": physchem["mean_length"]
     }
+
+
+# ==============================================================================
+# 8. Single VHH Sequence Biological Diagnostic
+# ==============================================================================
+
+def analyze_vhh_sequence(seq: str) -> Dict[str, any]:
+    """Perform comprehensive structural and biochemical QC on a single VHH nanobody sequence."""
+    if not isinstance(seq, str) or not seq:
+        return {"valid": False, "error": "Empty or non-string sequence"}
+
+    valid = is_valid_sequence(seq)
+    cys_positions = [i + 1 for i, aa in enumerate(seq) if aa == "C"]
+
+    # Canonical cysteines: C23 (FR1) and C104 (FR3)
+    has_canonical_cys = (
+        len(cys_positions) >= 2
+        and 18 <= cys_positions[0] <= 26
+        and 88 <= cys_positions[-1] <= 110
+    )
+
+    # FR2 hallmark search: W[FY]R... or WFRQ...KERE (solubility signature)
+    fr2_match = re.search(r"W[FY]RQ[A-Z]{4,10}[EK][ERKQ]", seq)
+    has_fr2_hallmarks = bool(fr2_match)
+    fr2_motif = fr2_match.group(0) if fr2_match else None
+
+    # CDR3 extraction: region between C[A-Z]{2,4} and W[GR]QG
+    cdr3_match = re.search(r"C[A-Z]{2,4}([A-Z]{4,30})W[GR]QG", seq)
+    cdr3_seq = None
+    cdr3_len = 0
+    if cdr3_match:
+        cdr3_seq = cdr3_match.group(1)
+        cdr3_len = len(cdr3_seq)
+    else:
+        m_fall = re.search(r"C([A-Z]{5,25})W", seq)
+        if m_fall:
+            cdr3_seq = m_fall.group(1)
+            cdr3_len = len(cdr3_seq)
+
+    gravy = compute_gravy(seq)
+    charge = compute_net_charge(seq)
+
+    # VHH Quality Score (0 to 100)
+    score = 0
+    if valid: score += 30
+    if has_canonical_cys: score += 25
+    if has_fr2_hallmarks: score += 25
+    if 8 <= cdr3_len <= 26: score += 10
+    if -0.50 <= gravy <= -0.20: score += 10
+
+    return {
+        "sequence": seq,
+        "length": len(seq),
+        "is_valid": valid,
+        "cys_positions": cys_positions,
+        "has_canonical_cysteines": has_canonical_cys,
+        "has_fr2_hallmarks": has_fr2_hallmarks,
+        "fr2_motif": fr2_motif,
+        "cdr3_sequence": cdr3_seq,
+        "cdr3_length": cdr3_len,
+        "gravy_index": round(gravy, 3),
+        "net_charge": round(charge, 2),
+        "vhh_quality_score": score,
+        "solubility_status": "Highly Soluble (VHH Hallmark)" if has_fr2_hallmarks and gravy < -0.30 else "Standard",
+    }
+

@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BioLM Studio — Neural Protein Language Model Workbench</title>
-  <meta name="description" content="Interactive dashboard and testing platform for autoregressive protein language models (Transformer, LSTM, Bigram). Compare metrics, explore training curves, generate de novo sequences, and diagnose performance.">
+  <title>BioLM Studio — Évaluation & Génération de Nanocorps VHH</title>
+  <meta name="description" content="Plateforme d'évaluation et de génération de nanocorps VHH par modèles de langage neuronaux autorégressifs (Transformer, LSTM, Bigram). Analyse des métriques de sampling, validité biologique, et test en direct.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <!-- Chart.js for interactive analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <!-- Ambient background glow effects -->
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
-  <div class="ambient-glow glow-3"></div>
 
   <div id="app" class="app-layout">
-    <!-- Header / Navbar -->
-    <header class="app-header" id="app-header">
+    <!-- Header -->
+    <header class="app-header">
       <div class="header-brand">
         <div class="brand-badge">
           <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -32,915 +29,397 @@
         <div class="brand-titles">
           <div class="brand-name-row">
             <h1 class="brand-title">BioLM Studio</h1>
-            <span class="version-tag">Sprint 2/3 Lab</span>
+            <span class="version-tag">VHH Camélidés • SRR3544218</span>
           </div>
-          <p class="brand-subtitle">Protein Sequence Generative Models & Benchmark Intelligence</p>
+          <p class="brand-subtitle">Évaluation Complète des Métriques & Génération de Nanocorps (Phase F / NB05 & NB06)</p>
         </div>
       </div>
 
-      <nav class="header-nav" id="main-nav" aria-label="Main Navigation">
-        <button class="nav-tab active" data-tab="overview" id="nav-tab-overview">
-          <span class="tab-icon">📊</span>
-          <span>Leaderboard</span>
-        </button>
-        <button class="nav-tab" data-tab="curves" id="nav-tab-curves">
-          <span class="tab-icon">📈</span>
-          <span>Training Curves</span>
-        </button>
-        <button class="nav-tab" data-tab="comparison" id="nav-tab-comparison">
-          <span class="tab-icon">⚖️</span>
-          <span>Compare</span>
-        </button>
-        <button class="nav-tab" data-tab="playground" id="nav-tab-playground">
-          <span class="tab-icon">🧬</span>
-          <span>Generation Playground</span>
-          <span class="tab-badge pulse">Test</span>
-        </button>
-        <button class="nav-tab" data-tab="evalmetrics" id="nav-tab-evalmetrics">
+      <!-- Navigation Tabs (Only essential sections) -->
+      <nav class="header-nav" id="main-nav">
+        <button class="nav-tab active" data-tab="evalmetrics" id="nav-tab-evalmetrics">
           <span class="tab-icon">🧪</span>
-          <span>Sampling & Benchmarks</span>
-          <span class="tab-badge" style="background: var(--color-emerald); color: white;">Phase F</span>
+          <span>Évaluation & Sampling (Phase F)</span>
         </button>
-        <button class="nav-tab" data-tab="advisor" id="nav-tab-advisor">
-          <span class="tab-icon">🧠</span>
-          <span>AI Advisor</span>
+        <button class="nav-tab" data-tab="generator" id="nav-tab-generator">
+          <span class="tab-icon">🧬</span>
+          <span>Tester le Modèle en Direct</span>
+          <span class="tab-badge pulse">Live</span>
         </button>
-        <button class="nav-tab" data-tab="simulator" id="nav-tab-simulator">
-          <span class="tab-icon">🎛️</span>
-          <span>What-If Studio</span>
+        <button class="nav-tab" data-tab="leaderboard" id="nav-tab-leaderboard">
+          <span class="tab-icon">📊</span>
+          <span>Modèles Colab & Courbes</span>
         </button>
       </nav>
 
       <div class="header-status">
-        <div class="status-indicator" id="backend-status-indicator" title="Connection status to PyTorch inference server">
+        <div class="status-indicator" id="backend-status-indicator">
           <span class="status-dot online"></span>
-          <span class="status-text" id="backend-status-text">Client Ready</span>
+          <span class="status-text" id="backend-status-text">PyTorch Prêt</span>
         </div>
-        <button class="btn btn-secondary btn-sm" id="btn-refresh-data" title="Reload training metrics">
+        <button class="btn btn-secondary btn-sm" id="btn-refresh-data" title="Recharger les données">
           <svg class="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
           </svg>
-          <span>Refresh</span>
+          <span>Actualiser</span>
         </button>
-        <button class="btn btn-primary btn-sm" id="btn-import-run" title="Import Colab Run (metrics.json, history.csv)">
-          <span>📥 Import Run</span>
-        </button>
-        <input type="file" id="file-input-import" accept=".json,.csv" multiple style="display: none;">
       </div>
     </header>
 
-    <!-- Top KPI Ribbon -->
-    <section class="kpi-ribbon" id="kpi-ribbon">
-      <div class="kpi-card" id="kpi-total-models">
-        <div class="kpi-icon-wrap cyan">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-            <path d="M2 17l10 5 10-5"></path>
-            <path d="M2 12l10 5 10-5"></path>
-          </svg>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Models Tracked</span>
-          <div class="kpi-value-row">
-            <span class="kpi-number" id="kpi-count-val">5</span>
-            <span class="kpi-meta">4 Neural + 1 N-gram</span>
-          </div>
-        </div>
-      </div>
+    <!-- Main Container -->
+    <main class="main-content">
 
-      <div class="kpi-card" id="kpi-best-ppl">
-        <div class="kpi-icon-wrap violet">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-            <path d="M4 22h16"></path>
-            <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"></path>
-            <path d="M14 14.66V17c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-2.34"></path>
-            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
-          </svg>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Best Neural Val PPL</span>
-          <div class="kpi-value-row">
-            <span class="kpi-number highlight" id="kpi-best-ppl-val">20.67</span>
-            <span class="kpi-meta tag-good">Transformer (15 ep)</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kpi-card" id="kpi-baseline-ppl">
-        <div class="kpi-icon-wrap emerald">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Bigram Baseline PPL</span>
-          <div class="kpi-value-row">
-            <span class="kpi-number" id="kpi-baseline-ppl-val">20.59</span>
-            <span class="kpi-meta">Toy Set (α=1.0)</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="kpi-card" id="kpi-uniform-ref">
-        <div class="kpi-icon-wrap amber">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Uniform Limit (V=20)</span>
-          <div class="kpi-value-row">
-            <span class="kpi-number">20.00</span>
-            <span class="kpi-meta">PPL Threshold (ln 23 = 3.13)</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Main Content Tabs Container -->
-    <main class="main-content" id="main-content">
-
-      <!-- ================= TAB 1: OVERVIEW & LEADERBOARD ================= -->
-      <section class="tab-pane active" id="pane-overview">
-        <div class="section-header">
+      <!-- ================= ONGLET 1: ÉVALUATION & SAMPLING (PHASE F / NB05 & NB06) ================= -->
+      <section class="tab-pane active" id="pane-evalmetrics">
+        <!-- Section Header avec Sélecteur de Modèle -->
+        <div class="section-header-compact">
           <div>
-            <h2 class="section-title">Model Leaderboard & Architecture Directory</h2>
-            <p class="section-desc">Comprehensive benchmark of all trained checkpoints, baselines, parameter footprints, and validation perplexity.</p>
+            <h2 class="section-title">Matrice d'Évaluation des Stratégies d'Échantillonnage</h2>
+            <p class="section-desc">Comparaison quantitative des 4 configurations canoniques de génération de NB05/NB06 sur les modèles réels entraînés sur Colab GPU.</p>
           </div>
-          <div class="filter-group">
-            <label for="filter-model-type" class="filter-label">Filter:</label>
-            <select id="filter-model-type" class="form-select">
-              <option value="all">All Models</option>
-              <option value="transformer">Transformers</option>
-              <option value="lstm">LSTMs</option>
-              <option value="baseline">Baselines (N-gram)</option>
+          <div class="model-picker-wrap">
+            <label for="eval-model-select">Modèle Évalué :</label>
+            <select id="eval-model-select" class="form-select model-select-prominent">
+              <option value="transformer-notebook-srr" selected>Transformer Causal (Colab GPU — Val PPL 2.229)</option>
+              <option value="lstm-notebook-srr">LSTM Baseline (Colab GPU — Val PPL 2.254)</option>
             </select>
           </div>
         </div>
 
-        <!-- Leaderboard Table -->
-        <div class="glass-card table-card">
+        <!-- 4 Badges KPI Biologiques Essentiels -->
+        <div class="kpi-banner-grid">
+          <div class="kpi-banner-card card-emerald">
+            <div class="kpi-banner-icon">🛡️</div>
+            <div class="kpi-banner-info">
+              <span class="kpi-banner-label">Validité Biologique</span>
+              <span class="kpi-banner-val" id="eval-kpi-validity">100.0%</span>
+              <span class="kpi-banner-sub">20 acides aminés, taille [100-140]</span>
+            </div>
+          </div>
+
+          <div class="kpi-banner-card card-cyan">
+            <div class="kpi-banner-icon">🎯</div>
+            <div class="kpi-banner-info">
+              <span class="kpi-banner-label">Unicité Stochastique</span>
+              <span class="kpi-banner-val" id="eval-kpi-uniqueness">100.0%</span>
+              <span class="kpi-banner-sub">Anti-effondrement (Greedy = 2.0%)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card card-purple kpi-banner-card">
+            <div class="kpi-banner-icon">🔗</div>
+            <div class="kpi-banner-info">
+              <span class="kpi-banner-label">Ponts Disulfure (Cys)</span>
+              <span class="kpi-banner-val" id="eval-kpi-cys">100.0%</span>
+              <span class="kpi-banner-sub">C23 (FR1) - C104 (FR3) Canonique</span>
+            </div>
+          </div>
+
+          <div class="kpi-banner-card card-amber">
+            <div class="kpi-banner-icon">💧</div>
+            <div class="kpi-banner-info">
+              <span class="kpi-banner-label">Hydropathie (GRAVY)</span>
+              <span class="kpi-banner-val" id="eval-kpi-gravy">-0.37</span>
+              <span class="kpi-banner-sub">Solubilité VHH (Kyte-Doolittle)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau Comparatif Principal (NB06 Cellule 6) -->
+        <div class="glass-card table-card-clean">
+          <div class="table-card-head">
+            <div class="table-title-group">
+              <h3 class="table-card-title">📊 Synthèse Complète — Comparaison des 4 Stratégies</h3>
+              <span class="table-card-sub">Inspiré de NB06 (Phase F) • 50 séquences générées de novo par méthode</span>
+            </div>
+            <div class="table-actions">
+              <button class="btn btn-primary btn-sm" id="btn-run-all-eval" title="Re-générer les évaluations">
+                ⚡ Lancer Évaluation Complète
+              </button>
+              <button class="btn btn-secondary btn-sm" id="btn-export-eval-json">
+                📥 Exporter JSON
+              </button>
+            </div>
+          </div>
+
           <div class="table-responsive">
-            <table class="data-table" id="leaderboard-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Model / Run ID</th>
-                  <th>Type</th>
-                  <th>Parameters</th>
-                  <th>Best Val Loss</th>
-                  <th>Best Val PPL</th>
-                  <th>Epochs</th>
-                  <th>Train Time</th>
-                  <th>Status / Action</th>
-                </tr>
-              </thead>
-              <tbody id="leaderboard-tbody">
-                <!-- Dynamically populated via JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Model Cards Grid -->
-        <div class="cards-grid" id="model-cards-grid">
-          <!-- Dynamically populated via JS -->
-        </div>
-      </section>
-
-      <!-- ================= TAB 2: TRAINING CURVES ================= -->
-      <section class="tab-pane" id="pane-curves">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Training Dynamics & Loss Trajectories</h2>
-            <p class="section-desc">Interactive loss curves, validation convergence, and perplexity trajectories over epochs.</p>
-          </div>
-          <div class="chart-controls">
-            <div class="btn-group" id="metric-toggle-group">
-              <button class="btn btn-sm btn-pill active" data-metric="val_nats" id="btn-metric-val-nats">Val Loss (nats)</button>
-              <button class="btn btn-sm btn-pill" data-metric="val_ppl" id="btn-metric-val-ppl">Perplexity (PPL)</button>
-              <button class="btn btn-sm btn-pill" data-metric="train_nats" id="btn-metric-train-nats">Train Loss (nats)</button>
-              <button class="btn btn-sm btn-pill" data-metric="lr" id="btn-metric-lr">Learning Rate</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid-2-col">
-          <!-- Main Chart -->
-          <div class="glass-card chart-card-lg">
-            <div class="card-head">
-              <h3 class="card-title" id="main-chart-title">Validation Loss (nats) over Epochs</h3>
-              <div class="legend-badge-row" id="model-toggles-container">
-                <!-- Checkboxes to show/hide runs -->
-              </div>
-            </div>
-            <div class="chart-wrapper">
-              <canvas id="canvas-main-curves"></canvas>
-            </div>
-            <div class="chart-footnote">
-              <span class="footnote-item"><span class="dot-dash red"></span> Uniform Random Loss: <strong>3.1355 nats (ln 23)</strong></span>
-              <span class="footnote-item"><span class="dot-dash blue"></span> Bigram Toy Val Loss: <strong>3.025 nats</strong></span>
-              <span class="footnote-item"><span class="dot-dash green"></span> Real Data Target: <strong>&lt; 2.47 nats (PPL 11.83)</strong></span>
-            </div>
-          </div>
-
-          <!-- Side Analytics Panel -->
-          <div class="glass-card panel-insights">
-            <h3 class="card-title">Convergence Insights</h3>
-            <div class="insight-list" id="curves-insights-list">
-              <div class="insight-item">
-                <div class="insight-icon cyan">⚡</div>
-                <div class="insight-body">
-                  <strong>Transformer Convergence</strong>
-                  <p>Consistently reaches lowest validation loss (~3.028 nats / 20.67 PPL) thanks to self-attention across all positions simultaneously.</p>
-                </div>
-              </div>
-              <div class="insight-item">
-                <div class="insight-icon violet">🔄</div>
-                <div class="insight-body">
-                  <strong>LSTM Gradient Flow</strong>
-                  <p>LSTM converges smoothly but stabilizes at ~3.080 nats (21.77 PPL) due to sequential state bottleneck on 140-token sequences.</p>
-                </div>
-              </div>
-              <div class="insight-item">
-                <div class="insight-icon amber">⚠️</div>
-                <div class="insight-body">
-                  <strong>The "Toy Set Ceiling"</strong>
-                  <p>On only 180 toy sequences, both neural models hover near bigram baseline (~20.59 PPL). Neural models require 10k+ sequences to unlock non-local dependencies!</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mini-stats-box">
-              <div class="mini-stat">
-                <span class="stat-name">Per-epoch Speed</span>
-                <span class="stat-val highlight">LSTM (0.6s) vs TF (4.8s)</span>
-              </div>
-              <div class="mini-stat">
-                <span class="stat-name">Memory Footprint</span>
-                <span class="stat-val">1.6 MB vs 3.2 MB</span>
-              </div>
-              <div class="mini-stat">
-                <span class="stat-name">Generalization Gap</span>
-                <span class="stat-val" style="color: var(--color-emerald);">&lt; 0.005 nats (No overfit)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 3: HEAD-TO-HEAD COMPARISON ================= -->
-      <section class="tab-pane" id="pane-comparison">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Head-to-Head Model Comparison</h2>
-            <p class="section-desc">Multi-dimensional radar evaluation & side-by-side architectural diff matrix.</p>
-          </div>
-          <div class="comparison-selectors">
-            <select id="compare-select-1" class="form-select">
-              <!-- populated via JS -->
-            </select>
-            <span class="vs-badge">VS</span>
-            <select id="compare-select-2" class="form-select">
-              <!-- populated via JS -->
-            </select>
-          </div>
-        </div>
-
-        <div class="grid-2-col">
-          <!-- Radar Chart Card -->
-          <div class="glass-card chart-card">
-            <h3 class="card-title">Multi-Metric Radar Profiling</h3>
-            <div class="chart-wrapper radar-wrapper">
-              <canvas id="canvas-radar"></canvas>
-            </div>
-            <p class="chart-caption">Scores normalized [0 - 100]. Higher is better across all 5 axes: Perplexity, Parameter Efficiency, Training Speed, Sequence Modeling, Generalization.</p>
-          </div>
-
-          <!-- Head to Head Matrix Card -->
-          <div class="glass-card matrix-card">
-            <h3 class="card-title">Side-by-Side Specification Matrix</h3>
-            <div class="table-responsive">
-              <table class="comparison-matrix-table" id="comparison-matrix">
-                <thead>
-                  <tr>
-                    <th>Metric / Attribute</th>
-                    <th id="comp-header-1">Model A</th>
-                    <th id="comp-header-2">Model B</th>
-                    <th>Advantage</th>
-                  </tr>
-                </thead>
-                <tbody id="comparison-matrix-body">
-                  <!-- dynamically populated -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 4: INTERACTIVE PLAYGROUND ================= -->
-      <section class="tab-pane" id="pane-playground">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">De Novo Protein Generation Playground</h2>
-            <p class="section-desc">Sample novel amino acid sequences autoregressively from trained models with precision sampling controls.</p>
-          </div>
-          <div class="playground-status-badge" id="playground-mode-badge">
-            <span class="dot"></span>
-            <span id="playground-mode-text">Interactive Neural Generator</span>
-          </div>
-        </div>
-
-        <div class="playground-layout">
-          <!-- Controls Column -->
-          <div class="glass-card playground-controls">
-            <h3 class="card-title">Generation Hyperparameters</h3>
-
-            <div class="form-group">
-              <label for="play-model-select" class="form-label">Active Model</label>
-              <select id="play-model-select" class="form-select">
-                <option value="toy-test">Causal Transformer (toy-test, 4L-4H)</option>
-                <option value="transformer-notebook-toy">Causal Transformer (notebook-toy, 15 ep)</option>
-                <option value="toy-lstm">LSTM LM (toy-lstm, 1L-256H)</option>
-                <option value="lstm-notebook-toy">LSTM LM (notebook-toy, 10 ep)</option>
-                <option value="bigram_toy_a1">Bigram Baseline (Markov α=1.0)</option>
-              </select>
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
-                <button type="button" class="btn btn-xs btn-secondary" id="btn-upload-checkpoint">
-                  ⬆️ Upload .pt Checkpoint
-                </button>
-                <span class="field-hint" id="checkpoint-status-hint">Local PyTorch / Colab GPU</span>
-                <input type="file" id="file-input-checkpoint" accept=".pt,.pth" style="display: none;">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="play-prompt" class="form-label">
-                <span>Prompt / Prefix (Optional)</span>
-                <span class="field-hint">e.g. M, MKLL, MST...</span>
-              </label>
-              <input type="text" id="play-prompt" class="form-input mono" placeholder="Start token BOS (<B>) or type 'M'..." maxlength="30" value="M">
-              <div class="quick-prompts">
-                <span class="quick-chip" data-prefix="M">Met (M)</span>
-                <span class="quick-chip" data-prefix="MK">MK (Signal)</span>
-                <span class="quick-chip" data-prefix="MVL">MVL (Hydrophobic)</span>
-                <span class="quick-chip" data-prefix="">None (BOS)</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="play-temp" class="form-label">Temperature (T)</label>
-                <span class="slider-val" id="val-temp">0.85</span>
-              </div>
-              <input type="range" id="play-temp" class="form-range" min="0.1" max="2.0" step="0.05" value="0.85">
-              <div class="range-labels">
-                <span>0.1 (Conservative)</span>
-                <span>1.0 (Exact Distribution)</span>
-                <span>2.0 (Creative/Diverse)</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="play-topp" class="form-label">Nucleus Top-P</label>
-                <span class="slider-val" id="val-topp">0.90</span>
-              </div>
-              <input type="range" id="play-topp" class="form-range" min="0.1" max="1.0" step="0.05" value="0.90">
-              <div class="range-labels">
-                <span>0.1 (Strict Nucleus)</span>
-                <span>0.90 (Recommended)</span>
-                <span>1.0 (Full Mass)</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="play-topk" class="form-label">Top-K</label>
-                <span class="slider-val" id="val-topk">0 (Off)</span>
-              </div>
-              <input type="range" id="play-topk" class="form-range" min="0" max="20" step="1" value="0">
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="play-maxlen" class="form-label">Target Max Length</label>
-                <span class="slider-val" id="val-maxlen">60 AA</span>
-              </div>
-              <input type="range" id="play-maxlen" class="form-range" min="10" max="140" step="5" value="60">
-            </div>
-
-            <div class="form-group-checkbox">
-              <label class="custom-checkbox">
-                <input type="checkbox" id="play-greedy">
-                <span class="checkmark"></span>
-                <span>Greedy Argmax (Deterministic)</span>
-              </label>
-            </div>
-
-            <button class="btn btn-primary btn-lg btn-block glow-btn" id="btn-generate">
-              <span class="btn-icon">⚡</span>
-              <span>Generate Sequence</span>
-            </button>
-          </div>
-
-          <!-- Output Column -->
-          <div class="playground-output-column">
-            <!-- Sequence Output Card -->
-            <div class="glass-card sequence-card">
-              <div class="card-head">
-                <div class="card-title-row">
-                  <h3 class="card-title">Generated Protein Sequence</h3>
-                  <span class="badge badge-success" id="seq-status-badge">Complete (<EOS>)</span>
-                </div>
-                <div class="card-actions">
-                  <button class="btn btn-secondary btn-sm" id="btn-copy-seq" title="Copy amino acid sequence">
-                    <span>📋 Copy</span>
-                  </button>
-                  <button class="btn btn-secondary btn-sm" id="btn-export-fasta" title="Export as FASTA file">
-                    <span>💾 FASTA</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Formatted sequence viewer with amino acid colored tokens -->
-              <div class="sequence-viewer-container" id="sequence-viewer">
-                <!-- Dynamically colored tokens -->
-              </div>
-
-              <!-- Sequence Legend -->
-              <div class="aa-legend">
-                <span class="legend-chip aa-hydrophobic">Hydrophobic (A,V,I,L,M,F,W)</span>
-                <span class="legend-chip aa-polar">Polar / Neutral (S,T,N,Q,C,Y)</span>
-                <span class="legend-chip aa-basic">Basic / + (K,R,H)</span>
-                <span class="legend-chip aa-acidic">Acidic / - (D,E)</span>
-                <span class="legend-chip aa-special">Structural (G,P)</span>
-              </div>
-
-              <!-- Physicochemical Properties Grid -->
-              <div class="bio-metrics-grid">
-                <div class="bio-metric-box">
-                  <span class="bio-label">Length</span>
-                  <span class="bio-val" id="bio-len">48 AA</span>
-                </div>
-                <div class="bio-metric-box">
-                  <span class="bio-label">Molecular Weight</span>
-                  <span class="bio-val" id="bio-mw">5.32 kDa</span>
-                </div>
-                <div class="bio-metric-box">
-                  <span class="bio-label">Isoelectric Point (est. pI)</span>
-                  <span class="bio-val" id="bio-pi">6.82</span>
-                </div>
-                <div class="bio-metric-box">
-                  <span class="bio-label">Net Charge (pH 7.0)</span>
-                  <span class="bio-val" id="bio-charge">+0.2</span>
-                </div>
-                <div class="bio-metric-box">
-                  <span class="bio-label">Hydrophobicity Ratio</span>
-                  <span class="bio-val" id="bio-hydro">41.7%</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Residue Composition Bar Chart -->
-            <div class="glass-card composition-card">
-              <h3 class="card-title">Residue Frequency Distribution</h3>
-              <div class="composition-chart-wrapper">
-                <canvas id="canvas-residue-dist"></canvas>
-              </div>
-            </div>
-
-            <!-- Generation History -->
-            <div class="glass-card history-card">
-              <h3 class="card-title">Session Generated Samples</h3>
-              <div class="history-list" id="generation-history-list">
-                <!-- Dynamically filled with past samples -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 5: AI ADVISOR & DIAGNOSTICS ================= -->
-      <section class="tab-pane" id="pane-advisor">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Automated Model Diagnostic & Optimization Advisor</h2>
-            <p class="section-desc">Real-time health check on model curves, overfitting risk analysis, and concrete Sprint 2/3 upgrade recipes.</p>
-          </div>
-          <div class="advisor-run-selector">
-            <label for="advisor-select-run" class="filter-label">Inspect Run:</label>
-            <select id="advisor-select-run" class="form-select">
-              <!-- populated via JS -->
-            </select>
-          </div>
-        </div>
-
-        <!-- Diagnostic Summary Cards -->
-        <div class="diagnostic-banner" id="diagnostic-banner">
-          <div class="diag-status-icon" id="diag-icon">🟢</div>
-          <div class="diag-status-content">
-            <h3 class="diag-title" id="diag-title">Healthy Learning Trajectory with Severe Data Starvation</h3>
-            <p class="diag-summary" id="diag-summary">The model is learning smoothly without validation divergence, but is plateauing around 20.67 PPL due to dataset size limitation (180 sequences in toy set).</p>
-          </div>
-          <div class="diag-score-wrap">
-            <span class="diag-score-label">Health Score</span>
-            <span class="diag-score-val" id="diag-score-val">84 / 100</span>
-          </div>
-        </div>
-
-        <div class="grid-3-col">
-          <!-- Metric 1: Generalization & Overfitting -->
-          <div class="glass-card diag-detail-card" id="card-diag-overfit">
-            <div class="diag-card-head">
-              <span class="diag-badge-icon">🛡️</span>
-              <h4 class="diag-card-title">Overfitting & Gap Analysis</h4>
-            </div>
-            <div class="diag-card-stat">
-              <span class="stat-big" id="diag-gap-val">+0.003</span>
-              <span class="stat-unit">nats gap (Val - Train)</span>
-            </div>
-            <p class="diag-explanation" id="diag-gap-expl">Val loss closely tracks train loss. Regularization (dropout 0.1, weight decay 0.01) is preventing memorization.</p>
-            <div class="diag-status-tag tag-healthy" id="diag-gap-status">Status: No Overfitting</div>
-          </div>
-
-          <!-- Metric 2: Convergence vs Random Chance -->
-          <div class="glass-card diag-detail-card" id="card-diag-entropy">
-            <div class="diag-card-head">
-              <span class="diag-badge-icon">📉</span>
-              <h4 class="diag-card-title">Entropy Reduction</h4>
-            </div>
-            <div class="diag-card-stat">
-              <span class="stat-big" id="diag-entropy-drop">-0.107</span>
-              <span class="stat-unit">nats below uniform random</span>
-            </div>
-            <p class="diag-explanation" id="diag-entropy-expl">Model moved from 3.135 nats (uniform) to 3.028 nats. It has learned unigram and low-order n-gram frequencies.</p>
-            <div class="diag-status-tag tag-moderate" id="diag-entropy-status">Status: Initial Learning</div>
-          </div>
-
-          <!-- Metric 3: Parameter Capacity vs Data -->
-          <div class="glass-card diag-detail-card" id="card-diag-ratio">
-            <div class="diag-card-head">
-              <span class="diag-badge-icon">📦</span>
-              <h4 class="diag-card-title">Param / Token Ratio</h4>
-            </div>
-            <div class="diag-card-stat">
-              <span class="stat-big" id="diag-ratio-val">32.6</span>
-              <span class="stat-unit">parameters per train token</span>
-            </div>
-            <p class="diag-explanation" id="diag-ratio-expl">High ratio (optimal is 0.05 - 0.20 tokens per param). The model has 821k parameters but only ~25k training tokens.</p>
-            <div class="diag-status-tag tag-warning" id="diag-ratio-status">Status: Severe Data Bottleneck</div>
-          </div>
-        </div>
-
-        <!-- Actionable Upgrade Roadmaps -->
-        <div class="recommendations-container">
-          <h3 class="section-title">Prioritized Recommendations & Next Steps</h3>
-
-          <div class="rec-grid">
-            <!-- Rec 1 -->
-            <div class="glass-card rec-card">
-              <div class="rec-header">
-                <span class="rec-priority p-high">P0 • Crucial</span>
-                <span class="rec-category">Dataset Scale</span>
-              </div>
-              <h4 class="rec-title">Transition to Full SRR3544218 Dataset</h4>
-              <p class="rec-desc">Switch from the 200-sequence toy split to the real dataset (50,000+ sequences, ~7M tokens). This will drop perplexity from <strong>20.6 → ~11.8 PPL</strong> and allow the transformer attention heads to discover secondary structure motifs.</p>
-              <div class="rec-code">
-                <code>python scripts/train_pipeline.py --data real --epochs 25 --batch-size 64</code>
-              </div>
-            </div>
-
-            <!-- Rec 2 -->
-            <div class="glass-card rec-card">
-              <div class="rec-header">
-                <span class="rec-priority p-high">P1 • Optimization</span>
-                <span class="rec-category">LR Schedule</span>
-              </div>
-              <h4 class="rec-title">Cosine Annealing with 500-Step Warmup</h4>
-              <p class="rec-desc">Linear warmup prevents early gradient explosion in self-attention layers. Cosine decay to $\eta_{min} = 10^{-5}$ enables precise settlement into sharp loss basins without manual step decay tuning.</p>
-              <div class="rec-code">
-                <code>lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs*steps_per_epoch, eta_min=1e-5)</code>
-              </div>
-            </div>
-
-            <!-- Rec 3 -->
-            <div class="glass-card rec-card">
-              <div class="rec-header">
-                <span class="rec-priority p-med">P2 • Architecture</span>
-                <span class="rec-category">Rotary RoPE Embeddings</span>
-              </div>
-              <h4 class="rec-title">Upgrade from Absolute to Rotary Position (RoPE)</h4>
-              <p class="rec-desc">Current absolute positional embedding cannot generalize to proteins longer than <code>max_len=200</code>. Rotary Position Embedding preserves relative amino acid distance and improves attention on structural contacts.</p>
-              <div class="rec-code">
-                <code>x = apply_rotary_pos_emb(q, k, cos, sin)</code>
-              </div>
-            </div>
-
-            <!-- Rec 4 -->
-            <div class="glass-card rec-card">
-              <div class="rec-header">
-                <span class="rec-priority p-med">P3 • Efficiency</span>
-                <span class="rec-category">Memory & Speed</span>
-              </div>
-              <h4 class="rec-title">Enable FlashAttention-2 / PyTorch SDPA</h4>
-              <p class="rec-desc">PyTorch 2.x <code>F.scaled_dot_product_attention</code> fuses the softmax and dropout kernels, reducing memory from $O(N^2)$ to $O(N)$ and speeding up training by 2.4x on NVIDIA T4/A100 GPUs in Google Colab.</p>
-              <div class="rec-code">
-                <code>out = F.scaled_dot_product_attention(q, k, v, is_causal=True)</code>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 6: WHAT-IF ARCHITECTURE SIMULATOR ================= -->
-      <section class="tab-pane" id="pane-simulator">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">"What-If" Architecture & Capacity Simulator</h2>
-            <p class="section-desc">Simulate model scale, compute requirements, VRAM allocation, and expected perplexity before training on GPU/Colab.</p>
-          </div>
-          <div class="simulator-presets">
-            <span class="filter-label">Presets:</span>
-            <button class="btn btn-sm btn-pill" id="preset-toy">Toy Model (Current)</button>
-            <button class="btn btn-sm btn-pill" id="preset-sprint2">Sprint 2 Target (Medium)</button>
-            <button class="btn btn-sm btn-pill" id="preset-esm">Mini-ESM Scale (Large)</button>
-          </div>
-        </div>
-
-        <div class="grid-2-col">
-          <!-- Slider Controls -->
-          <div class="glass-card sim-controls-card">
-            <h3 class="card-title">Architecture Configuration</h3>
-
-            <div class="form-group">
-              <label for="sim-arch-type" class="form-label">Model Architecture</label>
-              <select id="sim-arch-type" class="form-select">
-                <option value="transformer">Causal Transformer (Decoder-only)</option>
-                <option value="lstm">Stacked LSTM Language Model</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="sim-embed-dim" class="form-label">Embedding Dimension ($d_{model}$)</label>
-                <span class="slider-val" id="val-sim-embed">128</span>
-              </div>
-              <input type="range" id="sim-embed-dim" class="form-range" min="64" max="512" step="64" value="128">
-            </div>
-
-            <div class="form-group" id="sim-group-heads">
-              <div class="slider-header">
-                <label for="sim-num-heads" class="form-label">Attention Heads ($n_{heads}$)</label>
-                <span class="slider-val" id="val-sim-heads">4</span>
-              </div>
-              <input type="range" id="sim-num-heads" class="form-range" min="1" max="16" step="1" value="4">
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="sim-num-layers" class="form-label">Layers / Depth ($L$)</label>
-                <span class="slider-val" id="val-sim-layers">4</span>
-              </div>
-              <input type="range" id="sim-num-layers" class="form-range" min="1" max="12" step="1" value="4">
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="sim-dataset-size" class="form-label">Training Sequences ($N$)</label>
-                <span class="slider-val" id="val-sim-dataset">180 (Toy)</span>
-              </div>
-              <input type="range" id="sim-dataset-size" class="form-range" min="1" max="4" step="1" value="1">
-              <div class="range-labels">
-                <span>180 (Toy)</span>
-                <span>5k</span>
-                <span>50k (SRR)</span>
-                <span>200k</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="slider-header">
-                <label for="sim-batch-size" class="form-label">Batch Size</label>
-                <span class="slider-val" id="val-sim-batch">32</span>
-              </div>
-              <input type="range" id="sim-batch-size" class="form-range" min="16" max="128" step="16" value="32">
-            </div>
-          </div>
-
-          <!-- Simulation Projection Card -->
-          <div class="glass-card sim-results-card">
-            <h3 class="card-title">Hardware & Performance Projections</h3>
-
-            <div class="sim-kpi-grid">
-              <div class="sim-kpi-card">
-                <span class="sim-kpi-title">Parameter Count</span>
-                <span class="sim-kpi-number highlight" id="sim-res-params">821,888</span>
-                <span class="sim-kpi-sub">Weights & Biases</span>
-              </div>
-
-              <div class="sim-kpi-card">
-                <span class="sim-kpi-title">Checkpoint File Size</span>
-                <span class="sim-kpi-number" id="sim-res-size">3.29 MB</span>
-                <span class="sim-kpi-sub">FP32 State Dict</span>
-              </div>
-
-              <div class="sim-kpi-card">
-                <span class="sim-kpi-title">Peak Training VRAM</span>
-                <span class="sim-kpi-number" id="sim-res-vram">~145 MB</span>
-                <span class="sim-kpi-sub">Fits easily in Colab T4</span>
-              </div>
-
-              <div class="sim-kpi-card">
-                <span class="sim-kpi-title">Projected Val Perplexity</span>
-                <span class="sim-kpi-number" style="color: var(--color-emerald);" id="sim-res-ppl">20.5 - 20.8</span>
-                <span class="sim-kpi-sub">Expected Validation PPL</span>
-              </div>
-            </div>
-
-            <!-- Hardware Recommendation Box -->
-            <div class="sim-hardware-advice" id="sim-hardware-advice">
-              <div class="advice-head">
-                <span class="advice-icon">💻</span>
-                <strong>Recommended Training Environment: Local CPU / Laptop OK</strong>
-              </div>
-              <p class="advice-body">With ~820k parameters and 180 sequences, this configuration trains in ~15-20 seconds on a standard modern CPU. Moving to 50k sequences will require Google Colab GPU (T4).</p>
-            </div>
-
-            <!-- Colab Command Generator -->
-            <div class="colab-command-box">
-              <div class="colab-cmd-head">
-                <span>Equivalent Run Command</span>
-                <button class="btn btn-secondary btn-xs" id="btn-copy-colab-cmd">Copy</button>
-              </div>
-              <pre class="colab-pre"><code id="colab-cmd-code">python -m training --model transformer --embed-dim 128 --num-heads 4 --num-layers 4 --batch-size 32 --epochs 10</code></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= TAB 7: GENERATION QUALITY & SAMPLING BENCHMARK (PHASE F) ================= -->
-      <section class="tab-pane" id="pane-evalmetrics">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Generation Quality & Sampling Strategy Benchmark (Phase F)</h2>
-            <p class="section-desc">Comprehensive quantitative evaluation of de novo camelid VHH sequences across sampling regimes: biological validity, uniqueness, Levenshtein diversity, 3-mer Jaccard, composition KL divergence, novelty, and hydropathy.</p>
-          </div>
-          <div class="filter-group">
-            <label for="eval-model-select" class="filter-label">Model Checkpoint:</label>
-            <select id="eval-model-select" class="form-select">
-              <!-- Dynamically populated -->
-            </select>
-          </div>
-        </div>
-
-        <!-- 4 Key Biological & Generation Quality Cards -->
-        <div class="eval-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-          <div class="kpi-card">
-            <div class="kpi-icon-wrap emerald">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            </div>
-            <div class="kpi-content">
-              <span class="kpi-label">Biological Validity</span>
-              <div class="kpi-value-row">
-                <span class="kpi-number" id="eval-kpi-validity" style="color: var(--color-emerald);">100.0%</span>
-                <span class="kpi-meta">20 Standard AA, [100, 140]</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-card">
-            <div class="kpi-icon-wrap cyan">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
-            </div>
-            <div class="kpi-content">
-              <span class="kpi-label">Stochastic Uniqueness</span>
-              <div class="kpi-value-row">
-                <span class="kpi-number" id="eval-kpi-uniqueness" style="color: var(--color-cyan);">100.0%</span>
-                <span class="kpi-meta">Zero Duplicate Modes</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-card">
-            <div class="kpi-icon-wrap purple">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-            </div>
-            <div class="kpi-content">
-              <span class="kpi-label">Canonical Disulfide Pairs</span>
-              <div class="kpi-value-row">
-                <span class="kpi-number" id="eval-kpi-cys" style="color: var(--color-purple);">100.0%</span>
-                <span class="kpi-meta">C23 - C104 VHH Hallmark</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="kpi-card">
-            <div class="kpi-icon-wrap amber">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
-            </div>
-            <div class="kpi-content">
-              <span class="kpi-label">Hydropathy (GRAVY)</span>
-              <div class="kpi-value-row">
-                <span class="kpi-number" id="eval-kpi-gravy" style="color: var(--color-amber);">-0.37</span>
-                <span class="kpi-meta">Soluble Camelid Window</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Strategy Benchmark Table -->
-        <div class="glass-card table-card">
-          <div class="card-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <div>
-              <h3 class="card-section-title">📊 Sampling Configurations Comparative Matrix</h3>
-              <p class="card-section-sub">Direct quantitative comparison of Greedy, Top-k, and Nucleus (top-p) sampling as formulated in NB05 & NB06.</p>
-            </div>
-            <div class="btn-group">
-              <button class="btn btn-secondary btn-sm" id="btn-export-eval-json">📥 Download Eval Report</button>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="eval-strategies-table">
+            <table class="data-table-modern" id="eval-strategies-table">
               <thead>
                 <tr>
                   <th>Configuration</th>
-                  <th>Sampling Strategy</th>
-                  <th>Biological Validity</th>
-                  <th>Uniqueness</th>
-                  <th>Levenshtein Diversity</th>
-                  <th>3-mer Jaccard</th>
-                  <th>KL Divergence</th>
-                  <th>Novelty vs Train</th>
-                  <th>GRAVY (Hydropathy)</th>
-                  <th>Sample Candidate</th>
-                  <th>FASTA Export</th>
+                  <th>Stratégie & Hyperparamètres</th>
+                  <th>Validité</th>
+                  <th>Unicité</th>
+                  <th>Diversité Levenshtein</th>
+                  <th>Jaccard 3-mers</th>
+                  <th>KL Compo (Fidélité)</th>
+                  <th>Nouveauté vs Train</th>
+                  <th>Hydropathie GRAVY</th>
+                  <th>Séquence Générée (Aperçu)</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody id="eval-strategies-tbody">
-                <!-- Dynamically populated -->
+                <!-- Rempli dynamiquement -->
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Metric Explanation & Biological Context Cards -->
-        <div class="eval-info-grid" style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
-          <div class="glass-card">
-            <h4 style="color: var(--color-cyan); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>🧬</span> Biological Validity & Disulfide Bridge
-            </h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Evaluates if generated sequences strictly consist of the 20 standard amino acids (V=20) within length bounds [100, 140], and validates the presence of the conserved canonical C23 and C104 cysteine residues forming the essential intra-chain disulfide bond that stabilizes the immunoglobulin domain fold.
+        <!-- Guide Pédagogique des Métriques -->
+        <div class="metrics-guide-grid">
+          <div class="guide-box">
+            <div class="guide-box-header">
+              <span class="guide-icon">⚠️</span>
+              <h4>1. Effondrement de Mode (Mode Collapse)</h4>
+            </div>
+            <p>
+              L'échantillonnage <strong>Greedy (Argmax)</strong> génère toujours la même séquence la plus probable : Unicité = <strong>2.0%</strong> et Levenshtein = <strong>0.000</strong>. Il est donc inadapté à la découverte de nouveaux anticorps.
             </p>
           </div>
-          <div class="glass-card">
-            <h4 style="color: var(--color-purple); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>⚖️</span> Mode Collapse vs. Stochastic Diversity
-            </h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Greedy argmax decoding predictably suffers from mode collapse (Uniqueness = 2.0%, Levenshtein = 0.000). In contrast, Top-k (k=10, T=0.8) and Nucleus sampling (p=0.95, T=1.0) achieve 100% uniqueness with 0.28–0.36 normalized Levenshtein diversity across CDR loops while preserving conserved framework regions.
+
+          <div class="guide-box">
+            <div class="guide-box-header">
+              <span class="guide-icon">🎯</span>
+              <h4>2. Équilibre Top-k & Nucléus (Top-p)</h4>
+            </div>
+            <p>
+              Le <strong>Top-k (k=10, T=0.8)</strong> et le <strong>Nucléus (p=0.95, T=1.0)</strong> atteignent <strong>100% d'unicité</strong> avec une distance de Levenshtein de <strong>0.28 à 0.36</strong> : la variabilité est concentrée sur les boucles CDR tout en préservant le framework structural.
             </p>
           </div>
-          <div class="glass-card">
-            <h4 style="color: var(--color-emerald); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>📈</span> Statistical Fidelity & Hydropathy
-            </h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Amino acid composition KL divergence is near zero (~0.00 to 0.01 nats), demonstrating that the autoregressive neural network has acquired the evolutionary codon frequencies of camelid VHH. Grand Average of Hydropathy (-0.37) matches natural soluble nanobodies, preventing hydrophobic precipitation.
+
+          <div class="guide-box">
+            <div class="guide-box-header">
+              <span class="guide-icon">🧬</span>
+              <h4>3. Fidélité Bio-Statistique & Solubilité</h4>
+            </div>
+            <p>
+              La <strong>divergence KL</strong> est quasi nulle (&lt; 0.02 nats), prouvant que le modèle respecte parfaitement la fréquence naturelle des 20 acides aminés. L'indice <strong>GRAVY (-0.37)</strong> garantit que les nanocorps restent solubles sans agrégation.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ONGLET 2: TESTEUR VHH EN DIRECT (PLAYGROUND & QC) ================= -->
+      <section class="tab-pane" id="pane-generator">
+        <div class="generator-layout">
+          <!-- Panneau Contrôles Gauche -->
+          <div class="glass-card generator-controls-card">
+            <h3 class="card-title-compact">🎛️ Paramètres de Génération</h3>
+            
+            <div class="form-group">
+              <label for="live-model-select">Modèle Neural :</label>
+              <select id="live-model-select" class="form-select">
+                <option value="transformer-notebook-srr" selected>Transformer Causal (PPL 2.229 • 821k params)</option>
+                <option value="lstm-notebook-srr">LSTM Baseline (PPL 2.254 • 431k params)</option>
+              </select>
+            </div>
+
+            <!-- Boutons Rapides de Stratégies -->
+            <div class="form-group">
+              <label>Stratégie de Sampling (NB05) :</label>
+              <div class="strategy-preset-group">
+                <button type="button" class="btn-preset active" data-strat="topk10_T08">
+                  <strong>Top-k 10</strong>
+                  <span>T=0.8 (Recommandé)</span>
+                </button>
+                <button type="button" class="btn-preset" data-strat="nucleus_p95_T10">
+                  <strong>Nucléus p=0.95</strong>
+                  <span>T=1.0 (Haute Diversité)</span>
+                </button>
+                <button type="button" class="btn-preset" data-strat="nucleus_p80_T12">
+                  <strong>Nucléus p=0.80</strong>
+                  <span>T=1.2 (Exploration)</span>
+                </button>
+                <button type="button" class="btn-preset" data-strat="greedy">
+                  <strong>Greedy</strong>
+                  <span>Argmax Déterministe</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="live-prompt-input">Amorçage / Préfixe Optionnel :</label>
+              <input type="text" id="live-prompt-input" class="form-input mono" placeholder="Ex: HVQLVESGG (ou laisser vide pour de novo)" value="HVQLVESGG">
+            </div>
+
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="live-temp-slider">Température (T) :</label>
+                <span class="slider-val" id="live-temp-val">0.80</span>
+              </div>
+              <input type="range" id="live-temp-slider" min="0.1" max="1.5" step="0.05" value="0.80" class="form-range">
+            </div>
+
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="live-len-slider">Longueur Maximale :</label>
+                <span class="slider-val" id="live-len-val">125 AA</span>
+              </div>
+              <input type="range" id="live-len-slider" min="60" max="140" step="5" value="125" class="form-range">
+            </div>
+
+            <button class="btn btn-primary btn-block btn-lg" id="btn-generate-live">
+              ⚡ Générer & Analyser le VHH
+            </button>
+          </div>
+
+          <!-- Panneau Résultat & Contrôle Qualité VHH Droite -->
+          <div class="generator-result-column">
+            <!-- Carte Diagnostic Biologique -->
+            <div class="glass-card vhh-qc-card">
+              <div class="qc-head">
+                <div>
+                  <h3 class="card-title-compact">🧬 Séquence VHH Générée & Diagnostic Qualité</h3>
+                  <p class="qc-sub" id="qc-model-badge">Inférence PyTorch active • Checkpoint Colab réel</p>
+                </div>
+                <div class="qc-score-badge" id="qc-score-badge">
+                  <span class="qc-score-num" id="qc-score-num">100</span>
+                  <span class="qc-score-denom">/ 100 VHH Score</span>
+                </div>
+              </div>
+
+              <!-- Visualiseur Séquence Colorée avec Annotations Biologiques -->
+              <div class="seq-viewer-wrapper">
+                <div class="seq-viewer-header">
+                  <span>Séquence Annotée (Frameworks, Ponts Disulfure, Hallmarks VHH, CDR3)</span>
+                  <div class="seq-actions">
+                    <button class="btn btn-secondary btn-xs" id="btn-copy-live-seq">📋 Copier</button>
+                    <button class="btn btn-secondary btn-xs" id="btn-download-live-fasta">📥 FASTA</button>
+                  </div>
+                </div>
+                <div class="sequence-display-box" id="live-sequence-display">
+                  <!-- Séquence colorée dynamique -->
+                </div>
+                <!-- Légende des Couleurs Biologiques -->
+                <div class="seq-legend">
+                  <span class="legend-item"><span class="legend-dot dot-cys"></span> C23 / C104 (Pont Disulfure)</span>
+                  <span class="legend-item"><span class="legend-dot dot-fr2"></span> Hallmarks Solubilité VHH (FR2)</span>
+                  <span class="legend-item"><span class="legend-dot dot-cdr3"></span> Boucle CDR3 (Paratope)</span>
+                  <span class="legend-item"><span class="legend-dot dot-j"></span> Motif J Canonique (WGQG)</span>
+                </div>
+              </div>
+
+              <!-- Grille des 6 Métriques de Contrôle Qualité VHH -->
+              <div class="qc-metrics-grid">
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Validité Biologique</span>
+                  <span class="qc-m-val text-emerald" id="qc-val-validity">✅ 100% (20 AA)</span>
+                  <span class="qc-m-sub" id="qc-val-len">Longueur : 124 AA</span>
+                </div>
+
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Pont Disulfure Inter-Brin</span>
+                  <span class="qc-m-val text-cyan" id="qc-val-cys">✅ C23 - C104 Détecté</span>
+                  <span class="qc-m-sub" id="qc-val-cys-pos">Positions Cys : 22, 95</span>
+                </div>
+
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Signature Solubilité VHH</span>
+                  <span class="qc-m-val text-purple" id="qc-val-hallmarks">✅ Hallmarks Présents</span>
+                  <span class="qc-m-sub" id="qc-val-motif">Motif FR2 : WFRQAPGKER</span>
+                </div>
+
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Boucle CDR3 Extraite</span>
+                  <span class="qc-m-val text-cyan" id="qc-val-cdr3">14 Acides Aminés</span>
+                  <span class="qc-m-sub" id="qc-val-cdr3-seq">VTGGNWRSIDHWSY</span>
+                </div>
+
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Indice GRAVY (Hydropathie)</span>
+                  <span class="qc-m-val text-amber" id="qc-val-gravy">-0.38 (Soluble)</span>
+                  <span class="qc-m-sub">Échelle Kyte-Doolittle</span>
+                </div>
+
+                <div class="qc-metric-item">
+                  <span class="qc-m-label">Charge Nette (pH 7.4)</span>
+                  <span class="qc-m-val text-emerald" id="qc-val-charge">+0.20</span>
+                  <span class="qc-m-sub">Non-aggrégant</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historique des Séquences Générées -->
+            <div class="glass-card history-card-clean">
+              <h4 class="card-title-compact">📜 Dernières Séquences Générées</h4>
+              <div class="history-list" id="live-history-list">
+                <!-- Rempli par JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ONGLET 3: MODÈLES COLAB & COURBES ================= -->
+      <section class="tab-pane" id="pane-leaderboard">
+        <div class="section-header-compact">
+          <div>
+            <h2 class="section-title">Leaderboard Officiel & Dynamique d'Apprentissage</h2>
+            <p class="section-desc">Modèles neuronaux et baseline évalués sur le jeu réel NCBI SRA SRR3544218 (242 891 séquences de nanocorps camélidés).</p>
+          </div>
+        </div>
+
+        <!-- Tableau Leaderboard -->
+        <div class="glass-card table-card-clean">
+          <div class="table-responsive">
+            <table class="data-table-modern">
+              <thead>
+                <tr>
+                  <th>Rang</th>
+                  <th>Identifiant du Modèle</th>
+                  <th>Architecture</th>
+                  <th>Paramètres</th>
+                  <th>Perte Validation</th>
+                  <th>Perplexité Val (PPL)</th>
+                  <th>Époques</th>
+                  <th>Temps GPU Colab</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody id="colab-leaderboard-tbody">
+                <!-- Rempli dynamiquement -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Graphique des Courbes d'Entraînement -->
+        <div class="glass-card chart-card-clean" style="margin-top: 1.5rem;">
+          <div class="chart-header-flex">
+            <div>
+              <h3 class="table-card-title">📈 Trajectoire de Convergence (Validation Loss)</h3>
+              <p class="table-card-sub">Évolution de la perte en nats/résidu au cours des époques sur GPU T4</p>
+            </div>
+            <div class="chart-legend-custom">
+              <span class="badge-legend legend-tf">Transformer (821k)</span>
+              <span class="badge-legend legend-lstm">LSTM (431k)</span>
+              <span class="badge-legend legend-bigram">Bigram Baseline (PPL 11.83)</span>
+            </div>
+          </div>
+          <div class="chart-box-wrapper">
+            <canvas id="colab-curves-chart"></canvas>
           </div>
         </div>
       </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="app-footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <span>BioLM Studio • Research AI Group B</span>
-          <span class="sep">•</span>
-          <span>Sprint 1-3 Workflow Pipeline</span>
-        </div>
-        <div class="footer-right">
-          <a href="../docs/MODELS_EXPLAINED.md" target="_blank" class="footer-link">📖 Models Guide (815 lines)</a>
-          <span class="sep">•</span>
-          <a href="../CONTRACT.md" target="_blank" class="footer-link">📋 Metric Contract</a>
-          <span class="sep">•</span>
-          <span class="text-muted">Vocabulary V=23 (20 Amino Acids + PAD/BOS/EOS)</span>
-        </div>
+    <!-- Footer Épuré -->
+    <footer class="app-footer-clean">
+      <div>
+        <strong>BioLM Studio</strong> • Projet Recherche IA Groupe B • Dataset SRR3544218
+      </div>
+      <div>
+        <a href="../docs/GUIDE_COLLABORATEURS.md" target="_blank">📖 Guide Collaborateurs</a>
+        <span class="sep">•</span>
+        <a href="../CONTRACT.md" target="_blank">📋 Contrat Métriques</a>
       </div>
     </footer>
   </div>
 
-  <!-- Main JavaScript bundle -->
   <script src="app.js"></script>
 </body>
 </html>
