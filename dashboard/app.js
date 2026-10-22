@@ -1048,6 +1048,40 @@ function initPlaygroundControls() {
     });
   });
 
+  // Upload Checkpoint (.pt)
+  const btnUploadCkpt = document.getElementById('btn-upload-checkpoint');
+  const fileInputCkpt = document.getElementById('file-input-checkpoint');
+  const ckptHint = document.getElementById('checkpoint-status-hint');
+
+  if (btnUploadCkpt && fileInputCkpt) {
+    btnUploadCkpt.addEventListener('click', () => fileInputCkpt.click());
+    fileInputCkpt.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const modelId = document.getElementById('play-model-select')?.value || 'toy-test';
+      if (ckptHint) ckptHint.textContent = `Uploading ${file.name}...`;
+
+      try {
+        const res = await fetch(`/api/upload_checkpoint?model_id=${encodeURIComponent(modelId)}`, {
+          method: 'POST',
+          body: file
+        });
+        if (res.ok) {
+          if (ckptHint) {
+            ckptHint.textContent = '✅ best.pt Active';
+            ckptHint.style.color = '#10b981';
+          }
+          alert(`✅ Checkpoint ${file.name} successfully loaded for model '${modelId}'!\nPyTorch local generation is now active.`);
+        } else {
+          if (ckptHint) ckptHint.textContent = 'Upload error';
+        }
+      } catch (err) {
+        if (ckptHint) ckptHint.textContent = 'Server offline';
+        console.error('Upload error:', err);
+      }
+    });
+  }
+
   // Generate Button
   const btnGen = document.getElementById('btn-generate');
   if (btnGen) {

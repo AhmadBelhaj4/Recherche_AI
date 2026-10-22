@@ -366,6 +366,13 @@
                 <option value="lstm-notebook-toy">LSTM LM (notebook-toy, 10 ep)</option>
                 <option value="bigram_toy_a1">Bigram Baseline (Markov α=1.0)</option>
               </select>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                <button type="button" class="btn btn-xs btn-secondary" id="btn-upload-checkpoint">
+                  ⬆️ Upload .pt Checkpoint
+                </button>
+                <span class="field-hint" id="checkpoint-status-hint">Local PyTorch / Colab GPU</span>
+                <input type="file" id="file-input-checkpoint" accept=".pt,.pth" style="display: none;">
+              </div>
             </div>
 
             <div class="form-group">

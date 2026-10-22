@@ -56,6 +56,19 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
 
             result = self._handle_generation(payload)
             self._send_json(result)
+        elif parsed.path == "/api/upload_checkpoint":
+            query = urllib.parse.parse_qs(parsed.query)
+            model_id = query.get("model_id", ["default"])[0]
+            content_length = int(self.headers.get("Content-Length", 0))
+            raw_data = self.rfile.read(content_length)
+
+            target_dir = ROOT / "models" / model_id
+            target_dir.mkdir(parents=True, exist_ok=True)
+            checkpoint_file = target_dir / "best.pt"
+            checkpoint_file.write_bytes(raw_data)
+
+            print(f"📥 Checkpoint received via Web Dashboard: {checkpoint_file} ({len(raw_data)/1024/1024:.2f} MB)")
+            self._send_json({"status": "ok", "message": f"Checkpoint best.pt saved for model {model_id}", "size_mb": round(len(raw_data)/1024/1024, 2)})
             return
 
         self._send_json({"error": "Endpoint not found"}, status=404)
