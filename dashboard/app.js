@@ -623,6 +623,10 @@ function populateSelectDropdowns() {
   if (compA) compA.innerHTML = buildOptions(state.selectedCompareA);
   if (compB) compB.innerHTML = buildOptions(state.selectedCompareB);
   if (advSelect) advSelect.innerHTML = models.map(m => `<option value="${m.run_id}" ${m.run_id === state.selectedAdvisorRun ? 'selected' : ''}>${m.run_id}</option>`).join('');
+  if (playSelect) {
+    const currentVal = playSelect.value;
+    playSelect.innerHTML = buildOptions(currentVal || (models[0]?.run_id || 'toy-test'));
+  }
 
   // Populate checkboxes for training curves
   const togglesContainer = document.getElementById('model-toggles-container');
