@@ -160,6 +160,8 @@ def train(model, cfg, train_loader, val_loader, device, run_id, epochs, lr,
                "epochs_run": state["epoch"], "n_params": count_params(model),
                "train_seconds": time.time() - t_start}
     (res_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    if cfg:
+        (res_dir / "config.json").write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     return metrics
 
 
