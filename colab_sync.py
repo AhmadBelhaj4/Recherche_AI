@@ -40,7 +40,7 @@ def save_colab_run(
     test_metrics: dict | None = None,
     device=None,
     sync_drive: bool = True,
-    drive_folder: str = "/content/drive/MyDrive/recherche_ai_models",
+    drive_folder: str = "/content/drive/MyDrive/AI_Project_Shared/models",
     push_git: bool = False,
     git_branch: str = "main",
     n_samples: int = 5,

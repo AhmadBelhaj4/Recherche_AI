@@ -1,12 +1,11 @@
-r"""sync_drive.py - Continuous Google Drive Desktop Sync Utility.
+r"""sync_drive.py - Continuous Google Drive Desktop Sync Utility for AI_Project_Shared.
 
-Automatically scans for Google Drive for Desktop mounted drives (e.g. G:\Mon Drive\recherche_ai_models)
-and links/syncs all trained model checkpoints into models/<run_id>/best.pt.
+Automatically detects the Google Drive 'AI_Project_Shared' folder on Windows
+(including virtual shortcut targets on G:\) and synchronizes trained checkpoints (.pt),
+evaluation metrics (history.csv), and baselines into the local project.
 
 Usage:
     python scripts/sync_drive.py
-    python scripts/sync_drive.py --link    (creates Windows Directory Junctions - instant, 0 disk space)
-    python scripts/sync_drive.py --copy    (copies .pt files locally)
 """
 
 import argparse
@@ -20,109 +19,153 @@ sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def find_google_drive_folder() -> Path | None:
-    """Detect the Google Drive for Desktop folder on Windows."""
-    # Check drive letters (G:, H:, etc.)
+def find_ai_project_shared() -> Path | None:
+    """Detect AI_Project_Shared folder on Windows Google Drive."""
+    # 1. Check G: drive and other drive letters
     for letter in "GHIJKLMNOPQRSTUVWXYZFED":
         try:
-            root = Path(f"{letter}:/")
-            if root.exists():
-                for sub in ["Mon Drive", "My Drive", ""]:
-                    candidate = root / sub / "recherche_ai_models"
-                    if candidate.exists():
-                        return candidate
-                    drive_parent = root / sub
-                    if drive_parent.exists() and sub:
-                        return candidate
+            drive_root = Path(f"{letter}:/")
+            if not drive_root.exists():
+                continue
+
+            # Check inside .shortcut-targets-by-id (Google Drive virtual shortcut targets)
+            shortcut_dir = drive_root / ".shortcut-targets-by-id"
+            if shortcut_dir.exists():
+                for target_id in shortcut_dir.iterdir():
+                    cand = target_id / "AI_Project_Shared"
+                    if cand.exists():
+                        return cand
+
+            # Check direct subfolders in Drive root
+            for sub in ["Mon Drive", "My Drive", ""]:
+                cand = drive_root / sub / "AI_Project_Shared"
+                if cand.exists() and cand.is_dir():
+                    return cand
+
         except (PermissionError, OSError):
             continue
 
-    # Check User Profile directory
-    for folder_name in ["Google Drive", "GoogleDrive", "Drive", "OneDrive"]:
+    # 2. Check User Home folders
+    for sub in ["Google Drive", "GoogleDrive", "Drive", "OneDrive"]:
         try:
-            candidate = Path.home() / folder_name / "recherche_ai_models"
-            if candidate.exists():
-                return candidate
+            cand = Path.home() / sub / "AI_Project_Shared"
+            if cand.exists() and cand.is_dir():
+                return cand
         except (PermissionError, OSError):
             continue
 
     return None
 
 
-def sync_models(use_junction: bool = False, verbose: bool = True):
+def sync_drive():
     print("=" * 65)
-    print("  BioLM Studio — Google Drive Desktop Continuous Sync")
+    print("  BioLM Studio — Google Drive Sync (AI_Project_Shared)")
     print("=" * 65)
 
-    drive_path = find_google_drive_folder()
+    shared_dir = find_ai_project_shared()
 
-    if not drive_path or not drive_path.parent.exists():
-        print("\n❌ Google Drive pour PC n'a pas été détecté sur votre machine.")
-        print("\nPour activer la synchronisation continue 100% automatique :")
-        print("1. Téléchargez gratuitement Google Drive pour PC (Windows) :")
-        print("   👉 https://www.google.com/intl/fr_ALL/drive/download/")
-        print("2. Connectez-vous avec le même compte Google que celui de Colab.")
-        print("3. Dès que l'application est lancée, votre Google Drive apparaîtra")
-        print("   comme un lecteur Windows 'G:\\Mon Drive\\'.")
-        print("\nRelancez ensuite ce script : `python scripts/sync_drive.py`.")
+    if not shared_dir or not shared_dir.exists():
+        print("\n❌ Dossier 'AI_Project_Shared' introuvable sur Google Drive.")
+        print("Vérifiez que Google Drive pour PC est lancé et que le dossier")
+        print("'AI_Project_Shared' est bien synchronisé ou présent dans Mon Drive.")
         print("=" * 65)
         return False
 
-    drive_path.mkdir(parents=True, exist_ok=True)
-    print(f"✅ Dossier Google Drive détecté : {drive_path}")
+    print(f"✅ Dossier Google Drive détecté :\n   👉 {shared_dir}\n")
 
-    # Scan for runs in Google Drive
-    runs = [d for d in drive_path.iterdir() if d.is_dir()]
-    if not runs:
-        print(f"ℹ️ Aucun modèle trouvé dans {drive_path} pour l'instant.")
-        print("   Dès que votre entraînement Colab (Section 7) se termine,")
-        print("   le fichier 'best.pt' sera déposé ici automatiquement !")
-        return True
+    # Local target directories
+    local_models = ROOT / "models"
+    local_runs = ROOT / "results" / "runs"
+    local_baseline = ROOT / "results" / "baseline"
+    local_models.mkdir(parents=True, exist_ok=True)
+    local_runs.mkdir(parents=True, exist_ok=True)
+    local_baseline.mkdir(parents=True, exist_ok=True)
 
-    print(f"📦 {len(runs)} modèle(s) trouvé(s) sur Google Drive :\n")
-    models_local = ROOT / "models"
-    models_local.mkdir(parents=True, exist_ok=True)
+    synced_items = 0
 
-    synced_count = 0
-    for run_dir in runs:
-        run_id = run_dir.name
-        pt_file = run_dir / "best.pt"
-        if not pt_file.exists():
-            continue
+    # 1. Sync Baselines
+    drive_baseline = shared_dir / "results" / "baseline"
+    if drive_baseline.exists():
+        for b_file in drive_baseline.glob("*.json"):
+            dest = local_baseline / b_file.name
+            if not dest.exists() or b_file.stat().st_mtime > dest.stat().st_mtime:
+                shutil.copy2(b_file, dest)
+                print(f"  📊 [Baseline] {b_file.name} ➔ results/baseline/")
+                synced_items += 1
 
-        target_run_dir = models_local / run_id
-        target_pt = target_run_dir / "best.pt"
+    # 2. Sync Models and Runs
+    # Search for all best.pt inside shared_dir
+    for root, dirs, files in os.walk(shared_dir):
+        root_path = Path(root)
+        for file in files:
+            if file == "best.pt":
+                # Determine run_id
+                # Check if path contains 'transformer' or 'lstm' and 'SRR3544218'
+                lower_path = str(root_path).lower()
+                if "srr3544218" in lower_path:
+                    if "transformer" in lower_path:
+                        run_id = "transformer-notebook-srr"
+                    elif "lstm" in lower_path:
+                        run_id = "lstm-notebook-srr"
+                    else:
+                        run_id = "model-srr3544218"
+                else:
+                    # Use directory name or parent
+                    run_id = root_path.name if root_path.name != "models" else "colab-model"
 
-        size_mb = pt_file.stat().st_size / 1024 / 1024
+                # Copy checkpoint
+                target_model_dir = local_models / run_id
+                target_model_dir.mkdir(parents=True, exist_ok=True)
+                dest_pt = target_model_dir / "best.pt"
 
-        if use_junction and os.name == "nt" and not target_run_dir.exists():
-            # Create Windows directory junction (mklink /J)
-            try:
-                cmd = f'cmd /c mklink /J "{target_run_dir}" "{run_dir}"'
-                subprocess.run(cmd, shell=True, check=True, stdout=subprocess.DEVNULL)
-                print(f"  🔗 [Junction] {run_id:<30} ➔ {run_dir} ({size_mb:.2f} MB)")
-                synced_count += 1
-                continue
-            except Exception:
-                pass
+                src_pt = root_path / file
+                size_mb = src_pt.stat().st_size / 1024 / 1024
 
-        # Otherwise copy if missing or newer
-        target_run_dir.mkdir(parents=True, exist_ok=True)
-        if not target_pt.exists() or pt_file.stat().st_mtime > target_pt.stat().st_mtime:
-            shutil.copy2(pt_file, target_pt)
-            print(f"  ⬇️ [Copié]    {run_id:<30} ➔ models/{run_id}/best.pt ({size_mb:.2f} MB)")
-            synced_count += 1
-        else:
-            print(f"  ✅ [À jour]   {run_id:<30} (déjà synchronisé, {size_mb:.2f} MB)")
+                if not dest_pt.exists() or src_pt.stat().st_mtime > dest_pt.stat().st_mtime:
+                    shutil.copy2(src_pt, dest_pt)
+                    print(f"  🧠 [Modèle]   {run_id:<26} ➔ models/{run_id}/best.pt ({size_mb:.2f} MB)")
+                    synced_items += 1
+                else:
+                    print(f"  ✅ [À jour]   {run_id:<26} ({size_mb:.2f} MB)")
 
-    print(f"\n✨ Synchronisation terminée : {synced_count} nouveau(x) modèle(s) synchronisé(s) !")
-    print("   Ces modèles sont immédiatement utilisables dans BioLM Studio : http://localhost:8765")
+            elif file == "history.csv":
+                lower_path = str(root_path).lower()
+                if "srr3544218" in lower_path:
+                    if "transformer" in lower_path:
+                        run_id = "transformer-notebook-srr"
+                    elif "lstm" in lower_path:
+                        run_id = "lstm-notebook-srr"
+                    else:
+                        run_id = "model-srr3544218"
+                else:
+                    run_id = root_path.name
+
+                target_run_dir = local_runs / run_id
+                target_run_dir.mkdir(parents=True, exist_ok=True)
+                dest_csv = target_run_dir / "history.csv"
+
+                src_csv = root_path / file
+                if not dest_csv.exists() or src_csv.stat().st_mtime > dest_csv.stat().st_mtime:
+                    shutil.copy2(src_csv, dest_csv)
+                    print(f"  📈 [History]  {run_id:<26} ➔ results/runs/{run_id}/history.csv")
+                    synced_items += 1
+
+    print("\n" + "=" * 65)
+    print(f"✨ Synchronisation terminée avec succès !")
+    print("   Actualisation de dashboard/data.json...")
+
+    # Run export script automatically
+    try:
+        from scripts.export_dashboard_data import main as export_main
+        export_main()
+    except Exception as e:
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "export_dashboard_data.py")], check=False)
+
+    print("🚀 BioLM Studio est à jour avec vos vrais modèles SRR3544218 !")
+    print("   Ouvrez : http://localhost:8765")
     print("=" * 65)
     return True
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Sync models from Google Drive Desktop")
-    parser.add_argument("--link", action="store_true", help="Create directory junctions instead of copying")
-    args = parser.parse_args()
-    sync_models(use_junction=args.link)
+    sync_drive()

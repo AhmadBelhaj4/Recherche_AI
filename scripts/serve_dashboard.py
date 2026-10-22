@@ -139,6 +139,9 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                     seq = prompt + seq[len(prompt):] if len(seq) > len(prompt) else prompt
                 return {"sequence": seq, "finished": dones[0] if dones else True, "backend": "pytorch"}
 
+        except Exception as err:
+            pass
+
         # Check if pre-computed samples from Colab GPU exist in metrics.json
         metrics_file = ROOT / "results" / "runs" / model_id / "metrics.json"
         if metrics_file.exists():
