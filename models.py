@@ -19,6 +19,7 @@ class LSTMLM(nn.Module):
         self.head = nn.Linear(embed_dim, vocab_size, bias=False)
         # Weight tying : head.weight = embed.weight
         self.head.weight = self.embed.weight
+        nn.init.normal_(self.embed.weight, mean=0.0, std=0.1)
 
     def forward(self, x, hidden=None):
         emb = self.embed(x)
@@ -51,6 +52,9 @@ class CausalTransformerLM(nn.Module):
         self.norm = nn.LayerNorm(embed_dim)
         self.head = nn.Linear(embed_dim, vocab_size, bias=False)
         self.head.weight = self.token_embed.weight
+        # GPT-2 style init (std 0.02). Avec N(0,1) + weight tying, la loss initiale vaut ~47 nats au lieu de ~3.1.
+        nn.init.normal_(self.token_embed.weight, mean=0.0, std=0.02)
+        nn.init.normal_(self.pos_embed.weight, mean=0.0, std=0.02)
 
     def forward(self, x):
         b, seq_len = x.shape
