@@ -197,6 +197,7 @@ def evaluate_model(
     print(header)
     print("-" * 90)
     for name, r in results.items():
+        nov_str = f"{r['novelty_rate'] * 100:>8.1f}%" if r.get("novelty_rate") is not None else f"{'N/A':>9}"
         row = (
             f"{name:<18} | "
             f"{r['validity_rate'] * 100:>7.1f}% | "
@@ -204,7 +205,7 @@ def evaluate_model(
             f"{r['levenshtein_diversity']:>11.3f} | "
             f"{r['kmer_jaccard_similarity']:>10.3f} | "
             f"{r['kl_divergence']:>8.4f} | "
-            f"{r['novelty_rate'] * 100:>8.1f}% | "
+            f"{nov_str} | "
             f"{r['mean_gravy']:>6.2f}"
         )
         print(row)

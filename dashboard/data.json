@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-10-22T21:26:05.581419",
+  "exported_at": "2026-10-23T11:22:56.993757",
   "models": [
     {
       "run_id": "lstm-notebook-srr",
@@ -301,9 +301,9 @@
   "generation_evaluations": {
     "lstm-notebook-srr": {
       "greedy": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
-        "uniqueness_rate": 0.02,
+        "uniqueness_rate": 0.01,
         "levenshtein_diversity": 0.0,
         "kmer_jaccard_similarity": 1.0,
         "kl_divergence": 0.0685,
@@ -317,107 +317,111 @@
           "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS",
           "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\greedy.fasta",
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\greedy.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "topk10_T08": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
         "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.2941,
-        "kmer_jaccard_similarity": 0.3409,
-        "kl_divergence": 0.0338,
+        "levenshtein_diversity": 0.2898,
+        "kmer_jaccard_similarity": 0.3536,
+        "kl_divergence": 0.0341,
         "novelty_rate": null,
         "mean_gravy": -0.379,
-        "mean_net_charge": 0.28,
-        "canonical_cysteine_rate": 0.98,
-        "mean_length": 123.8,
+        "mean_net_charge": -0.41,
+        "canonical_cysteine_rate": 0.99,
+        "mean_length": 124.6,
         "sample_sequences": [
-          "DVQLVESGGGSVQAGGSLRLSCAASGYASSRYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPGYGDSWPEDHFDHWCRGRGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSGYCMGWFRQTPGKEREGVAAISSGGPATYYADSVKGRFTISRDNAKNTVYLQMNSLKSEDTALYYCATGYGSSSLSTPRGQGTQVTVS"
+          "DVQLVESGGGSVQAGGSLRLSCAASGYTHITRCMAWFRQAPGKEREGVAAIDSDGTTAYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADRSLSCSWDATGTDYSYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGDTIGRYCMGWFRQIPDKEREGVAGIESDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGLRWYGCSERLNDYEYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCVGSGYTSDINCVAWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGWGCVESTSNFDYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\topk10_T08.fasta",
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\topk10_T08.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "nucleus_p95_T10": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
         "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.3611,
-        "kmer_jaccard_similarity": 0.2609,
-        "kl_divergence": 0.0287,
+        "levenshtein_diversity": 0.3474,
+        "kmer_jaccard_similarity": 0.2726,
+        "kl_divergence": 0.0271,
         "novelty_rate": null,
-        "mean_gravy": -0.376,
-        "mean_net_charge": -0.58,
-        "canonical_cysteine_rate": 1.0,
-        "mean_length": 124.5,
+        "mean_gravy": -0.388,
+        "mean_net_charge": -0.41,
+        "canonical_cysteine_rate": 0.97,
+        "mean_length": 124.4,
         "sample_sequences": [
-          "DVQLVESGGGSVQAGGSLRLSCALSPYASSKRCMGWFRQAPGKERERVATILIDGSGTYYADSVKGRFTISQDSAKKTVYLEMNNLKPEDTAMYYCAADWHGADCDEGSWHFDHWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQPPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRMATILTDASTFWGQGTQVTVS",
-          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSGGPARYADSVKGRFTISRDNAKNTLYLQMNSLKAEDTAVYYCAAVESDPFLSLSGGRGTQVTVS"
+          "DVQLVESGGGSVQAGGSLKLSCAASGYTHITYCMAWFRQTPGKEREGVAAIDSDGTTNYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADRSLSCSWDVTVGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCSAPRDFSLYYTMGWFRQAPGKEREGVAIVHSDGTTEYAESVKGRFAISQDNAKKTMFLHMNTLKPEDTATYYCAAGLRWYGDSWYKADDYEYSIRDQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLNLSCVVSGYLPSTNCVAWFRQAPGKEREGVAAIDSDGVTSYADSVKGRFTISQDKAKHTRYLQMDSLKLEDTAMYYCAAGWCEVVAGWADPGHSFAYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\nucleus_p95_T10.fasta",
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\nucleus_p95_T10.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "nucleus_p80_T12": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
         "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.3295,
-        "kmer_jaccard_similarity": 0.3071,
-        "kl_divergence": 0.0293,
+        "levenshtein_diversity": 0.3352,
+        "kmer_jaccard_similarity": 0.2874,
+        "kl_divergence": 0.0291,
         "novelty_rate": null,
-        "mean_gravy": -0.386,
-        "mean_net_charge": -0.58,
-        "canonical_cysteine_rate": 0.98,
-        "mean_length": 125.3,
+        "mean_gravy": -0.371,
+        "mean_net_charge": 0.01,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.5,
         "sample_sequences": [
-          "VQLVESGGGSVQPGGSLRLSCVASGFRISSRCVAWFRQAPGKEREGVAVIDSDGTIKYADSVKGRFTISKDKAKDTVYLQMNSLKPEDTAMYSCKTFGRWRGYDCYEGSWCSDVGCRTRGPRSPSP",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
-          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDRTYYTDAVKGRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAAVESERLLGYSGSLYCGGRWYEYWGRGTQVTVS"
+          "VQLVESGGGSVQAGGSLRLSCTASGYIFSSYCLGWFRQVPGKEREGVAAIYTGDNTTYYADSVKGRFTISQDNAKNTVYLQMNSLKPEDTAVYYCVAECSLERCSDGTWFDGILHNFGHWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLTLSCSAPTFTSRYSFSDDCMGWFRQTPGKEREAVAAMYTGFGGGNIYYDDSVKGRFTISQDNSKNTLYLQMNNLKPEDTGMYYCAASRRIPIDTLVAITVMTIGTMGSRGPGTRGPRSPSP",
+          "HVQLVESGGGSVQAGGSLTLSCVGSGYPFDKNCVAWFRQAPGKEREGVAAIDADGNTYYADSVKGRFTISQDKAKHTRYLQMDSLKPEDTAMYYCAAGEREHCSGWANYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\nucleus_p80_T12.fasta",
+        "fasta_file": "results\\generated\\lstm-notebook-srr\\nucleus_p80_T12.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       }
     },
     "transformer-notebook-srr": {
       "greedy": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
-        "uniqueness_rate": 0.02,
+        "uniqueness_rate": 0.01,
         "levenshtein_diversity": 0.0,
         "kmer_jaccard_similarity": 1.0,
         "kl_divergence": 0.051,
@@ -431,98 +435,102 @@
           "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS",
           "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\greedy.fasta",
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\greedy.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "topk10_T08": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
         "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.2677,
-        "kmer_jaccard_similarity": 0.3894,
-        "kl_divergence": 0.037,
+        "levenshtein_diversity": 0.2667,
+        "kmer_jaccard_similarity": 0.3952,
+        "kl_divergence": 0.0353,
         "novelty_rate": null,
-        "mean_gravy": -0.378,
-        "mean_net_charge": -0.1,
+        "mean_gravy": -0.356,
+        "mean_net_charge": -0.41,
         "canonical_cysteine_rate": 1.0,
-        "mean_length": 123.5,
+        "mean_length": 124.2,
         "sample_sequences": [
-          "DVQLVESGGGSVQAGGSLRLSCAASGYAYSSYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPLARDLVGSGPADVGYWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSSYCMGWFRQAPGKEREGVAAVDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLCSSLTRDFGYWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAISSGGPYTYYADSVKGRFTISQDNAKTTVYLQMNSLKPEDTAMYYCAADSRRYCSGGYCYTTVERGYWGQGTQVTVS"
+          "DVQLVESGGGSVQAGGSLRLSCAASGYTHITYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADRSLSCSWIGTVFDYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGDTIGRYCMGWFRQIPDKEREGVAGIESDGSTSYADSVKGRFTISQDSAKNILYLQMHSLKPEDTAMYYCAARSVGWCPLFEHWLGKRAYTPGGYFANWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCVGSGYNSDSNCMAWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGRRGVCSGWARSYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\topk10_T08.fasta",
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\topk10_T08.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "nucleus_p95_T10": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
         "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.3091,
-        "kmer_jaccard_similarity": 0.3262,
-        "kl_divergence": 0.0297,
+        "levenshtein_diversity": 0.3232,
+        "kmer_jaccard_similarity": 0.3066,
+        "kl_divergence": 0.0296,
         "novelty_rate": null,
         "mean_gravy": -0.366,
-        "mean_net_charge": -0.52,
+        "mean_net_charge": -0.32,
         "canonical_cysteine_rate": 1.0,
-        "mean_length": 124.4,
+        "mean_length": 124.2,
         "sample_sequences": [
-          "DVQLVESGGGSVQAGGSLRLSCALSPRASSKNCMGWFRQAPGKERERVATILSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGRWIGYDCYSGSWSSDHGYWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGVTKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGYQYWGQGTQVTVS",
-          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSNYCMGWFRQTPGKEREGVASISSIDGSTYYADSVKGRFTISQDNAKTTVFLQMNSLKSEDTALYYCAVEGSGAYCSLRALPLGYWDQGTQVTVS"
+          "DVQLVESGGGSVQAGGSLKLSCAASGYTHITYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADRSLSCSWIGTVFDYSGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCSAPRDFISRNCMGWFRQAPGKEREGVAIVHSDGTTEYAESVKGRFTISQNNAKDTMYLQMESLKFEDTAVYYCALAVPCMGWSMPAPKASDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCVGSGYNSDINCVAWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKKTLYLQMNSLKPEDTAMYYCAAGERRVHYSDYDDCWSLQDQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\nucleus_p95_T10.fasta",
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\nucleus_p95_T10.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       },
       "nucleus_p80_T12": {
-        "n_sequences": 50,
+        "n_sequences": 100,
         "validity_rate": 1.0,
-        "uniqueness_rate": 1.0,
-        "levenshtein_diversity": 0.2951,
-        "kmer_jaccard_similarity": 0.3528,
-        "kl_divergence": 0.0323,
+        "uniqueness_rate": 0.99,
+        "levenshtein_diversity": 0.3128,
+        "kmer_jaccard_similarity": 0.326,
+        "kl_divergence": 0.0308,
         "novelty_rate": null,
-        "mean_gravy": -0.368,
+        "mean_gravy": -0.353,
         "mean_net_charge": 0.19,
         "canonical_cysteine_rate": 1.0,
-        "mean_length": 124.5,
+        "mean_length": 124.4,
         "sample_sequences": [
-          "VQLVESGGGSVQAGGSLRLSCVASGHRYSSYCMAWFRQVPGKEREGVAVIDSDGLAKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAAPLWIGYTCLEGSDYNYWGQGTQVTVS",
-          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAIDSDGRTDYVASVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGTFRYWGQGTQVTVS",
-          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDGTTYYADSVKGRFTISQDNAKKSVFLQMNSLKSEDTALYYCAAEIPRLLELEGPYNYWGQGTQVTVS"
+          "VQLVESGGGSVQAGGSLRLSCTASGYIFSSCGVGWYRQVPGKEREFVSTISSDGNPSYADSVKGRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADPRSLSTCSPVFVFDYSGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGDTIGRYCMGWFRQIPDKEREGVAGIESDGSTSYADSVKGRFTISQDSAKNILYLQMHSLKPEDTAMYYCAARSVGWCPLFEHWLGKRAYTPGGYFANWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCVGSGYNSDYNCMAWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKKTLYLQMNSLKPEDTAMYYCAAGERRLYCSGAFSYWGQGTQVTVS"
         ],
-        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\nucleus_p80_T12.fasta",
+        "fasta_file": "results\\generated\\transformer-notebook-srr\\nucleus_p80_T12.fasta",
         "dataset_metadata": {
           "dataset_id": "SRR3544218",
           "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
           "split_evaluated": "generation_de_novo",
           "reference_train_loaded": false,
           "n_reference_train": 0,
-          "evaluation_n_sequences": 50,
+          "evaluation_n_sequences": 100,
+          "seed_used": 42,
           "is_heuristic_qc": true
         }
       }
