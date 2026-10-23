@@ -1,11 +1,12 @@
 /**
- * BioLM Studio — Pro Client Application
+ * BioLM Studio — Institutional BioTech Dashboard
  * Features:
- * 1. Side-by-Side Model Comparison (Transformer vs LSTM vs Bigramme)
+ * 1. Side-by-Side Model Comparison (Transformer Causal vs LSTM Baseline vs Bigramme)
  * 2. Real-Time PyTorch VHH Generation with Cached Weights (~200ms)
  * 3. Annotated Structural Sequence Breakdown (FR1, C23, FR2 Hallmarks, CDR3, C104, J-Region)
  * 4. 6-Card Biological Quality Diagnostic Grid
  * 5. Sampling Strategy Matrix (Phase F / NB05 & NB06) & Convergence Curves
+ * 6. Methodological & Educational Guide for the Team with Interactive Distributions
  */
 
 // ==============================================================================
@@ -23,6 +24,7 @@ const state = {
   customSeed: null,
   currentGeneratedSeq: '',
   convergenceChart: null,
+  samplingChart: null,
   chartMode: 'nats', // 'nats' or 'ppl'
   history: []
 };
@@ -99,6 +101,9 @@ function switchTab(tabId) {
   if (tabId === 'benchmark' && state.convergenceChart) {
     setTimeout(() => state.convergenceChart.resize(), 50);
   }
+  if (tabId === 'guide' && state.samplingChart) {
+    setTimeout(() => state.samplingChart.resize(), 50);
+  }
 }
 
 // ==============================================================================
@@ -127,8 +132,9 @@ async function loadData() {
   renderModelComparisonTable();
   renderConvergenceChart();
   renderSamplingStrategiesTable();
+  renderSamplingComparisonChart();
 
-  // Run live generation with active PyTorch checkpoint
+  // Run initial live generation with active PyTorch checkpoint
   generateLiveSequence();
 }
 
@@ -258,8 +264,9 @@ function initControls() {
     if (state.currentGeneratedSeq) {
       navigator.clipboard.writeText(state.currentGeneratedSeq).then(() => {
         const btn = document.getElementById('btn-copy-seq');
-        btn.textContent = '✅ Copié !';
-        setTimeout(() => btn.textContent = '📋 Copier', 1500);
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span>Copié</span>';
+        setTimeout(() => btn.innerHTML = orig, 1500);
       });
     }
   });
@@ -590,7 +597,7 @@ async function generateLiveSequence() {
   const btnGen = document.getElementById('btn-generate-live');
   if (btnGen) {
     btnGen.disabled = true;
-    btnGen.innerHTML = '<span class="gen-icon">⏳</span><span class="gen-text">Inférence PyTorch en cours...</span>';
+    btnGen.innerHTML = '<span class="gen-text">Inférence PyTorch en cours...</span>';
   }
 
   let resultSeq = '';
@@ -639,7 +646,7 @@ async function generateLiveSequence() {
 
   if (btnGen) {
     btnGen.disabled = false;
-    btnGen.innerHTML = '<span class="gen-icon">⚡</span><span class="gen-text">Générer le Nanocorps VHH</span>';
+    btnGen.innerHTML = '<svg class="gen-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg><span class="gen-text">Générer le Nanocorps VHH</span>';
   }
 
   state.currentGeneratedSeq = resultSeq;
@@ -654,7 +661,7 @@ async function generateLiveSequence() {
   document.getElementById('meta-strat-id').textContent = preset.name + ' (T=' + state.temperature.toFixed(2) + ')';
   document.getElementById('meta-seed-id').textContent = 'Seed: #' + usedSeed;
   document.getElementById('meta-len-id').textContent = resultSeq.length + ' AA';
-  document.getElementById('meta-latency-id').textContent = '⚡ ' + latencyMs + ' ms';
+  document.getElementById('meta-latency-id').textContent = latencyMs + ' ms';
 
   // Render Annotated Sequence & 6 QC Cards
   renderAnnotatedSequence(resultSeq, analysis);
@@ -792,7 +799,6 @@ function renderQCCards(analysis) {
   document.getElementById('qc-val-validity').textContent = `${seqLen} AA (100% Standard)`;
 }
 
-
 // Session History
 function addToHistory(modelId, strat, seed, seq, analysis, latencyMs) {
   state.history.unshift({
@@ -833,8 +839,8 @@ function renderHistory() {
       </div>
       <div class="history-meta">
         <span class="meta-tag">#${item.seed}</span>
-        <span class="meta-tag tag-ms">⚡ ${item.latencyMs}ms</span>
-        <button class="btn btn-outline btn-sm" onclick="copySequence('${item.seq}')" title="Copier la séquence">📋</button>
+        <span class="meta-tag tag-ms">${item.latencyMs}ms</span>
+        <button class="btn btn-outline btn-sm" onclick="copySequence('${item.seq}')" title="Copier la séquence">Copier</button>
       </div>
     </div>
   `).join('');
@@ -867,7 +873,7 @@ function renderSamplingStrategiesTable() {
           ${(cfg.validity_rate * 100).toFixed(1)}%
         </td>
         <td class="val-mono" style="font-weight: 700; color: ${isGreedy ? 'var(--rose-text)' : 'var(--blue-text)'};">
-          ${(cfg.uniqueness_rate * 100).toFixed(1)}% ${isGreedy ? '⚠️' : ''}
+          ${(cfg.uniqueness_rate * 100).toFixed(1)}% ${isGreedy ? '(Mode Collapse)' : ''}
         </td>
         <td class="val-mono">
           ${cfg.levenshtein_diversity.toFixed(3)}
@@ -891,7 +897,7 @@ function renderSamplingStrategiesTable() {
         </td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="downloadConfigFasta('${state.selectedSamplingModel}', '${cfgKey}')">
-            📥 FASTA (${cfg.n_sequences || 50})
+            FASTA (${cfg.n_sequences || 50})
           </button>
         </td>
       </tr>
@@ -900,7 +906,95 @@ function renderSamplingStrategiesTable() {
 }
 
 // ==============================================================================
-// 9. UTILITIES
+// 9. TAB 4: SAMPLING COMPARISON CHART (ILLUSTRATIVE DISTRIBUTIONS)
+// ==============================================================================
+function renderSamplingComparisonChart() {
+  const ctx = document.getElementById('sampling-comparison-chart')?.getContext('2d');
+  if (!ctx) return;
+
+  const aaLabels = ['Ala (A)', 'Val (V)', 'Leu (L)', 'Gly (G)', 'Ser (S)', 'Thr (T)', 'Asp (D)', 'Glu (E)', 'Lys (K)', 'Cys (C)'];
+  
+  // Hypothetical probability distribution at CDR position
+  const rawProbs     = [0.34, 0.22, 0.16, 0.10, 0.07, 0.04, 0.03, 0.02, 0.01, 0.01];
+  const greedyProbs  = [1.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00];
+  const topKProbs    = [0.38, 0.25, 0.18, 0.11, 0.08, 0.00, 0.00, 0.00, 0.00, 0.00];
+  const nucleusProbs = [0.36, 0.24, 0.17, 0.11, 0.07, 0.05, 0.00, 0.00, 0.00, 0.00];
+
+  if (state.samplingChart) {
+    state.samplingChart.destroy();
+  }
+
+  state.samplingChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: aaLabels,
+      datasets: [
+        {
+          label: 'Softmax Standard (T=1.0)',
+          data: rawProbs,
+          backgroundColor: 'rgba(120, 113, 108, 0.4)',
+          borderRadius: 4
+        },
+        {
+          label: 'Greedy (Argmax: 100% sur Top 1)',
+          data: greedyProbs,
+          backgroundColor: '#f43f5e',
+          borderRadius: 4
+        },
+        {
+          label: 'Top-k (k=5: queue éliminée)',
+          data: topKProbs,
+          backgroundColor: '#16a34a',
+          borderRadius: 4
+        },
+        {
+          label: 'Nucléus (p=0.95: seuil cumulé adaptatif)',
+          data: nucleusProbs,
+          backgroundColor: '#3b82f6',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 12,
+            font: { family: 'Inter', size: 11, weight: '600' },
+            color: '#292524'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1c1917',
+          padding: 10,
+          cornerRadius: 6
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'Probabilité assignée P(AA)',
+            font: { family: 'Inter', size: 11, weight: '600' },
+            color: '#57534e'
+          },
+          grid: { color: '#e7e5e4' },
+          ticks: { color: '#78716c', font: { family: 'JetBrains Mono' } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#78716c', font: { family: 'Inter', size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+// ==============================================================================
+// 10. UTILITIES
 // ==============================================================================
 function copySequence(seq) {
   navigator.clipboard.writeText(seq).then(() => {

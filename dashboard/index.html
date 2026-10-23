@@ -15,11 +15,11 @@
 <body>
   <div class="app-layout">
     
-    <!-- Top Bar Navigation Header -->
+    <!-- Top Bar Institutional Navbar -->
     <header class="app-header">
       <div class="header-left">
         <div class="brand-badge">
-          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
           </svg>
         </div>
@@ -29,28 +29,54 @@
             <span class="badge-dataset">NCBI SRA SRR3544218</span>
             <span class="badge-nanobody">Nanocorps VHH</span>
           </div>
-          <p class="brand-tagline">Évaluation Biométrique & Modèles de Langage Génératifs (Phase F)</p>
+          <p class="brand-tagline">Évaluation Biométrique & Modèles Génératifs de Langage (Phase F)</p>
         </div>
       </div>
 
       <!-- Main Navigation Tabs -->
       <nav class="nav-tabs" id="main-nav">
         <button class="nav-tab active" data-tab="benchmark" id="tab-benchmark">
-          <span class="tab-icon">📊</span>
-          <span>Benchmark & Comparatif</span>
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Benchmark Comparatif</span>
         </button>
+
         <button class="nav-tab" data-tab="generator" id="tab-generator">
-          <span class="tab-icon">🧬</span>
-          <span>Tester le Modèle en Direct</span>
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+          </svg>
+          <span>Testeur VHH en Direct</span>
           <span class="tab-live-pill">Live</span>
         </button>
+
         <button class="nav-tab" data-tab="sampling" id="tab-sampling">
-          <span class="tab-icon">🧪</span>
-          <span>Stratégies de Sampling</span>
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>Matrice de Sampling</span>
+        </button>
+
+        <button class="nav-tab" data-tab="guide" id="tab-guide">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          <span>Guide Méthodologique & Équipe</span>
         </button>
       </nav>
 
-      <!-- Status Indicator & Actions -->
+      <!-- Server Status & Actions -->
       <div class="header-right">
         <div class="server-status-pill" id="backend-status-indicator">
           <span class="status-pulse-dot"></span>
@@ -66,15 +92,14 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Body Area -->
     <main class="main-body">
 
       <!-- =========================================================================
-           ONGLET 1: BENCHMARK & COMPARATIF DES MODÈLES (TRANSFORMER vs LSTM vs BIGRAM)
+           ONGLET 1: BENCHMARK & COMPARATIF DES MODÈLES (TRANSFORMER vs LSTM vs BIGRAMME)
            ========================================================================= -->
       <section class="tab-pane active" id="pane-benchmark">
         
-        <!-- Section Header -->
         <div class="page-title-box">
           <div>
             <h2 class="page-title">Comparatif Global des Modèles Neuronaux & Baseline</h2>
@@ -82,7 +107,8 @@
           </div>
           <div class="page-actions">
             <button class="btn btn-outline" id="btn-export-benchmark-json">
-              📥 Exporter Données JSON
+              <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Exporter Données JSON</span>
             </button>
           </div>
         </div>
@@ -90,31 +116,42 @@
         <!-- 4 Cartes Métriques Clés Globales -->
         <div class="kpi-grid">
           <div class="kpi-card">
-            <div class="kpi-icon-box kpi-green">🛡️</div>
+            <div class="kpi-icon-box kpi-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
             <div class="kpi-content">
               <span class="kpi-label">Validité Biologique</span>
               <span class="kpi-value" id="kpi-validity-val">100.0%</span>
               <span class="kpi-sub">20 AA standards, pas de stop interne</span>
             </div>
           </div>
+
           <div class="kpi-card">
-            <div class="kpi-icon-box kpi-blue">🎯</div>
+            <div class="kpi-icon-box kpi-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </div>
             <div class="kpi-content">
               <span class="kpi-label">Perplexité Causal Transformer</span>
               <span class="kpi-value" id="kpi-ppl-val">2.229</span>
               <span class="kpi-sub">Perte Val : 0.801 nats/résidu</span>
             </div>
           </div>
+
           <div class="kpi-card">
-            <div class="kpi-icon-box kpi-purple">🔗</div>
+            <div class="kpi-icon-box kpi-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            </div>
             <div class="kpi-content">
               <span class="kpi-label">Pont Disulfure Canonique</span>
               <span class="kpi-value" id="kpi-cys-val">100.0%</span>
               <span class="kpi-sub">Paire C23 (FR1) ↔ C104 (FR3)</span>
             </div>
           </div>
+
           <div class="kpi-card">
-            <div class="kpi-icon-box kpi-amber">💧</div>
+            <div class="kpi-icon-box kpi-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+            </div>
             <div class="kpi-content">
               <span class="kpi-label">Indice GRAVY (Hydropathie)</span>
               <span class="kpi-value" id="kpi-gravy-val">-0.378</span>
@@ -123,14 +160,14 @@
           </div>
         </div>
 
-        <!-- TABLEAU COMPARATIF DES MODÈLES (Side-by-Side Model Comparison) -->
+        <!-- TABLEAU COMPARATIF DES MODÈLES -->
         <div class="pro-card">
           <div class="pro-card-header">
             <div>
               <h3 class="pro-card-title">Matrice Comparative des Modèles (Validation & Métriques de Génération)</h3>
               <p class="pro-card-subtitle">Comparaison directe côte à côte des architectures sur le jeu de test SRR3544218</p>
             </div>
-            <span class="badge-verified">✓ Vérifié sur Colab GPU T4</span>
+            <span class="badge-verified">Validation GPU T4 Vérifiée</span>
           </div>
           
           <div class="table-responsive">
@@ -189,7 +226,7 @@
       </section>
 
       <!-- =========================================================================
-           ONGLET 2: TESTEUR VHH EN DIRECT (PLAYGROUND AVEC PYTORCH EN CACHE)
+           ONGLET 2: TESTEUR VHH EN DIRECT (PLAYGROUND & CONTRÔLE QUALITÉ PYTORCH)
            ========================================================================= -->
       <section class="tab-pane" id="pane-generator">
         
@@ -199,7 +236,7 @@
             <p class="page-subtitle">Inférence neuronale PyTorch en temps réel avec contrôle de repliement structural et analyse des paratopes.</p>
           </div>
           <div class="latency-status-tag" id="generator-latency-badge">
-            <span class="latency-icon">⚡</span>
+            <svg class="tag-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
             <span id="generator-latency-text">PyTorch CPU In-Memory Cache</span>
           </div>
         </div>
@@ -209,7 +246,7 @@
           <!-- Panneau Latéral Gauche : Contrôles & Hyperparamètres -->
           <div class="pro-card controls-sidebar">
             <div class="controls-header">
-              <h3 class="controls-title">⚙️ Paramètres d'Inférence</h3>
+              <h3 class="controls-title">Paramètres d'Inférence</h3>
             </div>
 
             <!-- Choix du Modèle -->
@@ -282,14 +319,15 @@
               <div class="seed-input-row">
                 <input type="number" id="live-seed-input" class="form-input mono" placeholder="Auto" min="0" max="999999">
                 <button type="button" class="btn btn-outline btn-seed" id="btn-randomize-seed" title="Nouveau tirage aléatoire">
-                  🎲 Tirage
+                  <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                  <span>Tirage</span>
                 </button>
               </div>
             </div>
 
             <!-- Bouton Principal de Génération -->
             <button type="button" class="btn btn-primary btn-generate" id="btn-generate-live">
-              <span class="gen-icon">⚡</span>
+              <svg class="gen-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               <span class="gen-text">Générer le Nanocorps VHH</span>
             </button>
           </div>
@@ -301,21 +339,23 @@
             <div class="pro-card sequence-card">
               <div class="sequence-card-header">
                 <div class="seq-title-group">
-                  <h3 class="pro-card-title">🧬 Séquence VHH Produite de Novo</h3>
+                  <h3 class="pro-card-title">Séquence VHH Produite de Novo</h3>
                   <div class="seq-meta-tags" id="seq-meta-tags">
                     <span class="meta-tag" id="meta-model-id">Modèle: Transformer</span>
                     <span class="meta-tag" id="meta-strat-id">Top-k 10 (T=0.80)</span>
                     <span class="meta-tag" id="meta-seed-id">Seed: #123456</span>
                     <span class="meta-tag tag-len" id="meta-len-id">124 AA</span>
-                    <span class="meta-tag tag-ms" id="meta-latency-id">⚡ 180 ms</span>
+                    <span class="meta-tag tag-ms" id="meta-latency-id">180 ms</span>
                   </div>
                 </div>
                 <div class="seq-actions-group">
                   <button class="btn btn-sm btn-outline" id="btn-copy-seq" title="Copier la séquence brute">
-                    📋 Copier
+                    <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span>Copier</span>
                   </button>
                   <button class="btn btn-sm btn-outline" id="btn-download-fasta" title="Télécharger le fichier FASTA">
-                    📥 FASTA
+                    <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>FASTA</span>
                   </button>
                 </div>
               </div>
@@ -352,7 +392,9 @@
               <!-- 1. Pont Disulfure -->
               <div class="qc-metric-card" id="qc-card-cys">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">🔗</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                  </span>
                   <span class="qc-status-badge badge-green" id="qc-badge-cys">Conforme</span>
                 </div>
                 <span class="qc-card-label">Pont Disulfure (Repliement)</span>
@@ -363,7 +405,9 @@
               <!-- 2. Solubilité FR2 -->
               <div class="qc-metric-card" id="qc-card-fr2">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">🛡️</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  </span>
                   <span class="qc-status-badge badge-green" id="qc-badge-fr2">Soluble VHH</span>
                 </div>
                 <span class="qc-card-label">Hallmarks FR2 (Sans Chaîne L)</span>
@@ -374,7 +418,9 @@
               <!-- 3. Boucle CDR3 -->
               <div class="qc-metric-card" id="qc-card-cdr3">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">🧬</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+                  </span>
                   <span class="qc-status-badge badge-blue" id="qc-badge-cdr3">Optimal</span>
                 </div>
                 <span class="qc-card-label">Boucle Paratope CDR3</span>
@@ -385,7 +431,9 @@
               <!-- 4. Hydropathie GRAVY -->
               <div class="qc-metric-card" id="qc-card-gravy">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">💧</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                  </span>
                   <span class="qc-status-badge badge-amber" id="qc-badge-gravy">Hydrophile</span>
                 </div>
                 <span class="qc-card-label">Hydropathie GRAVY</span>
@@ -396,7 +444,9 @@
               <!-- 5. Charge Nette -->
               <div class="qc-metric-card" id="qc-card-charge">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">⚡</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  </span>
                   <span class="qc-status-badge badge-purple" id="qc-badge-charge">Stable</span>
                 </div>
                 <span class="qc-card-label">Charge Nette à pH 7.4</span>
@@ -407,7 +457,9 @@
               <!-- 6. Validité Biologique -->
               <div class="qc-metric-card" id="qc-card-validity">
                 <div class="qc-card-top">
-                  <span class="qc-card-icon">✅</span>
+                  <span class="qc-card-icon-svg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  </span>
                   <span class="qc-status-badge badge-green" id="qc-badge-validity">100% Valide</span>
                 </div>
                 <span class="qc-card-label">Conformité Séquentielle</span>
@@ -421,7 +473,7 @@
             <div class="pro-card history-card">
               <div class="pro-card-header">
                 <div>
-                  <h3 class="pro-card-title">📜 Historique de Session</h3>
+                  <h3 class="pro-card-title">Historique de Session</h3>
                   <p class="pro-card-subtitle">Séquences générées au cours de cette session avec leurs métriques instantanées</p>
                 </div>
                 <button class="btn btn-sm btn-outline" id="btn-clear-history">Effacer</button>
@@ -464,7 +516,8 @@
               <p class="pro-card-subtitle">Évalué sur 50 séquences indépendantes par configuration selon le protocole de Phase F</p>
             </div>
             <button class="btn btn-outline btn-sm" id="btn-download-all-fasta">
-              📥 Télécharger Tous les FASTA
+              <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Télécharger Tous les FASTA</span>
             </button>
           </div>
           
@@ -492,54 +545,226 @@
           </div>
         </div>
 
-        <!-- Guide Théorique & Formules Mathématiques -->
-        <div class="theory-grid">
+      </section>
+
+      <!-- =========================================================================
+           ONGLET 4: GUIDE MÉTHODOLOGIQUE & ÉQUIPE (POURQUOI CES MÉTRIQUES & SAMPLING)
+           ========================================================================= -->
+      <section class="tab-pane" id="pane-guide">
+        
+        <div class="page-title-box">
+          <div>
+            <h2 class="page-title">Guide Méthodologique & Référence pour l'Équipe</h2>
+            <p class="page-subtitle">Documentation complète des métriques choisies, du rationnel biomécanique des nanocorps VHH, et du fonctionnement mathématique des techniques de sampling.</p>
+          </div>
+        </div>
+
+        <!-- Section 1 : Pourquoi ces métriques ? -->
+        <div class="pro-card guide-section-card">
+          <div class="guide-card-head">
+            <span class="guide-step-pill">Section 1</span>
+            <h3 class="guide-title">Rationnel Scientifique : Pourquoi avons-nous choisi ces métriques ?</h3>
+          </div>
           
-          <div class="theory-card">
-            <div class="theory-header">
-              <span class="theory-icon">⚠️</span>
-              <h4>1. Détection du Mode Collapse (Greedy Argmax)</h4>
+          <p class="guide-intro">
+            L'évaluation d'un modèle de langage appliqué aux protéines (BioLM) ne peut se limiter à la perte d'apprentissage (cross-entropy). Un nanocorps généré doit être à la fois <strong>statistiquement représentatif</strong> du répertoire naturel et <strong>thermodynamiquement viable</strong> *in vitro*. Voici les trois piliers méthodologiques retenus :
+          </p>
+
+          <div class="metrics-rationale-grid">
+            
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 1 : Mathématique & Modèle</span>
+                <h4>Perplexité & Incertitude</h4>
+              </div>
+              <div class="formula-box">
+                $$\text{PPL} = \exp\left(-\frac{1}{N}\sum_{t=1}^N \ln P(x_t \mid x_{<t})\right) = \exp(\mathcal{L}_{\text{nats}})$$
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> La perplexité quantifie le nombre moyen d'acides aminés entre lesquels le modèle hésite à chaque position. Sur un alphabet de 20 résidus, un modèle non entraîné a une perplexité de 20.0. Notre Transformer atteint <strong>2.229</strong>, signifiant qu'il restreint son choix à environ 2 résidus plausibles, capturant la grammaire structurale du repliement.
+              </p>
             </div>
-            <p class="theory-text">
-              L'échantillonnage déterministe <code>greedy</code> choisit à chaque étape le token de logit maximal $x_t = \arg\max P(x_t \mid x_{<t})$. Sur le modèle entraîné, cela provoque un effondrement complet de la diversité : l'<strong>Unicité s'effondre à 2.0%</strong> et la distance de Levenshtein tombe à <strong>0.000</strong>. Cette méthode est inutilisable pour le design de novo.
-            </p>
+
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 2 : Bio-Statistique</span>
+                <h4>Divergence KL & Unicité</h4>
+              </div>
+              <div class="formula-box">
+                $$D_{\text{KL}}(P_{\text{gen}} \parallel P_{\text{train}}) = \sum_{a=1}^{20} P_{\text{gen}}(a) \ln \frac{P_{\text{gen}}(a)}{P_{\text{train}}(a)}$$
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> La divergence de Kullback-Leibler vérifie que le modèle ne sur-représente pas anormalement certains résidus (ex: excès de cystéines ou de prolines). Une valeur proche de zéro ($< 0.01$) certifie la conformité biochimique. L'unicité ($|\text{Unique}| / N$) garantit l'absence d'effondrement de mode (mode collapse).
+              </p>
+            </div>
+
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 3 : Biophysique VHH</span>
+                <h4>Pont Disulfure & Solubilité FR2</h4>
+              </div>
+              <div class="formula-box">
+                $$\text{C23 (FR1)} \xleftrightarrow{\text{Covalence S-S}} \text{C104 (FR3)} \quad ; \quad \text{IMGT 42, 49, 50, 52}$$
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> Les VHH sont dépourvus de chaîne légère ($V_L$). Pour éviter l'agrégation spontanée, ils possèdent des mutations hydrophiles dans la région Framework 2 (Kabat 37, 44, 45, 47). Le pont disulfure entre C23 et C104 stabilise le cœur $\beta$-sandwich. Vérifier ces positions est le test ultime de validité structurale.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section 2 : Explication Interactive des Techniques de Sampling avec Graphique -->
+        <div class="pro-card guide-section-card">
+          <div class="guide-card-head">
+            <span class="guide-step-pill">Section 2</span>
+            <h3 class="guide-title">Comparaison des Techniques de Sampling (Exploration vs Exploitation)</h3>
           </div>
 
-          <div class="theory-card">
-            <div class="theory-header">
-              <span class="theory-icon">🎯</span>
-              <h4>2. Équilibre Top-k & Nucléus (Top-p)</h4>
+          <p class="guide-intro">
+            À chaque pas de temps, le modèle produit un vecteur de logits $z \in \mathbb{R}^{23}$. La manière dont ces logits sont transformés en probabilités et échantillonnés dicte entièrement la qualité et la diversité des anticorps créés.
+          </p>
+
+          <!-- Graphique Illustratif de Distribution -->
+          <div class="sampling-viz-box">
+            <div class="viz-header">
+              <h4>Impact des Techniques de Sampling sur la Distribution des Probabilités de Tokens</h4>
+              <p>Visualisation de l'écrêtage et de la redistribution pour un pas de prédiction donné</p>
             </div>
-            <p class="theory-text">
-              Le <strong>Top-k ($k=10, T=0.8$)</strong> restreint le tirage aux 10 meilleurs candidats, éliminant la longue traîne aberrante tout en maintenant une <strong>Unicité de 100%</strong> et une diversité de Levenshtein de <strong>0.277</strong>. Le <strong>Nucléus ($p=0.95, T=1.0$)</strong> tronque dynamiquement à 95% de la masse cumulée, atteignant une diversité de <strong>0.312</strong>.
-            </p>
+            <div class="chart-wrapper-sampling">
+              <canvas id="sampling-comparison-chart"></canvas>
+            </div>
           </div>
 
-          <div class="theory-card">
-            <div class="theory-header">
-              <span class="theory-icon">📐</span>
-              <h4>3. Fidélité Distributionnelle & Divergence KL</h4>
+          <!-- Grille des 4 Techniques Détaillées -->
+          <div class="techniques-detail-grid">
+            
+            <div class="technique-detail-card">
+              <div class="technique-head">
+                <span class="tech-badge tech-greedy">1. Greedy (Argmax)</span>
+                <span class="tech-math">x_t = \arg\max P(x_t)</span>
+              </div>
+              <p class="tech-desc">
+                <strong>Principe :</strong> Sélection déterministe du résidu de plus haute probabilité.
+              </p>
+              <div class="tech-verdict verdict-bad">
+                <strong>Inconvénient majeur : Mode Collapse !</strong><br>
+                Le modèle génère en boucle la même séquence d'énergie minimale : l'unicité tombe à <strong>2.0%</strong> et la distance de Levenshtein est de <strong>0.000</strong>. À proscrire pour la découverte de nouveaux anticorps.
+              </div>
             </div>
-            <p class="theory-text">
-              La divergence de Kullback-Leibler $D_{\text{KL}}(P_{\text{gen}} \parallel P_{\text{train}}) = \sum_{a=1}^{20} P_{\text{gen}}(a) \log \frac{P_{\text{gen}}(a)}{P_{\text{train}}(a)}$ est inférieure à <strong>0.01 nats</strong>, confirmant que la composition globale en acides aminés respecte fidèlement les proportions naturelles du jeu camélidé NCBI SRA.
-            </p>
+
+            <div class="technique-detail-card">
+              <div class="technique-head">
+                <span class="tech-badge tech-temp">2. Température (T)</span>
+                <span class="tech-math">P(x_i) = \frac{e^{z_i / T}}{\sum e^{z_j / T}}</span>
+              </div>
+              <p class="tech-desc">
+                <strong>Principe :</strong> Régule l'entropie de la distribution avant softmax.
+              </p>
+              <div class="tech-verdict verdict-good">
+                <strong>Effet paramétrique :</strong><br>
+                - $T < 1.0$ (ex: 0.8) : Aiguise la distribution sur les résidus viables.<br>
+                - $T > 1.0$ (ex: 1.2) : Aplatit la distribution et favorise l'exploration, mais peut introduire des résidus aberrants dans le framework structural.
+              </div>
+            </div>
+
+            <div class="technique-detail-card">
+              <div class="technique-head">
+                <span class="tech-badge tech-topk">3. Top-k Truncation</span>
+                <span class="tech-math">i \in \text{Top-k}(z)</span>
+              </div>
+              <p class="tech-desc">
+                <strong>Principe :</strong> Conserve uniquement les $k$ meilleurs logits et élimine la longue traîne ($z_j = -\infty$).
+              </p>
+              <div class="tech-verdict verdict-best">
+                <strong>Recommandation pour la production :</strong><br>
+                Avec $k=10$ et $T=0.8$, le modèle préserve <strong>100% de validité biologique</strong> tout en maintenant <strong>100% d'unicité</strong> et une distance de Levenshtein optimale de <strong>0.277</strong>.
+              </div>
+            </div>
+
+            <div class="technique-detail-card">
+              <div class="technique-head">
+                <span class="tech-badge tech-nucleus">4. Nucléus (Top-p)</span>
+                <span class="tech-math">\sum_{i \in V^{(p)}} P(x_i) \ge p</span>
+              </div>
+              <p class="tech-desc">
+                <strong>Principe :</strong> Troncature dynamique conservant le plus petit groupe de tokens accumulant au moins $p$ de masse de probabilité.
+              </p>
+              <div class="tech-verdict verdict-good">
+                <strong>Adaptabilité contextuelle :</strong><br>
+                Sur les positions conservées (ex: C23), le noyau ne retient qu'1 seul candidat. Sur la boucle variable CDR3, le noyau s'élargit naturellement à 6-12 candidats, permettant une haute créativité d'épitopes.
+              </div>
+            </div>
+
           </div>
 
+        </div>
+
+        <!-- Section 3 : Recommandations Stratégiques pour l'Équipe -->
+        <div class="pro-card guide-section-card">
+          <div class="guide-card-head">
+            <span class="guide-step-pill">Section 3</span>
+            <h3 class="guide-title">Guide Décisionnel pour vos Expérimentations</h3>
+          </div>
+
+          <div class="table-responsive">
+            <table class="pro-table">
+              <thead>
+                <tr>
+                  <th>Objectif du Projet</th>
+                  <th>Stratégie Recommandée</th>
+                  <th>Hyperparamètres</th>
+                  <th>Comportement Attendu</th>
+                  <th>Indicateur QC Clé</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Stabilité & Repliement Garanti</strong></td>
+                  <td><span class="badge-tag tag-topk">Top-k Truncated</span></td>
+                  <td><code>k=10, T=0.80</code></td>
+                  <td>Squelette ultra-stable, boucle CDR3 canonique</td>
+                  <td>Pont C23-C104 à 100%, GRAVY $\in [-0.40, -0.35]$</td>
+                </tr>
+                <tr>
+                  <td><strong>Découverte de Nouveaux Paratopes</strong></td>
+                  <td><span class="badge-tag tag-nucleus">Nucléus Standard</span></td>
+                  <td><code>p=0.95, T=1.00</code></td>
+                  <td>Diversité accrue dans les CDR1, CDR2, CDR3</td>
+                  <td>Levenshtein $> 0.310$, Nouveauté $100\%$</td>
+                </tr>
+                <tr>
+                  <td><strong>Exploration Haute Variabilité</strong></td>
+                  <td><span class="badge-tag tag-explore">Nucléus Chaud</span></td>
+                  <td><code>p=0.80, T=1.20</code></td>
+                  <td>Mutations alternatives de surface</td>
+                  <td>Surveiller le score d'hydropathie GRAVY</td>
+                </tr>
+                <tr>
+                  <td><strong>Évaluation de Base / Diagnostic</strong></td>
+                  <td><span class="badge-tag tag-greedy">Greedy Argmax</span></td>
+                  <td><code>Argmax, T=1.0</code></td>
+                  <td>Vérification du mode de plus haute probabilité</td>
+                  <td>Sert uniquement de témoin négatif d'unicité</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </section>
 
     </main>
 
-    <!-- Footer Épuré -->
+    <!-- Footer Institutionnel -->
     <footer class="app-footer">
       <div class="footer-left">
         <strong>BioLM Studio</strong> — Projet Recherche IA Nanobody VHH • Architecture Colab GPU • Dataset SRR3544218
       </div>
       <div class="footer-right">
-        <a href="../docs/GUIDE_COLLABORATEURS.md" target="_blank">📖 Guide Collaborateurs</a>
+        <a href="../docs/GUIDE_COLLABORATEURS.md" target="_blank">Guide Collaborateurs</a>
         <span class="footer-sep">•</span>
-        <a href="../CONTRACT.md" target="_blank">📋 Contrat des Métriques</a>
+        <a href="../CONTRACT.md" target="_blank">Contrat des Métriques</a>
       </div>
     </footer>
 
