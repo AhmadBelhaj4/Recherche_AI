@@ -169,6 +169,16 @@
             </div>
             <span class="badge-verified">Validation GPU T4 Vérifiée</span>
           </div>
+
+          <!-- Bandeau Provenance & Métadonnées -->
+          <div class="provenance-bar">
+            <svg class="prov-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span class="prov-item">Jeu de données : <strong>NCBI SRA SRR3544218</strong> (242 891 VHH camélidés)</span>
+            <span class="prov-sep">•</span>
+            <span class="prov-item">Stratégie d'évaluation : <strong>Top-k 10 (T=0.80)</strong></span>
+            <span class="prov-sep">•</span>
+            <span class="prov-item">Échantillon : <strong>N = 50 séquences / modèle</strong></span>
+          </div>
           
           <div class="table-responsive">
             <table class="pro-table" id="table-model-comparison">
@@ -243,10 +253,10 @@
 
         <div class="generator-workspace">
           
-          <!-- Panneau Latéral Gauche : Contrôles & Hyperparamètres -->
+          <!-- ZONE 1 : Contrôles & Hyperparamètres d'Inférence -->
           <div class="pro-card controls-sidebar">
             <div class="controls-header">
-              <h3 class="controls-title">Paramètres d'Inférence</h3>
+              <h3 class="controls-title">1. Paramètres d'Inférence</h3>
             </div>
 
             <!-- Choix du Modèle -->
@@ -332,14 +342,14 @@
             </button>
           </div>
 
-          <!-- Panneau Principal Droite : Visualiseur Séquence & 6 Cartes QC -->
+          <!-- Panneau Principal Droite : Zone 2 (Séquence) & Zone 3 (QC Heuristique) -->
           <div class="generator-output-area">
             
-            <!-- Carte Séquence & Annotations -->
+            <!-- ZONE 2 : Séquence Produite (FASTA Viewer) -->
             <div class="pro-card sequence-card">
               <div class="sequence-card-header">
                 <div class="seq-title-group">
-                  <h3 class="pro-card-title">Séquence VHH Produite de Novo</h3>
+                  <h3 class="pro-card-title">2. Séquence VHH Produite de Novo</h3>
                   <div class="seq-meta-tags" id="seq-meta-tags">
                     <span class="meta-tag" id="meta-model-id">Modèle: Transformer</span>
                     <span class="meta-tag" id="meta-strat-id">Top-k 10 (T=0.80)</span>
@@ -360,113 +370,124 @@
                 </div>
               </div>
 
-              <!-- Zone d'Affichage Découpée & Colorée -->
+              <!-- Zone d'Affichage Découpée & Colorée en Monospace -->
               <div class="sequence-display-box" id="sequence-display-box">
                 <!-- Rempli par JavaScript avec spans annotés -->
               </div>
 
-              <!-- Légende Biologique Structurale -->
+              <!-- Légende Compacte Horizontale -->
               <div class="structure-legend">
                 <div class="legend-chip chip-cys">
                   <span class="dot-color dot-cys"></span>
-                  <strong>C23 & C104</strong> : Pont Disulfure Intra-Domaine
+                  <span><strong>C23 & C104</strong> Pont Disulfure</span>
                 </div>
                 <div class="legend-chip chip-fr2">
                   <span class="dot-color dot-fr2"></span>
-                  <strong>FR2 Solubilité</strong> : Hallmarks IMGT 42, 49, 50, 52 (WFRQ...EKER)
+                  <span><strong>FR2 Solubilité</strong> IMGT 42, 49, 50, 52</span>
                 </div>
                 <div class="legend-chip chip-cdr3">
                   <span class="dot-color dot-cdr3"></span>
-                  <strong>Boucle CDR3</strong> : Paratope Hypervariable
+                  <span><strong>Boucle CDR3</strong> Paratope Hypervariable</span>
                 </div>
                 <div class="legend-chip chip-j">
                   <span class="dot-color dot-j"></span>
-                  <strong>J-Region</strong> : Motif Consensus WGQG
+                  <span><strong>Région-J</strong> Consensus WGQG</span>
                 </div>
               </div>
             </div>
 
-            <!-- Grille des 6 Métriques de Contrôle Qualité VHH -->
-            <div class="qc-metrics-grid">
-              
-              <!-- 1. Pont Disulfure -->
-              <div class="qc-metric-card" id="qc-card-cys">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                  </span>
-                  <span class="qc-status-badge badge-green" id="qc-badge-cys">Conforme</span>
+            <!-- ZONE 3 : Diagnostic & Contrôle Qualité (Annotations Heuristiques) -->
+            <div class="qc-section-box">
+              <div class="qc-section-header">
+                <div>
+                  <h3 class="qc-section-title">3. Diagnostic Biologique & Contrôle Qualité</h3>
+                  <p class="qc-section-subtitle">Vérification positionnelle du repliement et détection des motifs d'anticorps à domaine unique</p>
                 </div>
-                <span class="qc-card-label">Pont Disulfure (Repliement)</span>
-                <span class="qc-card-value text-green" id="qc-val-cys">C23 ↔ C104 Détecté</span>
-                <span class="qc-card-desc" id="qc-desc-cys">Indispensable à la stabilité thermodynamique</span>
+                <span class="badge-heuristic">Annotations Heuristiques</span>
               </div>
 
-              <!-- 2. Solubilité FR2 -->
-              <div class="qc-metric-card" id="qc-card-fr2">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                  </span>
-                  <span class="qc-status-badge badge-green" id="qc-badge-fr2">Soluble VHH</span>
+              <!-- Grille des 6 Métriques de Contrôle Qualité VHH -->
+              <div class="qc-metrics-grid">
+                
+                <!-- 1. Pont Disulfure -->
+                <div class="qc-metric-card" id="qc-card-cys">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    </span>
+                    <span class="qc-status-badge badge-green" id="qc-badge-cys">Conforme</span>
+                  </div>
+                  <span class="qc-card-label">Pont Disulfure (Repliement)</span>
+                  <span class="qc-card-value text-green" id="qc-val-cys">C23 ↔ C104 Détecté</span>
+                  <span class="qc-card-desc" id="qc-desc-cys">Vérification positionnelle stricte (FR1 & FR3)</span>
                 </div>
-                <span class="qc-card-label">Hallmarks FR2 (Sans Chaîne L)</span>
-                <span class="qc-card-value text-green" id="qc-val-fr2">WFRQAPGKEREG</span>
-                <span class="qc-card-desc" id="qc-desc-fr2">IMGT 42, 49, 50, 52 : Empêche l'agrégation</span>
-              </div>
 
-              <!-- 3. Boucle CDR3 -->
-              <div class="qc-metric-card" id="qc-card-cdr3">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
-                  </span>
-                  <span class="qc-status-badge badge-blue" id="qc-badge-cdr3">Optimal</span>
+                <!-- 2. Solubilité FR2 -->
+                <div class="qc-metric-card" id="qc-card-fr2">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </span>
+                    <span class="qc-status-badge badge-green" id="qc-badge-fr2">Soluble VHH</span>
+                  </div>
+                  <span class="qc-card-label">Hallmarks FR2 (Sans Chaîne L)</span>
+                  <span class="qc-card-value text-green" id="qc-val-fr2">WFRQAPGKEREG</span>
+                  <span class="qc-card-desc" id="qc-desc-fr2">Motif IMGT 42, 49, 50, 52 (règle heuristique)</span>
                 </div>
-                <span class="qc-card-label">Boucle Paratope CDR3</span>
-                <span class="qc-card-value text-blue" id="qc-val-cdr3">14 Acides Aminés</span>
-                <span class="qc-card-desc" id="qc-desc-cdr3">Motif : VTGGNWRSIDHWSY</span>
-              </div>
 
-              <!-- 4. Hydropathie GRAVY -->
-              <div class="qc-metric-card" id="qc-card-gravy">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
-                  </span>
-                  <span class="qc-status-badge badge-amber" id="qc-badge-gravy">Hydrophile</span>
+                <!-- 3. Boucle CDR3 -->
+                <div class="qc-metric-card" id="qc-card-cdr3">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+                    </span>
+                    <span class="qc-status-badge badge-blue" id="qc-badge-cdr3">Optimal</span>
+                  </div>
+                  <span class="qc-card-label">Boucle Paratope CDR3</span>
+                  <span class="qc-card-value text-blue" id="qc-val-cdr3">14 Acides Aminés</span>
+                  <span class="qc-card-desc" id="qc-desc-cdr3">Motif délimité : VTGGNWRSIDHWSY</span>
                 </div>
-                <span class="qc-card-label">Hydropathie GRAVY</span>
-                <span class="qc-card-value text-amber" id="qc-val-gravy">-0.378</span>
-                <span class="qc-card-desc">Échelle Kyte-Doolittle (Cible: -0.45 à -0.30)</span>
-              </div>
 
-              <!-- 5. Charge Nette -->
-              <div class="qc-metric-card" id="qc-card-charge">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                  </span>
-                  <span class="qc-status-badge badge-purple" id="qc-badge-charge">Stable</span>
+                <!-- 4. Hydropathie GRAVY -->
+                <div class="qc-metric-card" id="qc-card-gravy">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                    </span>
+                    <span class="qc-status-badge badge-amber" id="qc-badge-gravy">Hydrophile</span>
+                  </div>
+                  <span class="qc-card-label">Hydropathie GRAVY</span>
+                  <span class="qc-card-value text-amber" id="qc-val-gravy">-0.378</span>
+                  <span class="qc-card-desc">Échelle Kyte-Doolittle (Cible: -0.45 à -0.30)</span>
                 </div>
-                <span class="qc-card-label">Charge Nette à pH 7.4</span>
-                <span class="qc-card-value text-purple" id="qc-val-charge">-0.20</span>
-                <span class="qc-card-desc">Répulsion électrostatique anti-agrégation</span>
-              </div>
 
-              <!-- 6. Validité Biologique -->
-              <div class="qc-metric-card" id="qc-card-validity">
-                <div class="qc-card-top">
-                  <span class="qc-card-icon-svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                  </span>
-                  <span class="qc-status-badge badge-green" id="qc-badge-validity">100% Valide</span>
+                <!-- 5. Charge Nette -->
+                <div class="qc-metric-card" id="qc-card-charge">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </span>
+                    <span class="qc-status-badge badge-purple" id="qc-badge-charge">Stable</span>
+                  </div>
+                  <span class="qc-card-label">Charge Nette à pH 7.4</span>
+                  <span class="qc-card-value text-purple" id="qc-val-charge">-0.20</span>
+                  <span class="qc-card-desc">Répulsion électrostatique anti-agrégation</span>
                 </div>
-                <span class="qc-card-label">Conformité Séquentielle</span>
-                <span class="qc-card-value text-green" id="qc-val-validity">20 Acides Aminés Standards</span>
-                <span class="qc-card-desc">Aucun codon STOP prématuré ni token illégal</span>
-              </div>
 
+                <!-- 6. Validité Biologique -->
+                <div class="qc-metric-card" id="qc-card-validity">
+                  <div class="qc-card-top">
+                    <span class="qc-card-icon-svg">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </span>
+                    <span class="qc-status-badge badge-green" id="qc-badge-validity">100% Valide</span>
+                  </div>
+                  <span class="qc-card-label">Conformité Séquentielle</span>
+                  <span class="qc-card-value text-green" id="qc-val-validity">20 Acides Aminés Standards</span>
+                  <span class="qc-card-desc">Aucun codon STOP prématuré ni token illégal</span>
+                </div>
+
+              </div>
             </div>
 
             <!-- Historique des Séquences Générées -->
@@ -519,6 +540,16 @@
               <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               <span>Télécharger Tous les FASTA</span>
             </button>
+          </div>
+          
+          <!-- Bandeau Provenance & Métadonnées -->
+          <div class="provenance-bar">
+            <svg class="prov-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span class="prov-item">Jeu de données : <strong>NCBI SRA SRR3544218</strong> (242 891 VHH camélidés)</span>
+            <span class="prov-sep">•</span>
+            <span class="prov-item">Protocole de sampling : <strong>Phase F (4 configurations)</strong></span>
+            <span class="prov-sep">•</span>
+            <span class="prov-item">Échantillon : <strong>N = 50 séquences / configuration</strong></span>
           </div>
           
           <div class="table-responsive">
@@ -691,9 +722,9 @@
                 </div>
               </div>
               <div class="math-legend-item">
-                <span class="legend-badge val-highlight">-0.0022 nats</span>
+                <span class="legend-badge val-highlight">0.0370 nats</span>
                 <div class="legend-text">
-                  <strong>Score Obtenu (Transformer Causal)</strong> : Pratiquement nul (&le; 0.05 nats requis), certifiant une fidélité biologique absolue sans distorsion artificielle de la biochimie du nanocorps.
+                  <strong>Score Obtenu (Transformer Causal)</strong> : Inférieur au seuil (&le; 0.05 nats requis), certifiant une fidélité biologique absolue sans distorsion artificielle de la biochimie du nanocorps.
                 </div>
               </div>
             </div>
@@ -818,7 +849,7 @@
             <div class="guide-chart-header">
               <span class="guide-chart-badge">Graphique 1 • Fréquence Résidu par Résidu</span>
               <h4>Fidélité des 20 Acides Aminés : Référence Naturelle SRR3544218 vs Transformer Causal</h4>
-              <p>Superposition des fréquences relatives sur l'ensemble de l'alphabet protéique. La superposition quasi-parfaite confirme une fidélité biologique absolue (D<sub>KL</sub> = -0.0022 nats).</p>
+              <p>Superposition des fréquences relatives sur l'ensemble de l'alphabet protéique. La superposition quasi-parfaite confirme une fidélité biologique absolue (D<sub>KL</sub> = 0.0370 nats, conforme au seuil &le; 0.05 nats).</p>
             </div>
             <div class="chart-wrapper-guide">
               <canvas id="guide-aa-composition-chart"></canvas>

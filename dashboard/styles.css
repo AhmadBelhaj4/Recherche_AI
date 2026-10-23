@@ -145,7 +145,7 @@ body {
 
 .brand-name {
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
@@ -223,7 +223,7 @@ body {
 
 .tab-live-pill {
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--emerald);
   color: #ffffff;
   padding: 1px 6px;
@@ -348,7 +348,7 @@ body {
 
 .page-title {
   font-size: 1.45rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
@@ -379,7 +379,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: 24px 26px;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .pro-card-header {
@@ -393,7 +393,7 @@ body {
 
 .pro-card-title {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
@@ -465,7 +465,7 @@ body {
 }
 
 .kpi-label {
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -474,7 +474,7 @@ body {
 
 .kpi-value {
   font-size: 1.45rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   font-family: var(--font-mono);
   line-height: 1.2;
@@ -482,17 +482,61 @@ body {
 }
 
 .kpi-sub {
-  font-size: 0.74rem;
+  font-size: 0.81rem;
   color: var(--text-subtle);
+  margin-top: 3px;
 }
 
 /* ==========================================================================
-   Side-by-Side Model Comparison Table
+/* ==========================================================================
+   Side-by-Side Model Comparison Table & Provenance
    ========================================================================== */
 
+/* Provenance Subtitle Bar */
+.provenance-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 9px 14px;
+  margin-bottom: 18px;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.prov-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--emerald);
+  flex-shrink: 0;
+}
+
+.prov-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.prov-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.prov-sep {
+  color: var(--border-medium);
+  font-size: 0.75rem;
+}
+
+/* Table Responsive Container */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
 }
 
 .pro-table {
@@ -500,6 +544,11 @@ body {
   border-collapse: collapse;
   font-size: 0.88rem;
   text-align: left;
+  min-width: 680px; /* guarantees comfortable reading on mobile */
+}
+
+#table-sampling-strategies {
+  min-width: 880px;
 }
 
 .pro-table th {
@@ -509,28 +558,29 @@ body {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 12px 16px;
-  border-bottom: 2px solid var(--border-light);
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .th-model {
-  min-width: 200px;
+  min-width: 180px;
 }
 
 .model-badge-header {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .model-badge-header strong {
   font-size: 0.94rem;
+  font-weight: 600;
   color: var(--text-primary);
   text-transform: none;
 }
 
 .model-sub {
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   color: var(--text-subtle);
   font-weight: 400;
   text-transform: none;
@@ -540,12 +590,12 @@ body {
   display: inline-block;
   align-self: flex-start;
   font-size: 0.65rem;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--emerald);
   color: #ffffff;
   padding: 1px 7px;
   border-radius: 9999px;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .model-rank-badge.rank-2 {
@@ -557,47 +607,90 @@ body {
 }
 
 .pro-table td {
-  padding: 13px 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border-light);
   color: var(--text-body);
+  vertical-align: middle;
 }
 
 .pro-table tbody tr:hover td {
   background: var(--bg-hover);
 }
 
-.pro-table td.val-best {
-  font-weight: 700;
-  color: var(--emerald-text);
-  background: rgba(22, 163, 74, 0.04);
+/* Featured Primary Metric Row (PPL) */
+.pro-table tr.row-primary-metric {
+  background: rgba(22, 163, 74, 0.035);
 }
 
+.pro-table tr.row-primary-metric td {
+  border-bottom: 2px solid rgba(22, 163, 74, 0.20);
+  border-top: 1px solid rgba(22, 163, 74, 0.12);
+}
+
+.pro-table tr.row-primary-metric .metric-name-cell {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.badge-primary-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: var(--emerald-bg);
+  color: var(--emerald-text);
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  margin-left: 6px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Monospace for Technical Values Only */
 .pro-table td.val-mono {
   font-family: var(--font-mono);
   font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-body);
+}
+
+.pro-table td.val-primary-highlight {
+  color: var(--emerald-text);
+  font-weight: 600;
 }
 
 .metric-name-cell {
   font-weight: 600;
   color: var(--text-primary);
+  font-family: var(--font-sans);
 }
 
 .metric-name-cell .metric-desc {
   display: block;
-  font-size: 0.74rem;
+  font-size: 0.83rem;
   color: var(--text-subtle);
   font-weight: 400;
-  margin-top: 1px;
+  margin-top: 2px;
+  line-height: 1.35;
 }
 
 .target-cell {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+/* Discreet N/A Display */
+.val-na {
+  color: var(--text-faint);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 400;
 }
 
 /* Convergence Chart Card */
 .chart-pro-card {
-  margin-top: 24px;
+  margin-top: 32px;
 }
 
 .chart-toggle-group {
@@ -682,7 +775,7 @@ body {
 
 .controls-title {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -813,7 +906,7 @@ body {
 .slider-display {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--emerald);
 }
 
@@ -838,7 +931,7 @@ body {
   width: 100%;
   padding: 12px 18px;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
   border-radius: var(--radius-md);
   margin-top: 8px;
 }
@@ -896,7 +989,7 @@ body {
   background: var(--emerald-bg);
   color: var(--emerald-text);
   border-color: rgba(22, 163, 74, 0.25);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .seq-actions-group {
@@ -919,11 +1012,11 @@ body {
   min-height: 80px;
 }
 
-/* Annotated Spans */
+/* Annotated Spans in Monospace */
 .span-cys {
   background: #fef08a;
   color: #854d0e;
-  font-weight: 800;
+  font-weight: 600;
   padding: 1px 4px;
   border-radius: 3px;
   border-bottom: 2px solid #ca8a04;
@@ -932,7 +1025,7 @@ body {
 .span-fr2 {
   background: #dcfce7;
   color: #166534;
-  font-weight: 700;
+  font-weight: 600;
   padding: 1px 3px;
   border-radius: 3px;
   border-bottom: 2px solid #16a34a;
@@ -941,7 +1034,7 @@ body {
 .span-cdr3 {
   background: #e0e7ff;
   color: #3730a3;
-  font-weight: 700;
+  font-weight: 600;
   padding: 1px 3px;
   border-radius: 3px;
   border-bottom: 2px solid #4f46e5;
@@ -950,20 +1043,20 @@ body {
 .span-j {
   background: #ffedd5;
   color: #9a3412;
-  font-weight: 700;
+  font-weight: 600;
   padding: 1px 3px;
   border-radius: 3px;
 }
 
-/* Structure Legend */
+/* Compact Structure Legend */
 .structure-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 12px 18px;
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--border-light);
-  font-size: 0.76rem;
+  font-size: 0.81rem;
   color: var(--text-muted);
 }
 
@@ -973,10 +1066,16 @@ body {
   gap: 6px;
 }
 
+.legend-chip strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 .dot-color {
   width: 9px;
   height: 9px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .dot-cys { background: #ca8a04; }
@@ -984,18 +1083,58 @@ body {
 .dot-cdr3 { background: #4f46e5; }
 .dot-j { background: #ea580c; }
 
+/* Dedicated QC Diagnostic Section */
+.qc-section-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 22px 24px;
+}
+
+.qc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.qc-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.qc-section-subtitle {
+  font-size: 0.81rem;
+  color: var(--text-subtle);
+  margin-top: 2px;
+}
+
+.badge-heuristic {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
 /* 6 QC Metrics Grid */
 .qc-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 14px;
 }
 
 .qc-metric-card {
-  background: var(--bg-card);
+  background: var(--bg-subtle);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
@@ -1021,7 +1160,66 @@ body {
 
 .qc-status-badge {
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-green { background: var(--emerald-bg); color: var(--emerald-text); }
+.badge-blue { background: var(--blue-bg); color: var(--blue-text); }
+.badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+.badge-amber { background: var(--amber-bg); color: var(--amber-text); }
+
+.qc-card-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.qc-card-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 3px 0 2px 0;
+  font-family: var(--font-sans);
+}
+
+.text-green { color: var(--emerald-text); }
+.text-blue { color: var(--blue-text); }
+.text-purple { color: var(--purple-text); }
+.text-amber { color: var(--amber-text); }
+
+.qc-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-subtle);
+  line-height: 1.4;
+}
+
+.qc-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.qc-card-icon-svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+}
+
+.qc-card-icon-svg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.qc-status-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
   padding: 2px 7px;
   border-radius: 9999px;
   text-transform: uppercase;
@@ -1043,7 +1241,7 @@ body {
 
 .qc-card-value {
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 3px 0 2px 0;
   font-family: var(--font-sans);
@@ -1121,7 +1319,7 @@ body {
 
 .guide-step-pill {
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--emerald-bg);
   color: var(--emerald-text);
   padding: 3px 9px;
@@ -1132,7 +1330,7 @@ body {
 
 .guide-title {
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
@@ -1182,7 +1380,7 @@ body {
 
 .domain-title {
   font-size: 0.76rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .domain-res {
@@ -1218,7 +1416,7 @@ body {
   background: #f3e8ff;
   border: 2px solid #9333ea;
   color: #6b21a8;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .block-j {
@@ -1250,7 +1448,7 @@ body {
 .rationale-tag {
   display: inline-block;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-subtle);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1259,7 +1457,7 @@ body {
 
 .rationale-header h4 {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -1360,7 +1558,7 @@ body {
   font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
   color: var(--emerald);
-  font-weight: 700;
+  font-weight: 600;
   padding: 0 6px;
 }
 
@@ -1393,7 +1591,7 @@ body {
 .m-sum-top {
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--emerald-text);
   margin-bottom: 2px;
 }
@@ -1462,7 +1660,7 @@ body {
   flex-shrink: 0;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   background: #ffffff;
   border: 1px solid var(--border-medium);
   color: var(--text-primary);
@@ -1506,7 +1704,7 @@ body {
 
 .residue-inspector-title h5 {
   font-size: 0.88rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
@@ -1534,7 +1732,7 @@ body {
   background: var(--bg-subtle);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.82rem;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1577,7 +1775,7 @@ body {
 .residue-calc-metric .metric-val {
   font-family: var(--font-mono);
   font-size: 0.98rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   margin-top: 2px;
 }
@@ -1602,7 +1800,7 @@ body {
 .guide-chart-badge {
   display: inline-block;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--emerald-bg);
   color: var(--emerald-text);
   padding: 2px 7px;
@@ -1613,7 +1811,7 @@ body {
 
 .guide-chart-header h4 {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -1658,7 +1856,7 @@ body {
 /* Badge Tags */
 .badge-tag {
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
   padding: 2px 7px;
   border-radius: 9999px;
 }
@@ -1698,4 +1896,55 @@ body {
 
 .footer-sep {
   margin: 0 6px;
+}
+
+/* ==========================================================================
+   Mobile Responsive Enhancements (Horizontal Scroll & Adaptive Sequences)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-layout {
+    padding: 16px 14px 36px 14px;
+  }
+
+  .generator-workspace {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sequence-display-box {
+    font-size: 0.86rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    padding: 12px 14px;
+  }
+
+  .structure-legend {
+    gap: 8px 12px;
+    font-size: 0.76rem;
+  }
+
+  .legend-chip {
+    padding: 3px 8px;
+    font-size: 0.74rem;
+  }
+
+  .qc-metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .pro-card {
+    padding: 18px 16px;
+    margin-bottom: 22px;
+  }
+
+  .provenance-bar {
+    font-size: 0.78rem;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }

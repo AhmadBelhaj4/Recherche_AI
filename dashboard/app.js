@@ -382,137 +382,161 @@ function renderModelComparisonTable() {
       : 'N/A';
   }
 
+  function formatMetricVal(val, isPct = false, decimals = 3) {
+    if (val === undefined || val === null || val === 'N/A' || val === 'None') {
+      return '<span class="val-na">—</span>';
+    }
+    if (typeof val === 'number') {
+      return isPct ? `${(val * 100).toFixed(1)}%` : val.toFixed(decimals);
+    }
+    return val;
+  }
+
   const rows = [
     {
-      name: "Perte de Validation",
-      desc: "Perte cross-entropy en nats par résidu",
-      tf: "0.801 nats",
-      lstm: "0.813 nats",
-      base: "2.471 nats",
-      target: "< 0.850 nats",
-      best: "tf"
-    },
-    {
       name: "Perplexité Validation (PPL)",
-      desc: "exp(Perte) — incertitude moyenne de choix par acide aminé",
+      desc: "exp(Perte val) • Incertitude moyenne par résidu",
       tf: "2.229",
       lstm: "2.254",
       base: "11.830",
       target: "< 2.500 (Base: 11.8)",
-      best: "tf"
+      isPrimary: true
+    },
+    {
+      name: "Perte de Validation",
+      desc: "Cross-entropy nats / résidu sur split test SRR3544218",
+      tf: "0.801 nats",
+      lstm: "0.813 nats",
+      base: "2.471 nats",
+      target: "< 0.850 nats"
     },
     {
       name: "Perte d'Entraînement Final",
-      desc: "Convergence sur les 242 891 séquences SRR3544218",
-      tf: "0.764 nats (PPL 2.148)",
-      lstm: "0.804 nats (PPL 2.234)",
+      desc: "Convergence finale après 10 époques complètes",
+      tf: "0.764 nats (PPL 2.15)",
+      lstm: "0.804 nats (PPL 2.23)",
       base: "2.450 nats (PPL 11.59)",
-      target: "Sans surapprentissage",
-      best: "tf"
+      target: "Sans surapprentissage"
     },
     {
       name: "Validité Biologique",
-      desc: "Taux de séquences composées à 100% des 20 AA standards",
-      tf: (tfEval.validity_rate !== undefined ? `${(tfEval.validity_rate * 100).toFixed(1)}%` : "N/A"),
-      lstm: (lstmEval.validity_rate !== undefined ? `${(lstmEval.validity_rate * 100).toFixed(1)}%` : "N/A"),
+      desc: "Alphabet standard des 20 acides aminés",
+      tf: formatMetricVal(tfEval.validity_rate, true),
+      lstm: formatMetricVal(lstmEval.validity_rate, true),
       base: "94.2%",
-      target: "100.0%",
-      best: "both"
+      target: "100.0%"
     },
     {
       name: "Unicité (Sampling Top-k 10)",
-      desc: "Taux de séquences distinctes (anti-mode collapse)",
-      tf: (tfEval.uniqueness_rate !== undefined ? `${(tfEval.uniqueness_rate * 100).toFixed(1)}%` : "N/A"),
-      lstm: (lstmEval.uniqueness_rate !== undefined ? `${(lstmEval.uniqueness_rate * 100).toFixed(1)}%` : "N/A"),
+      desc: "Taux de séquences distinctes (anti-collapse)",
+      tf: formatMetricVal(tfEval.uniqueness_rate, true),
+      lstm: formatMetricVal(lstmEval.uniqueness_rate, true),
       base: "88.0%",
-      target: "> 95.0% (Greedy = 2%)",
-      best: "both"
+      target: "> 95.0% (Greedy = 2%)"
     },
     {
       name: "Diversité de Levenshtein",
-      desc: "Distance inter-séquences normalisée moyenne",
-      tf: (tfEval.levenshtein_diversity !== undefined ? tfEval.levenshtein_diversity.toFixed(3) : "N/A"),
-      lstm: (lstmEval.levenshtein_diversity !== undefined ? lstmEval.levenshtein_diversity.toFixed(3) : "N/A"),
-      base: "0.412 (Aléatoire)",
-      target: "[0.250 - 0.350]",
-      best: "tf"
+      desc: "Distance d'édition normalisée moyenne",
+      tf: formatMetricVal(tfEval.levenshtein_diversity, false, 3),
+      lstm: formatMetricVal(lstmEval.levenshtein_diversity, false, 3),
+      base: "0.412",
+      target: "[0.250 - 0.350]"
     },
     {
       name: "Similarité 3-mer Jaccard",
       desc: "Recouvrement des triplets de résidus intra-batch",
-      tf: (tfEval.kmer_jaccard_similarity !== undefined ? tfEval.kmer_jaccard_similarity.toFixed(3) : "N/A"),
-      lstm: (lstmEval.kmer_jaccard_similarity !== undefined ? lstmEval.kmer_jaccard_similarity.toFixed(3) : "N/A"),
+      tf: formatMetricVal(tfEval.kmer_jaccard_similarity, false, 3),
+      lstm: formatMetricVal(lstmEval.kmer_jaccard_similarity, false, 3),
       base: "0.125",
-      target: "> 0.300",
-      best: "tf"
+      target: "> 0.300"
     },
     {
       name: "Divergence KL Acides Aminés",
-      desc: "Fidélité de composition vs distribution naturelle (nats)",
-      tf: (tfEval.kl_divergence !== undefined ? tfEval.kl_divergence.toFixed(4) : "N/A"),
-      lstm: (lstmEval.kl_divergence !== undefined ? lstmEval.kl_divergence.toFixed(4) : "N/A"),
+      desc: "Fidélité de distribution vs répertoire naturel",
+      tf: formatMetricVal(tfEval.kl_divergence, false, 4),
+      lstm: formatMetricVal(lstmEval.kl_divergence, false, 4),
       base: "0.1840",
-      target: "< 0.050 nats",
-      best: "tf"
+      target: "< 0.050 nats"
     },
     {
       name: "Pont Disulfure Canonique C23-C104",
-      desc: "Vérification positionnelle stricte des cystéines C23 et C104",
-      tf: (tfEval.canonical_cysteine_rate !== undefined ? `${(tfEval.canonical_cysteine_rate * 100).toFixed(1)}%` : "N/A"),
-      lstm: (lstmEval.canonical_cysteine_rate !== undefined ? `${(lstmEval.canonical_cysteine_rate * 100).toFixed(1)}%` : "N/A"),
+      desc: "Contrôle positionnel C23 (FR1) ↔ C104 (FR3)",
+      tf: formatMetricVal(tfEval.canonical_cysteine_rate, true),
+      lstm: formatMetricVal(lstmEval.canonical_cysteine_rate, true),
       base: "62.0%",
-      target: "100.0% (Stabilité)",
-      best: "both"
+      target: "100.0% (Stabilité)"
     },
     {
       name: "Hallmarks Solubilité FR2 (Heuristique)",
-      desc: "Conservation des résidus IMGT 42, 49, 50, 52 (motif regex heuristique)",
+      desc: "Motif IMGT 42, 49, 50, 52 (règle heuristique)",
       tf: "100.0%",
       lstm: "98.0%",
       base: "45.0%",
-      target: "> 95.0% (Solubilité)",
-      best: "tf"
+      target: "> 95.0% (Solubilité)"
     },
     {
       name: "Indice d'Hydropathie GRAVY",
-      desc: "Score Kyte-Doolittle moyen des nanocorps générés",
-      tf: (tfEval.mean_gravy !== undefined ? tfEval.mean_gravy.toFixed(3) : "N/A"),
-      lstm: (lstmEval.mean_gravy !== undefined ? lstmEval.mean_gravy.toFixed(3) : "N/A"),
+      desc: "Hydrophobie Kyte-Doolittle moyenne",
+      tf: formatMetricVal(tfEval.mean_gravy, false, 3),
+      lstm: formatMetricVal(lstmEval.mean_gravy, false, 3),
       base: "-0.210",
-      target: "Soluble : [-0.45, -0.30]",
-      best: "both"
+      target: "Soluble : [-0.45, -0.30]"
     },
     {
       name: "Temps d'Entraînement (Colab T4)",
-      desc: "10 époques complètes sur 242 891 séquences",
-      tf: "524 secondes (~52s / ép.)",
-      lstm: "502 secondes (~50s / ép.)",
-      base: "12 secondes (CPU)",
-      target: "< 10 min GPU",
-      best: "lstm"
+      desc: "Durée totale 10 époques GPU T4",
+      tf: "524s (~52s / ép.)",
+      lstm: "502s (~50s / ép.)",
+      base: "12s (CPU)",
+      target: "< 10 min GPU"
     }
   ];
 
-  tbody.innerHTML = rows.map(r => `
-    <tr>
-      <td class="metric-name-cell">
-        ${r.name}
-        <span class="metric-desc">${r.desc}</span>
-      </td>
-      <td class="val-mono ${r.best === 'tf' || r.best === 'both' ? 'val-best' : ''}">
-        ${r.tf}
-      </td>
-      <td class="val-mono ${r.best === 'lstm' || r.best === 'both' ? 'val-best' : ''}">
-        ${r.lstm}
-      </td>
-      <td class="val-mono" style="color: var(--text-muted);">
-        ${r.base}
-      </td>
-      <td class="target-cell">
-        ${r.target}
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = rows.map(r => {
+    if (r.isPrimary) {
+      return `
+        <tr class="row-primary-metric">
+          <td class="metric-name-cell">
+            ${r.name}
+            <span class="badge-primary-pill">Métrique Clé</span>
+            <span class="metric-desc">${r.desc}</span>
+          </td>
+          <td class="val-mono val-primary-highlight">
+            ${r.tf}
+          </td>
+          <td class="val-mono">
+            ${r.lstm}
+          </td>
+          <td class="val-mono" style="color: var(--text-muted);">
+            ${r.base}
+          </td>
+          <td class="target-cell">
+            ${r.target}
+          </td>
+        </tr>
+      `;
+    }
+    return `
+      <tr>
+        <td class="metric-name-cell">
+          ${r.name}
+          <span class="metric-desc">${r.desc}</span>
+        </td>
+        <td class="val-mono">
+          ${r.tf}
+        </td>
+        <td class="val-mono">
+          ${r.lstm}
+        </td>
+        <td class="val-mono" style="color: var(--text-muted);">
+          ${r.base}
+        </td>
+        <td class="target-cell">
+          ${r.target}
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // ==============================================================================
@@ -979,7 +1003,7 @@ function renderAACompositionChart() {
           borderRadius: 3
         },
         {
-          label: 'Transformer Causal Généré (D_KL = -0.0022)',
+          label: 'Transformer Causal Généré (D_KL = 0.0370)',
           data: transformerFreqs,
           backgroundColor: '#16a34a',
           borderRadius: 3
