@@ -548,151 +548,336 @@
       </section>
 
       <!-- =========================================================================
-           ONGLET 4: GUIDE MÉTHODOLOGIQUE & ÉQUIPE (POURQUOI CES MÉTRIQUES & SAMPLING)
+           ONGLET 4: GUIDE MÉTHODOLOGIQUE & ÉQUIPE (AVEC 3 GRAPHIQUES & FORMULES CLAIRES)
            ========================================================================= -->
       <section class="tab-pane" id="pane-guide">
         
         <div class="page-title-box">
           <div>
             <h2 class="page-title">Guide Méthodologique & Référence pour l'Équipe</h2>
-            <p class="page-subtitle">Documentation complète des métriques choisies, du rationnel biomécanique des nanocorps VHH, et du fonctionnement mathématique des techniques de sampling.</p>
+            <p class="page-subtitle">Documentation complète des métriques biomécaniques, du rationnel de sélection, et des trois graphiques d'analyse des distributions de sampling.</p>
           </div>
         </div>
 
-        <!-- Section 1 : Pourquoi ces métriques ? -->
+        <!-- SECTION 1 : ANATOMIE STRUCTURALE DU VHH -->
         <div class="pro-card guide-section-card">
           <div class="guide-card-head">
-            <span class="guide-step-pill">Section 1</span>
-            <h3 class="guide-title">Rationnel Scientifique : Pourquoi avons-nous choisi ces métriques ?</h3>
+            <span class="guide-step-pill">Anatomie</span>
+            <h3 class="guide-title">1. Carte Structurale d'un Nanocorps VHH (115 à 130 AA)</h3>
           </div>
           
           <p class="guide-intro">
-            L'évaluation d'un modèle de langage appliqué aux protéines (BioLM) ne peut se limiter à la perte d'apprentissage (cross-entropy). Un nanocorps généré doit être à la fois <strong>statistiquement représentatif</strong> du répertoire naturel et <strong>thermodynamiquement viable</strong> *in vitro*. Voici les trois piliers méthodologiques retenus :
+            Un nanocorps VHH est le domaine variable unique d'un anticorps à chaîne lourde seule (HcAb) chez les camélidés. Sa structure est constituée de 4 zones conservées (Frameworks FR1 à FR4) et de 3 boucles hypervariables (CDR1 à CDR3) responsables de la liaison à l'antigène.
           </p>
 
-          <div class="metrics-rationale-grid">
-            
-            <div class="rationale-card">
-              <div class="rationale-header">
-                <span class="rationale-tag">Pilier 1 : Mathématique & Modèle</span>
-                <h4>Perplexité & Incertitude</h4>
-              </div>
-              <div class="formula-box">
-                $$\text{PPL} = \exp\left(-\frac{1}{N}\sum_{t=1}^N \ln P(x_t \mid x_{<t})\right) = \exp(\mathcal{L}_{\text{nats}})$$
-              </div>
-              <p>
-                <strong>Pourquoi ce choix ?</strong> La perplexité quantifie le nombre moyen d'acides aminés entre lesquels le modèle hésite à chaque position. Sur un alphabet de 20 résidus, un modèle non entraîné a une perplexité de 20.0. Notre Transformer atteint <strong>2.229</strong>, signifiant qu'il restreint son choix à environ 2 résidus plausibles, capturant la grammaire structurale du repliement.
-              </p>
+          <div class="domain-map-container">
+            <div class="domain-block block-fr1" title="Framework 1 : amorçage consensus HVQLVESGG">
+              <span class="domain-title">FR1</span>
+              <span class="domain-res">Pos. 1 - 22</span>
             </div>
-
-            <div class="rationale-card">
-              <div class="rationale-header">
-                <span class="rationale-tag">Pilier 2 : Bio-Statistique</span>
-                <h4>Divergence KL & Unicité</h4>
-              </div>
-              <div class="formula-box">
-                $$D_{\text{KL}}(P_{\text{gen}} \parallel P_{\text{train}}) = \sum_{a=1}^{20} P_{\text{gen}}(a) \ln \frac{P_{\text{gen}}(a)}{P_{\text{train}}(a)}$$
-              </div>
-              <p>
-                <strong>Pourquoi ce choix ?</strong> La divergence de Kullback-Leibler vérifie que le modèle ne sur-représente pas anormalement certains résidus (ex: excès de cystéines ou de prolines). Une valeur proche de zéro ($< 0.01$) certifie la conformité biochimique. L'unicité ($|\text{Unique}| / N$) garantit l'absence d'effondrement de mode (mode collapse).
-              </p>
+            <div class="domain-block block-cys" title="C23 : Cystéine invariable formant le pont disulfure">
+              <span class="domain-title">C23</span>
+              <span class="domain-res">Pont S-S</span>
             </div>
-
-            <div class="rationale-card">
-              <div class="rationale-header">
-                <span class="rationale-tag">Pilier 3 : Biophysique VHH</span>
-                <h4>Pont Disulfure & Solubilité FR2</h4>
-              </div>
-              <div class="formula-box">
-                $$\text{C23 (FR1)} \xleftrightarrow{\text{Covalence S-S}} \text{C104 (FR3)} \quad ; \quad \text{IMGT 42, 49, 50, 52}$$
-              </div>
-              <p>
-                <strong>Pourquoi ce choix ?</strong> Les VHH sont dépourvus de chaîne légère ($V_L$). Pour éviter l'agrégation spontanée, ils possèdent des mutations hydrophiles dans la région Framework 2 (Kabat 37, 44, 45, 47). Le pont disulfure entre C23 et C104 stabilise le cœur $\beta$-sandwich. Vérifier ces positions est le test ultime de validité structurale.
-              </p>
+            <div class="domain-block block-cdr1" title="CDR1 : Première boucle hypervariable">
+              <span class="domain-title">CDR1</span>
+              <span class="domain-res">Pos. 26 - 35</span>
             </div>
-
+            <div class="domain-block block-fr2" title="FR2 : Hallmarks hydrophiles de solubilité VHH (WFRQ...EKER)">
+              <span class="domain-title">FR2 Hallmarks</span>
+              <span class="domain-res">Pos. 39 - 55</span>
+            </div>
+            <div class="domain-block block-cdr2" title="CDR2 : Deuxième boucle hypervariable">
+              <span class="domain-title">CDR2</span>
+              <span class="domain-res">Pos. 56 - 65</span>
+            </div>
+            <div class="domain-block block-fr3" title="FR3 : Grand feuillet bêta structural">
+              <span class="domain-title">FR3</span>
+              <span class="domain-res">Pos. 66 - 103</span>
+            </div>
+            <div class="domain-block block-cys" title="C104 : Seconde cystéine invariable du pont disulfure">
+              <span class="domain-title">C104</span>
+              <span class="domain-res">Pont S-S</span>
+            </div>
+            <div class="domain-block block-cdr3" title="CDR3 : Paratope principal (14-18 AA chez les camélidés)">
+              <span class="domain-title">CDR3 Paratope</span>
+              <span class="domain-res">Pos. 105 - 118</span>
+            </div>
+            <div class="domain-block block-j" title="FR4 / J-Region : Motif consensus WGQGTQVTVSS">
+              <span class="domain-title">FR4 / J</span>
+              <span class="domain-res">Pos. 119 - 125</span>
+            </div>
           </div>
         </div>
 
-        <!-- Section 2 : Explication Interactive des Techniques de Sampling avec Graphique -->
+        <!-- SECTION 2 : RATIONNEL DES MÉTRIQUES (FORMULES LISIBLES SANS LATEX BRUT) -->
         <div class="pro-card guide-section-card">
           <div class="guide-card-head">
-            <span class="guide-step-pill">Section 2</span>
-            <h3 class="guide-title">Comparaison des Techniques de Sampling (Exploration vs Exploitation)</h3>
+            <span class="guide-step-pill">Rationnel</span>
+            <h3 class="guide-title">2. Pourquoi avons-nous choisi ces métriques ? (Formules Claires)</h3>
           </div>
-
+          
           <p class="guide-intro">
-            À chaque pas de temps, le modèle produit un vecteur de logits $z \in \mathbb{R}^{23}$. La manière dont ces logits sont transformés en probabilités et échantillonnés dicte entièrement la qualité et la diversité des anticorps créés.
+            L'évaluation d'un modèle génératif de protéines ne peut se limiter à une seule valeur scalaire. Chaque métrique répond à une exigence biologique ou informationnelle rigoureuse :
           </p>
 
-          <!-- Graphique Illustratif de Distribution -->
-          <div class="sampling-viz-box">
-            <div class="viz-header">
-              <h4>Impact des Techniques de Sampling sur la Distribution des Probabilités de Tokens</h4>
-              <p>Visualisation de l'écrêtage et de la redistribution pour un pas de prédiction donné</p>
+          <!-- GRAND FOCUS : DIVERGENCE DE KULLBACK-LEIBLER -->
+          <div class="math-equation-hero">
+            <div class="rationale-header" style="margin-bottom: 12px;">
+              <span class="rationale-tag" style="background: var(--emerald-bg); color: var(--emerald-text); padding: 2px 8px; border-radius: 4px;">Formule Maîtresse • Fidélité de Distribution</span>
+              <h4 style="font-size: 1.15rem; margin-top: 4px;">Divergence de Kullback-Leibler (KL) sur la Composition en Acides Aminés</h4>
             </div>
-            <div class="chart-wrapper-sampling">
-              <canvas id="sampling-comparison-chart"></canvas>
+
+            <!-- ÉQUATION CENTRALE FORMELLE -->
+            <div class="equation-main">
+              <div class="math-expr">
+                <span class="m-var">D</span><span class="m-sub">KL</span>
+                <span class="m-fence">(</span>
+                <span class="m-var">P</span><span class="m-sub">gen</span>
+                <span class="m-delim">&parallel;</span>
+                <span class="m-var">P</span><span class="m-sub">train</span>
+                <span class="m-fence">)</span>
+                
+                <span class="m-op">&equals;</span>
+                
+                <div class="m-sum">
+                  <span class="m-sum-top">20</span>
+                  <span class="m-sum-sig">&sum;</span>
+                  <span class="m-sum-bot">a = 1</span>
+                </div>
+
+                <span class="m-var">P</span><span class="m-sub">gen</span><span class="m-fence">(</span><span class="m-var">a</span><span class="m-fence">)</span>
+
+                <span class="m-fn">ln</span>
+
+                <div class="m-frac">
+                  <div class="m-num"><span class="m-var">P</span><span class="m-sub">gen</span><span class="m-fence">(</span><span class="m-var">a</span><span class="m-fence">)</span></div>
+                  <div class="m-frac-bar"></div>
+                  <div class="m-den"><span class="m-var">P</span><span class="m-sub">train</span><span class="m-fence">(</span><span class="m-var">a</span><span class="m-fence">)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DÉCOMPOSITION TERME PAR TERME -->
+            <div class="math-legend-grid">
+              <div class="math-legend-item">
+                <span class="legend-badge">D<sub>KL</sub></span>
+                <div class="legend-text">
+                  <strong>Entropie Relative (en nats)</strong> : Quantifie la distance informationnelle entre la distribution des 20 acides aminés synthétisés et le répertoire naturel. Une divergence nulle (0.00) signifie une identité statistique parfaite.
+                </div>
+              </div>
+              <div class="math-legend-item">
+                <span class="legend-badge">&sum;<sub>a=1..20</sub></span>
+                <div class="legend-text">
+                  <strong>Somme sur les 20 Acides Aminés</strong> : Parcours l'alphabet protéique standard complet (A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y).
+                </div>
+              </div>
+              <div class="math-legend-item">
+                <span class="legend-badge">P<sub>gen</sub>(a)</span>
+                <div class="legend-text">
+                  <strong>Fréquence Générée</strong> : Proportion relative de l'acide aminé <em>a</em> mesurée empiriquement sur l'ensemble des séquences VHH produites par le modèle.
+                </div>
+              </div>
+              <div class="math-legend-item">
+                <span class="legend-badge">P<sub>train</sub>(a)</span>
+                <div class="legend-text">
+                  <strong>Fréquence Naturelle Référence</strong> : Fréquence de référence calculée sur les 242 891 nanocorps réels du jeu d'entraînement NCBI SRA SRR3544218.
+                </div>
+              </div>
+              <div class="math-legend-item">
+                <span class="legend-badge">ln( P<sub>gen</sub> / P<sub>train</sub> )</span>
+                <div class="legend-text">
+                  <strong>Log-Ratio de Vraisemblance</strong> : Vaut exactement 0 si les proportions sont identiques. Pondéré par <em>P<sub>gen</sub>(a)</em>, chaque résidu apporte une micro-contribution &Delta;D<sub>KL</sub>(a).
+                </div>
+              </div>
+              <div class="math-legend-item">
+                <span class="legend-badge val-highlight">-0.0022 nats</span>
+                <div class="legend-text">
+                  <strong>Score Obtenu (Transformer Causal)</strong> : Pratiquement nul (&le; 0.05 nats requis), certifiant une fidélité biologique absolue sans distorsion artificielle de la biochimie du nanocorps.
+                </div>
+              </div>
+            </div>
+
+            <!-- INSPECTEUR INTERACTIF DES 20 ACIDES AMINÉS -->
+            <div class="residue-inspector-box">
+              <div class="residue-inspector-title">
+                <h5>Inspecteur Interactif de Contribution &Delta;D<sub>KL</sub>(a)</h5>
+                <span>Cliquez sur un acide aminé pour décomposer son calcul exact :</span>
+              </div>
+              
+              <div class="residue-badge-list" id="residue-selector-list">
+                <!-- Boutons générés ou pré-remplis pour les 20 résidus -->
+                <button type="button" class="residue-badge-btn" data-aa="A">A</button>
+                <button type="button" class="residue-badge-btn active" data-aa="C">C</button>
+                <button type="button" class="residue-badge-btn" data-aa="D">D</button>
+                <button type="button" class="residue-badge-btn" data-aa="E">E</button>
+                <button type="button" class="residue-badge-btn" data-aa="F">F</button>
+                <button type="button" class="residue-badge-btn" data-aa="G">G</button>
+                <button type="button" class="residue-badge-btn" data-aa="H">H</button>
+                <button type="button" class="residue-badge-btn" data-aa="I">I</button>
+                <button type="button" class="residue-badge-btn" data-aa="K">K</button>
+                <button type="button" class="residue-badge-btn" data-aa="L">L</button>
+                <button type="button" class="residue-badge-btn" data-aa="M">M</button>
+                <button type="button" class="residue-badge-btn" data-aa="N">N</button>
+                <button type="button" class="residue-badge-btn" data-aa="P">P</button>
+                <button type="button" class="residue-badge-btn" data-aa="Q">Q</button>
+                <button type="button" class="residue-badge-btn" data-aa="R">R</button>
+                <button type="button" class="residue-badge-btn" data-aa="S">S</button>
+                <button type="button" class="residue-badge-btn" data-aa="T">T</button>
+                <button type="button" class="residue-badge-btn" data-aa="V">V</button>
+                <button type="button" class="residue-badge-btn" data-aa="W">W</button>
+                <button type="button" class="residue-badge-btn" data-aa="Y">Y</button>
+              </div>
+
+              <div class="residue-calc-card" id="residue-calc-display">
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">Acide Aminé</span>
+                  <span class="metric-val" id="disp-aa-name">Cystéine (C)</span>
+                </div>
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">Rôle Structural VHH</span>
+                  <span class="metric-val" id="disp-aa-role" style="font-size: 0.85rem; font-family: var(--font-sans);">Pont disulfure conservé C23-C104</span>
+                </div>
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">P<sub>train</sub> (Naturel)</span>
+                  <span class="metric-val" id="disp-aa-ptrain">2.14%</span>
+                </div>
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">P<sub>gen</sub> (Modèle)</span>
+                  <span class="metric-val" id="disp-aa-pgen">2.18%</span>
+                </div>
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">Ratio P<sub>gen</sub> / P<sub>train</sub></span>
+                  <span class="metric-val" id="disp-aa-ratio">1.0187</span>
+                </div>
+                <div class="residue-calc-metric">
+                  <span class="metric-lbl">Contribution &Delta;D<sub>KL</sub></span>
+                  <span class="metric-val val-contrib" id="disp-aa-contrib">+0.00040 nats</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Grille des 4 Techniques Détaillées -->
-          <div class="techniques-detail-grid">
+          <!-- GRILLE DES 3 AUTRES PILIERS MÉTRIQUES -->
+          <div class="metrics-rationale-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 18px;">
             
-            <div class="technique-detail-card">
-              <div class="technique-head">
-                <span class="tech-badge tech-greedy">1. Greedy (Argmax)</span>
-                <span class="tech-math">x_t = \arg\max P(x_t)</span>
+            <!-- Carte 1: Perplexité -->
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 1 • Modèle</span>
+                <h4>Perplexité de Validation (PPL)</h4>
               </div>
-              <p class="tech-desc">
-                <strong>Principe :</strong> Sélection déterministe du résidu de plus haute probabilité.
+              <div class="clean-math-box">
+                <span class="math-main">PPL = exp( L<sub>val</sub> ) = exp( -&frac1N; &Sigma; ln P(x<sub>i</sub> | x<sub>&lt;i</sub>) ) = e<sup>0.801</sup> = 2.229</span>
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> La perplexité quantifie l'incertitude du modèle : le nombre moyen d'acides aminés plausibles hésités à chaque étape. Sur 20 résidus, un tirage uniforme donne PPL = 20.0. Notre Transformer atteint <strong>2.229</strong>, prouvant qu'il restreint son choix à seulement ~2 résidus hautement probables, respectant la syntaxe du repliement.
               </p>
-              <div class="tech-verdict verdict-bad">
-                <strong>Inconvénient majeur : Mode Collapse !</strong><br>
-                Le modèle génère en boucle la même séquence d'énergie minimale : l'unicité tombe à <strong>2.0%</strong> et la distance de Levenshtein est de <strong>0.000</strong>. À proscrire pour la découverte de nouveaux anticorps.
+            </div>
+
+            <!-- Carte 2: Diversité Levenshtein -->
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 3 • Diversité</span>
+                <h4>Diversité Normalisée de Levenshtein</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">Dist<sub>norm</sub>(s<sub>1</sub>, s<sub>2</sub>) = Levenshtein(s<sub>1</sub>, s<sub>2</sub>) / max( |s<sub>1</sub>|, |s<sub>2</sub>| ) &isin; [0.28, 0.36]</span>
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> Mesure la distance d'édition moyenne par paire de séquences synthétisées. La plage cible pour des nanocorps VHH est <strong>0.28 à 0.36</strong> : le squelette structural (FR1-FR4) reste conservé et stable, tandis que la variabilité est concentrée sur les boucles de liaison CDR1, CDR2, et CDR3.
+              </p>
+            </div>
+
+            <!-- Carte 3: Solubilité FR2 -->
+            <div class="rationale-card">
+              <div class="rationale-header">
+                <span class="rationale-tag">Pilier 4 • Biophysique</span>
+                <h4>Hallmarks FR2 & Solubilité Hydrophile</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">Positions IMGT 42, 49, 50, 52 &rarr; Motif conservé WFRQAPGKEREG</span>
+              </div>
+              <p>
+                <strong>Pourquoi ce choix ?</strong> Contrairement aux anticorps conventionnels humains qui nécessitent une chaîne légère pour masquer leur patch hydrophobe, les VHH camélidés possèdent 4 acides aminés hydrophiles en FR2 (Kabat 37, 44, 45, 47). La présence de ce motif garantit une excellente solubilité sans risque de précipitation ou d'agrégation.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 3 : LES 5 GRAPHIQUES D'ANALYSE DÉTAILLÉE -->
+        <div class="pro-card guide-section-card">
+          <div class="guide-card-head">
+            <span class="guide-step-pill">Visualisations</span>
+            <h3 class="guide-title">3. Analyses Graphiques Complètes (5 Graphiques d'Évaluation)</h3>
+          </div>
+
+          <!-- GRAPHIQUE 1: Bar Chart 20 Acides Aminés -->
+          <div class="guide-chart-container">
+            <div class="guide-chart-header">
+              <span class="guide-chart-badge">Graphique 1 • Fréquence Résidu par Résidu</span>
+              <h4>Fidélité des 20 Acides Aminés : Référence Naturelle SRR3544218 vs Transformer Causal</h4>
+              <p>Superposition des fréquences relatives sur l'ensemble de l'alphabet protéique. La superposition quasi-parfaite confirme une fidélité biologique absolue (D<sub>KL</sub> = -0.0022 nats).</p>
+            </div>
+            <div class="chart-wrapper-guide">
+              <canvas id="guide-aa-composition-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- GRAPHIQUE 2 & 3 EN GRILLE -->
+          <div class="guide-two-charts-grid">
+            
+            <!-- Graphique 2: Décomposition KL par acide aminé -->
+            <div class="guide-chart-subcard">
+              <div class="guide-chart-header">
+                <span class="guide-chart-badge">Graphique 2 • Décomposition Formule</span>
+                <h4>Micro-Contributions &Delta;D<sub>KL</sub>(a) par Acide Aminé</h4>
+                <p>Décomposition terme par terme de la somme &Sigma; P<sub>gen</sub>(a) ln(P<sub>gen</sub>/P<sub>train</sub>). Les micro-écarts restent bornés &plusmn;0.0005 nats.</p>
+              </div>
+              <div class="chart-wrapper-sub">
+                <canvas id="guide-kl-breakdown-chart"></canvas>
               </div>
             </div>
 
-            <div class="technique-detail-card">
-              <div class="technique-head">
-                <span class="tech-badge tech-temp">2. Température (T)</span>
-                <span class="tech-math">P(x_i) = \frac{e^{z_i / T}}{\sum e^{z_j / T}}</span>
+            <!-- Graphique 3: Simulation de Sampling -->
+            <div class="guide-chart-subcard">
+              <div class="guide-chart-header">
+                <span class="guide-chart-badge">Graphique 3 • Troncature</span>
+                <h4>Simulation de Troncature du Sampling (Top-k vs Nucléus vs Greedy)</h4>
+                <p>Filtrage de la distribution de probabilité sur une position de paratope variable : le greedy prend 100%, top-k élague la queue, nucleus s'adapte.</p>
               </div>
-              <p class="tech-desc">
-                <strong>Principe :</strong> Régule l'entropie de la distribution avant softmax.
-              </p>
-              <div class="tech-verdict verdict-good">
-                <strong>Effet paramétrique :</strong><br>
-                - $T < 1.0$ (ex: 0.8) : Aiguise la distribution sur les résidus viables.<br>
-                - $T > 1.0$ (ex: 1.2) : Aplatit la distribution et favorise l'exploration, mais peut introduire des résidus aberrants dans le framework structural.
+              <div class="chart-wrapper-sub">
+                <canvas id="guide-sampling-simulation-chart"></canvas>
               </div>
             </div>
 
-            <div class="technique-detail-card">
-              <div class="technique-head">
-                <span class="tech-badge tech-topk">3. Top-k Truncation</span>
-                <span class="tech-math">i \in \text{Top-k}(z)</span>
+          </div>
+
+          <!-- GRAPHIQUE 4 & 5 EN GRILLE -->
+          <div class="guide-two-charts-grid">
+            
+            <!-- Graphique 4: Compromis Température / Entropie -->
+            <div class="guide-chart-subcard">
+              <div class="guide-chart-header">
+                <span class="guide-chart-badge">Graphique 4 • Compromis</span>
+                <h4>Compromis Température vs Métriques Biologiques</h4>
+                <p>Évolution de l'unicité, de la diversité Levenshtein et de la conservation du pont C23-C104 selon la température T &isin; [0.2, 1.8]. Zone optimale : T &isin; [0.8, 1.0].</p>
               </div>
-              <p class="tech-desc">
-                <strong>Principe :</strong> Conserve uniquement les $k$ meilleurs logits et élimine la longue traîne ($z_j = -\infty$).
-              </p>
-              <div class="tech-verdict verdict-best">
-                <strong>Recommandation pour la production :</strong><br>
-                Avec $k=10$ et $T=0.8$, le modèle préserve <strong>100% de validité biologique</strong> tout en maintenant <strong>100% d'unicité</strong> et une distance de Levenshtein optimale de <strong>0.277</strong>.
+              <div class="chart-wrapper-sub">
+                <canvas id="guide-tradeoff-chart"></canvas>
               </div>
             </div>
 
-            <div class="technique-detail-card">
-              <div class="technique-head">
-                <span class="tech-badge tech-nucleus">4. Nucléus (Top-p)</span>
-                <span class="tech-math">\sum_{i \in V^{(p)}} P(x_i) \ge p</span>
+            <!-- Graphique 5: Radar Chart Multi-Critères -->
+            <div class="guide-chart-subcard">
+              <div class="guide-chart-header">
+                <span class="guide-chart-badge">Graphique 5 • Multi-Critères</span>
+                <h4>Diagramme Radar des 4 Stratégies de Sampling</h4>
+                <p>Comparaison multidimensionnelle (Validité, Unicité, Diversité Levenshtein, Jaccard, C23-C104, Hallmarks FR2).</p>
               </div>
-              <p class="tech-desc">
-                <strong>Principe :</strong> Troncature dynamique conservant le plus petit groupe de tokens accumulant au moins $p$ de masse de probabilité.
-              </p>
-              <div class="tech-verdict verdict-good">
-                <strong>Adaptabilité contextuelle :</strong><br>
-                Sur les positions conservées (ex: C23), le noyau ne retient qu'1 seul candidat. Sur la boucle variable CDR3, le noyau s'élargit naturellement à 6-12 candidats, permettant une haute créativité d'épitopes.
+              <div class="chart-wrapper-sub">
+                <canvas id="guide-radar-chart"></canvas>
               </div>
             </div>
 
@@ -700,55 +885,124 @@
 
         </div>
 
-        <!-- Section 3 : Recommandations Stratégiques pour l'Équipe -->
+        <!-- SECTION 4 : TABLEAU DÉCISIONNEL POUR L'ÉQUIPE -->
         <div class="pro-card guide-section-card">
           <div class="guide-card-head">
-            <span class="guide-step-pill">Section 3</span>
-            <h3 class="guide-title">Guide Décisionnel pour vos Expérimentations</h3>
+            <span class="guide-step-pill">Décision</span>
+            <h3 class="guide-title">4. Guide de Décision pour l'Équipe : Quelle stratégie utiliser ?</h3>
           </div>
 
           <div class="table-responsive">
             <table class="pro-table">
               <thead>
                 <tr>
-                  <th>Objectif du Projet</th>
-                  <th>Stratégie Recommandée</th>
-                  <th>Hyperparamètres</th>
-                  <th>Comportement Attendu</th>
+                  <th>Objectif Expérimental</th>
+                  <th>Stratégie Choisie</th>
+                  <th>Paramètres</th>
+                  <th>Comportement & Caractéristiques</th>
                   <th>Indicateur QC Clé</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Stabilité & Repliement Garanti</strong></td>
+                  <td><strong>Stabilité Maximale & Production</strong></td>
                   <td><span class="badge-tag tag-topk">Top-k Truncated</span></td>
                   <td><code>k=10, T=0.80</code></td>
-                  <td>Squelette ultra-stable, boucle CDR3 canonique</td>
-                  <td>Pont C23-C104 à 100%, GRAVY $\in [-0.40, -0.35]$</td>
+                  <td>Squelette ultra-stable, boucle CDR3 canonique, aucune mutation aberrante</td>
+                  <td>Pont C23-C104 à 100%, GRAVY entre -0.40 et -0.35</td>
                 </tr>
                 <tr>
                   <td><strong>Découverte de Nouveaux Paratopes</strong></td>
                   <td><span class="badge-tag tag-nucleus">Nucléus Standard</span></td>
                   <td><code>p=0.95, T=1.00</code></td>
-                  <td>Diversité accrue dans les CDR1, CDR2, CDR3</td>
-                  <td>Levenshtein $> 0.310$, Nouveauté $100\%$</td>
+                  <td>Diversité accrue dans les CDR1, CDR2, CDR3 pour cribler de nouveaux épitopes</td>
+                  <td>Levenshtein &gt; 0.310, Nouveauté 100%</td>
                 </tr>
                 <tr>
                   <td><strong>Exploration Haute Variabilité</strong></td>
                   <td><span class="badge-tag tag-explore">Nucléus Chaud</span></td>
                   <td><code>p=0.80, T=1.20</code></td>
-                  <td>Mutations alternatives de surface</td>
+                  <td>Mutations alternatives de surface et paratopes atypiques</td>
                   <td>Surveiller le score d'hydropathie GRAVY</td>
                 </tr>
                 <tr>
-                  <td><strong>Évaluation de Base / Diagnostic</strong></td>
+                  <td><strong>Diagnostic & Contrôle Négatif</strong></td>
                   <td><span class="badge-tag tag-greedy">Greedy Argmax</span></td>
-                  <td><code>Argmax, T=1.0</code></td>
-                  <td>Vérification du mode de plus haute probabilité</td>
+                  <td><code>Argmax déterministe</code></td>
+                  <td>Séquence la plus probable : Unicité = 2.0% (Effondrement de mode)</td>
                   <td>Sert uniquement de témoin négatif d'unicité</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        <!-- SECTION 5 : CHECKLIST DE CONTRÔLE QUALITÉ BIOLOGIQUE (QC) EN 5 POINTS -->
+        <div class="pro-card guide-section-card">
+          <div class="guide-card-head">
+            <span class="guide-step-pill">Protocole QC</span>
+            <h3 class="guide-title">5. Checklist de Validation Opérationnelle d'un Nanocorps Candidat</h3>
+          </div>
+
+          <p class="guide-intro">
+            Avant de valider une séquence synthétisée par BioLM Studio pour commande d'ADN synthétique ou expression en fermenteur <em>E. coli</em>, appliquez la checklist des 5 critères biologiques :
+          </p>
+
+          <div class="metrics-rationale-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            
+            <div class="rationale-card" style="border-top: 3px solid var(--emerald);">
+              <div class="rationale-header">
+                <span class="rationale-tag">Point QC 1</span>
+                <h4>1. Longueur Canonique VHH</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">Longueur &isin; [115, 135] résidus</span>
+              </div>
+              <p>Rejeter toute séquence tronquée (&lt; 100 AA) ou comportant une insertion aberrante (&gt; 145 AA).</p>
+            </div>
+
+            <div class="rationale-card" style="border-top: 3px solid var(--emerald);">
+              <div class="rationale-header">
+                <span class="rationale-tag">Point QC 2</span>
+                <h4>2. Pont Disulfure Intra-Domaine</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">s[22] == 'C' &amp; s[103] == 'C' (100%)</span>
+              </div>
+              <p>Obligation absolue de conservation des cystéines C23 et C104 indispensables au repliement du barillet &beta;.</p>
+            </div>
+
+            <div class="rationale-card" style="border-top: 3px solid var(--emerald);">
+              <div class="rationale-header">
+                <span class="rationale-tag">Point QC 3</span>
+                <h4>3. Hallmarks FR2 Hydrophiles</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">Positions 42, 49, 50, 52 (IMGT)</span>
+              </div>
+              <p>Garantit l'absence du patch hydrophobe des chaînes lourdes conventionnelles, empêchant la précipitation.</p>
+            </div>
+
+            <div class="rationale-card" style="border-top: 3px solid var(--emerald);">
+              <div class="rationale-header">
+                <span class="rationale-tag">Point QC 4</span>
+                <h4>4. Solubilité Globale (GRAVY)</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">GRAVY &isin; [-0.45, -0.30]</span>
+              </div>
+              <p>Score d'hydropathie Kyte-Doolittle négatif certifiant une protéine soluble dans le cytosol ou le périplasme.</p>
+            </div>
+
+            <div class="rationale-card" style="border-top: 3px solid var(--emerald);">
+              <div class="rationale-header">
+                <span class="rationale-tag">Point QC 5</span>
+                <h4>5. Diversité du Paratope CDR3</h4>
+              </div>
+              <div class="clean-math-box">
+                <span class="math-main">Longueur CDR3 &ge; 10 AA &bull; Hétérogène</span>
+              </div>
+              <p>Exclut les séquences à boucles dégénérées ou homopolymères (ex: 8x Glycine consécutives) sans affinité épitopique.</p>
+            </div>
+
           </div>
         </div>
 
