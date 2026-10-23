@@ -221,15 +221,42 @@ def compute_aa_composition(sequences: Sequence[str]) -> Dict[str, float]:
 def kl_divergence(
     p_gen: Dict[str, float],
     p_ref: Dict[str, float],
-    eps: float = 1e-8
+    alpha: float = 1e-6
 ) -> float:
-    """Compute D_KL(P_gen || P_ref) = sum(p * ln(p / q)) over the 20 amino acids."""
-    kl = 0.0
-    for aa in STANDARD_AA:
-        p = max(p_gen.get(aa, 0.0), eps)
-        q = max(p_ref.get(aa, 0.0), eps)
-        kl += p * math.log(p / q)
-    return float(kl)
+    """Compute D_KL(P_gen || P_ref) = sum(p * ln(p / q)) over the 20 amino acids.
+    
+    Applies Laplace smoothing and re-normalization to guarantee valid probability simplices
+    and strictly non-negative divergence by Gibbs' inequality (D_KL >= 0.0).
+    """
+    raw_p = [max(0.0, p_gen.get(aa, 0.0)) + alpha for aa in STANDARD_AA]
+    raw_q = [max(0.0, p_ref.get(aa, 0.0)) + alpha for aa in STANDARD_AA]
+    sum_p = sum(raw_p)
+    sum_q = sum(raw_q)
+
+    p_norm = [x / sum_p for x in raw_p]
+    q_norm = [y / sum_q for y in raw_q]
+
+    kl = sum(p * math.log(p / q) for p, q in zip(p_norm, q_norm))
+    return max(0.0, float(kl))
+
+
+def compute_reference_kmer_overlap(
+    sequences: Sequence[str],
+    ref_sequences: Sequence[str],
+    k: int = 3
+) -> float:
+    """Compute motif precision: fraction of generated k-mers that appear in real reference sequences."""
+    if not sequences or not ref_sequences:
+        return 0.0
+    gen_kmers = set()
+    for s in sequences:
+        gen_kmers.update(get_kmers(s, k=k))
+    if not gen_kmers:
+        return 0.0
+    ref_kmers = set()
+    for s in ref_sequences:
+        ref_kmers.update(get_kmers(s, k=k))
+    return float(len(gen_kmers & ref_kmers) / len(gen_kmers))
 
 
 # ==============================================================================
@@ -238,13 +265,18 @@ def kl_divergence(
 
 def compute_novelty(
     sequences: Sequence[str],
-    train_set: Set[str]
-) -> float:
-    """Fraction of generated sequences not present in the training set."""
+    train_set: Optional[Set[str]]
+) -> Optional[float]:
+    """Fraction of generated sequences not present in the training set.
+    
+    Returns None if train_set is not loaded or unavailable.
+    """
+    if train_set is None:
+        return None
     if not sequences:
         return 0.0
     n_novel = sum(1 for s in sequences if s not in train_set)
-    return n_novel / len(sequences)
+    return float(n_novel / len(sequences))
 
 
 # ==============================================================================
@@ -272,9 +304,23 @@ def compute_net_charge(seq: str, ph: float = 7.4) -> float:
     return float(charge)
 
 
-def has_canonical_cysteines(seq: str) -> bool:
-    """Check if sequence contains at least two Cysteines for the immunoglobulin disulfide bridge."""
-    return seq.count("C") >= 2
+def has_canonical_cysteines(seq: str, positional: bool = True) -> bool:
+    """Check for canonical immunoglobulin cysteines (C23 and C104).
+    
+    If positional is True and len(seq) >= 70:
+        Requires at least 2 cysteines with the first in FR1 window (18-26, 1-indexed)
+        and the last in FR3 window (88-115, 1-indexed).
+    Otherwise (short test peptide or positional=False):
+        Checks count >= 2.
+    """
+    if not isinstance(seq, str):
+        return False
+    cys_positions = [i + 1 for i, aa in enumerate(seq) if aa == "C"]
+    if len(cys_positions) < 2:
+        return False
+    if positional and len(seq) >= 70:
+        return (18 <= cys_positions[0] <= 26) and (88 <= cys_positions[-1] <= 115)
+    return True
 
 
 def compute_physicochemical_profile(sequences: Sequence[str]) -> Dict[str, float]:
@@ -288,7 +334,7 @@ def compute_physicochemical_profile(sequences: Sequence[str]) -> Dict[str, float
         }
     gravy_scores = [compute_gravy(s) for s in sequences]
     charge_scores = [compute_net_charge(s) for s in sequences]
-    cys_flags = [has_canonical_cysteines(s) for s in sequences]
+    cys_flags = [has_canonical_cysteines(s, positional=True) for s in sequences]
     lengths = [len(s) for s in sequences]
 
     return {
@@ -311,7 +357,7 @@ def evaluate_sequences(
     max_len: int = DEFAULT_MAX_LEN,
     n_pairs: int = 500,
     seed: int = 42
-) -> Dict[str, float]:
+) -> Dict[str, any]:
     """Run full evaluation suite on a set of generated sequences."""
     if ref_composition is None:
         ref_composition = SRR3544218_AA_FREQ
@@ -325,7 +371,7 @@ def evaluate_sequences(
     gen_comp = compute_aa_composition(sequences)
     kl = kl_divergence(gen_comp, ref_composition)
 
-    novelty = compute_novelty(sequences, train_set) if train_set is not None else 1.0
+    novelty = compute_novelty(sequences, train_set)
     physchem = compute_physicochemical_profile(sequences)
 
     return {
@@ -335,7 +381,7 @@ def evaluate_sequences(
         "levenshtein_diversity": round(lev_div, 4),
         "kmer_jaccard_similarity": round(jaccard, 4),
         "kl_divergence": round(kl, 4),
-        "novelty_rate": round(novelty, 4),
+        "novelty_rate": round(novelty, 4) if novelty is not None else None,
         "mean_gravy": physchem["mean_gravy"],
         "mean_net_charge": physchem["mean_net_charge"],
         "canonical_cysteine_rate": physchem["canonical_cysteine_rate"],
@@ -348,26 +394,30 @@ def evaluate_sequences(
 # ==============================================================================
 
 def analyze_vhh_sequence(seq: str) -> Dict[str, any]:
-    """Perform comprehensive structural and biochemical QC on a single VHH nanobody sequence."""
+    """Perform structural and biochemical QC heuristic annotations on a single VHH nanobody sequence.
+    
+    NOTE: FR2 hallmark, CDR3 boundary, and quality score are rule-based heuristic annotations,
+    not crystallographic structures or experimental binding assays.
+    """
     if not isinstance(seq, str) or not seq:
         return {"valid": False, "error": "Empty or non-string sequence"}
 
     valid = is_valid_sequence(seq)
     cys_positions = [i + 1 for i, aa in enumerate(seq) if aa == "C"]
 
-    # Canonical cysteines: C23 (FR1) and C104 (FR3)
+    # Canonical cysteines: C23 (FR1) and C104 (FR3) positional check
     has_canonical_cys = (
         len(cys_positions) >= 2
         and 18 <= cys_positions[0] <= 26
-        and 88 <= cys_positions[-1] <= 110
+        and 88 <= cys_positions[-1] <= 115
     )
 
-    # FR2 hallmark search: W[FY]R... or WFRQ...KERE (solubility signature)
+    # FR2 hallmark search heuristic: W[FY]R... or WFRQ...KERE (solubility signature)
     fr2_match = re.search(r"W[FY]RQ[A-Z]{4,10}[EK][ERKQ]", seq)
     has_fr2_hallmarks = bool(fr2_match)
     fr2_motif = fr2_match.group(0) if fr2_match else None
 
-    # CDR3 extraction: region between C[A-Z]{2,4} and W[GR]QG
+    # CDR3 extraction heuristic: region between C[A-Z]{2,4} and W[GR]QG
     cdr3_match = re.search(r"C[A-Z]{2,4}([A-Z]{4,30})W[GR]QG", seq)
     cdr3_seq = None
     cdr3_len = 0
@@ -383,7 +433,7 @@ def analyze_vhh_sequence(seq: str) -> Dict[str, any]:
     gravy = compute_gravy(seq)
     charge = compute_net_charge(seq)
 
-    # VHH Quality Score (0 to 100)
+    # VHH Quality Score Heuristic (0 to 100)
     score = 0
     if valid: score += 30
     if has_canonical_cys: score += 25
@@ -409,6 +459,8 @@ def analyze_vhh_sequence(seq: str) -> Dict[str, any]:
         "net_charge": round(charge, 2),
         "net_charge_ph74": round(charge, 2),
         "vhh_quality_score": score,
+        "is_heuristic_annotation": True,
+        "annotation_caveat": "FR2 hallmark, CDR3 boundary, and quality score are rule-based heuristic annotations, not crystallographic or experimental bindings.",
         "solubility_status": "Highly Soluble (VHH Hallmark)" if has_fr2_hallmarks and gravy < -0.30 else "Standard",
     }
 

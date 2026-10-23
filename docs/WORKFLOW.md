@@ -58,7 +58,8 @@ Recherche_AI/
 | Thing | In GitHub? | Why |
 |---|---|---|
 | Code, notebooks (without outputs), tests, docs | Yes | this is the project |
-| Real OAS file `1287151_1_Paired_All.csv` | **No** | too big, and not ours to republish |
+| Real OAS file `1287151_1_Paired_All.csv` (Sprint 1) | **No** | ~17.4k human paired sequences (too big to republish) |
+| Real SRA file `SRR3544218` (Sprint 2/3) | **No** | 242,891 camelid VHH nanobodies (downloaded via script/drive) |
 | `data/`, `models/`, `results/` | **No** | generated files |
 | Toy data | **No** | recreated by `make_toy_data.py` |
 
@@ -67,9 +68,19 @@ Without the real file, the notebooks use toy data. Toy data is for testing only.
 
 ---
 
-## 4. Golden rules
+## 4. Dataset Clarification & Biological Context
 
-1. **Never trust a number from toy data.** 180 / 10 / 10 sequences = toy data. The real corpus has about 17,400 sequences.
+> [!IMPORTANT]
+> **Clarification on Datasets Used in the Project:**
+> - **Dataset A — Sprint 1 (Historical Baseline)** : `data/raw/1287151_1_Paired_All.csv` from Observed Antibody Space (OAS). Contains ~17,400 paired **human conventional heavy chains (VH)**. In human VH, framework positions 37, 44, 45, 47 (Kabat) are hydrophobic ($V_{37}, G_{44}, L_{45}, W_{47}$) because they pack against the light chain ($V_L$).
+> - **Dataset B — Sprint 2 & 3 (BioLM Studio Production Models)** : `data/processed/SRR3544218/` from NCBI SRA. Contains **242,891 single-domain camelid nanobodies (VHH)** (alpaca/llama). Camelid VHH possess hydrophilic hallmark mutations in FR2 ($F/Y_{37}, E_{44}, R_{45}, G_{47}$) allowing autonomous aqueous solubility without a light chain.
+> - **Current Models & Dashboard** : All production neural models (`transformer-notebook-srr`, `lstm-notebook-srr`, `bigram_SRR3544218_a1`) are trained strictly on **Dataset B (SRR3544218, 242k camelid VHH)**. Biological claims regarding FR2 solubility hallmarks apply strictly to these camelid models.
+
+---
+
+## 5. Golden rules
+
+1. **Never trust a number from toy data.** 180 / 10 / 10 sequences = toy data. The real camelid VHH corpus has 242,891 sequences (split ~194k train / 24k val / 24k test).
 2. **Never commit notebook outputs.** Outputs contain your Windows paths, logs and huge images.
 3. **Never use "Save to GitHub" from Colab.** It commits outputs and rewrites the file.
 4. **Edit on your PC, then push, then test on Colab.** Colab clones what is on GitHub, not what is on your PC.

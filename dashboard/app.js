@@ -353,16 +353,34 @@ function renderModelComparisonTable() {
   const tfEval = evals['transformer-notebook-srr']?.['topk10_T08'] || {};
   const lstmEval = evals['lstm-notebook-srr']?.['topk10_T08'] || {};
 
-  // Update top KPI cards
+  // Update top KPI cards dynamically from exported results
   const kpiValidity = document.getElementById('kpi-validity-val');
   const kpiPpl = document.getElementById('kpi-ppl-val');
   const kpiCys = document.getElementById('kpi-cys-val');
   const kpiGravy = document.getElementById('kpi-gravy-val');
 
-  if (kpiValidity) kpiValidity.textContent = '100.0%';
-  if (kpiPpl) kpiPpl.textContent = '2.229';
-  if (kpiCys) kpiCys.textContent = ( (tfEval.canonical_cysteine_rate || 1.0) * 100 ).toFixed(1) + '%';
-  if (kpiGravy) kpiGravy.textContent = (tfEval.mean_gravy !== undefined ? tfEval.mean_gravy.toFixed(3) : '-0.378');
+  if (kpiValidity) {
+    kpiValidity.textContent = (tfEval.validity_rate !== undefined && tfEval.validity_rate !== null)
+      ? `${(tfEval.validity_rate * 100).toFixed(1)}%`
+      : 'N/A';
+  }
+  if (kpiPpl) {
+    const tfModel = state.data?.models?.find(m => m.run_id === 'transformer-notebook-srr');
+    const pplVal = tfModel?.metrics?.best_val_ppl;
+    kpiPpl.textContent = (pplVal !== undefined && pplVal !== null)
+      ? pplVal.toFixed(3)
+      : 'N/A';
+  }
+  if (kpiCys) {
+    kpiCys.textContent = (tfEval.canonical_cysteine_rate !== undefined && tfEval.canonical_cysteine_rate !== null)
+      ? `${(tfEval.canonical_cysteine_rate * 100).toFixed(1)}%`
+      : 'N/A';
+  }
+  if (kpiGravy) {
+    kpiGravy.textContent = (tfEval.mean_gravy !== undefined && tfEval.mean_gravy !== null)
+      ? tfEval.mean_gravy.toFixed(3)
+      : 'N/A';
+  }
 
   const rows = [
     {
@@ -395,8 +413,8 @@ function renderModelComparisonTable() {
     {
       name: "Validité Biologique",
       desc: "Taux de séquences composées à 100% des 20 AA standards",
-      tf: "100.0%",
-      lstm: "100.0%",
+      tf: (tfEval.validity_rate !== undefined ? `${(tfEval.validity_rate * 100).toFixed(1)}%` : "N/A"),
+      lstm: (lstmEval.validity_rate !== undefined ? `${(lstmEval.validity_rate * 100).toFixed(1)}%` : "N/A"),
       base: "94.2%",
       target: "100.0%",
       best: "both"
@@ -404,8 +422,8 @@ function renderModelComparisonTable() {
     {
       name: "Unicité (Sampling Top-k 10)",
       desc: "Taux de séquences distinctes (anti-mode collapse)",
-      tf: "100.0%",
-      lstm: "100.0%",
+      tf: (tfEval.uniqueness_rate !== undefined ? `${(tfEval.uniqueness_rate * 100).toFixed(1)}%` : "N/A"),
+      lstm: (lstmEval.uniqueness_rate !== undefined ? `${(lstmEval.uniqueness_rate * 100).toFixed(1)}%` : "N/A"),
       base: "88.0%",
       target: "> 95.0% (Greedy = 2%)",
       best: "both"
@@ -413,42 +431,42 @@ function renderModelComparisonTable() {
     {
       name: "Diversité de Levenshtein",
       desc: "Distance inter-séquences normalisée moyenne",
-      tf: (tfEval.levenshtein_diversity !== undefined ? tfEval.levenshtein_diversity.toFixed(3) : "0.277"),
-      lstm: (lstmEval.levenshtein_diversity !== undefined ? lstmEval.levenshtein_diversity.toFixed(3) : "0.293"),
+      tf: (tfEval.levenshtein_diversity !== undefined ? tfEval.levenshtein_diversity.toFixed(3) : "N/A"),
+      lstm: (lstmEval.levenshtein_diversity !== undefined ? lstmEval.levenshtein_diversity.toFixed(3) : "N/A"),
       base: "0.412 (Aléatoire)",
       target: "[0.250 - 0.350]",
       best: "tf"
     },
     {
       name: "Similarité 3-mer Jaccard",
-      desc: "Recouvrement des triplets de résidus avec le corpus naturel",
-      tf: (tfEval.kmer_jaccard_similarity !== undefined ? tfEval.kmer_jaccard_similarity.toFixed(3) : "0.374"),
-      lstm: (lstmEval.kmer_jaccard_similarity !== undefined ? lstmEval.kmer_jaccard_similarity.toFixed(3) : "0.341"),
+      desc: "Recouvrement des triplets de résidus intra-batch",
+      tf: (tfEval.kmer_jaccard_similarity !== undefined ? tfEval.kmer_jaccard_similarity.toFixed(3) : "N/A"),
+      lstm: (lstmEval.kmer_jaccard_similarity !== undefined ? lstmEval.kmer_jaccard_similarity.toFixed(3) : "N/A"),
       base: "0.125",
       target: "> 0.300",
       best: "tf"
     },
     {
       name: "Divergence KL Acides Aminés",
-      desc: "Fidélité de la distribution des 20 acides aminés vs train set",
-      tf: (tfEval.kl_divergence !== undefined ? tfEval.kl_divergence.toFixed(4) : "-0.0022"),
-      lstm: (lstmEval.kl_divergence !== undefined ? lstmEval.kl_divergence.toFixed(4) : "-0.0054"),
+      desc: "Fidélité de composition vs distribution naturelle (nats)",
+      tf: (tfEval.kl_divergence !== undefined ? tfEval.kl_divergence.toFixed(4) : "N/A"),
+      lstm: (lstmEval.kl_divergence !== undefined ? lstmEval.kl_divergence.toFixed(4) : "N/A"),
       base: "0.1840",
       target: "< 0.050 nats",
       best: "tf"
     },
     {
       name: "Pont Disulfure Canonique C23-C104",
-      desc: "Présence de la paire de cystéines formant le repliement",
-      tf: "100.0%",
-      lstm: "100.0%",
+      desc: "Vérification positionnelle stricte des cystéines C23 et C104",
+      tf: (tfEval.canonical_cysteine_rate !== undefined ? `${(tfEval.canonical_cysteine_rate * 100).toFixed(1)}%` : "N/A"),
+      lstm: (lstmEval.canonical_cysteine_rate !== undefined ? `${(lstmEval.canonical_cysteine_rate * 100).toFixed(1)}%` : "N/A"),
       base: "62.0%",
       target: "100.0% (Stabilité)",
       best: "both"
     },
     {
-      name: "Hallmarks Solubilité FR2 (VHH)",
-      desc: "Conservation des résidus IMGT 42, 49, 50, 52 (WFRQ...EKER)",
+      name: "Hallmarks Solubilité FR2 (Heuristique)",
+      desc: "Conservation des résidus IMGT 42, 49, 50, 52 (motif regex heuristique)",
       tf: "100.0%",
       lstm: "98.0%",
       base: "45.0%",
@@ -458,8 +476,8 @@ function renderModelComparisonTable() {
     {
       name: "Indice d'Hydropathie GRAVY",
       desc: "Score Kyte-Doolittle moyen des nanocorps générés",
-      tf: (tfEval.mean_gravy !== undefined ? tfEval.mean_gravy.toFixed(3) : "-0.378"),
-      lstm: (lstmEval.mean_gravy !== undefined ? lstmEval.mean_gravy.toFixed(3) : "-0.379"),
+      tf: (tfEval.mean_gravy !== undefined ? tfEval.mean_gravy.toFixed(3) : "N/A"),
+      lstm: (lstmEval.mean_gravy !== undefined ? lstmEval.mean_gravy.toFixed(3) : "N/A"),
       base: "-0.210",
       target: "Soluble : [-0.45, -0.30]",
       best: "both"
@@ -884,6 +902,7 @@ function renderSamplingStrategiesTable() {
       <tr>
         <td>
           <strong>${cfgKey}</strong>
+          <span style="font-size: 0.7rem; color: var(--text-subtle); display: block;">(N = ${cfg.n_sequences || 50} seqs)</span>
         </td>
         <td>
           <span style="font-weight: 600; color: var(--text-primary);">${preset.name}</span>
@@ -904,8 +923,10 @@ function renderSamplingStrategiesTable() {
         <td class="val-mono">
           ${cfg.kl_divergence.toFixed(4)}
         </td>
-        <td class="val-mono" style="color: var(--emerald-text); font-weight: 700;">
-          ${(cfg.novelty_rate * 100).toFixed(1)}%
+        <td class="val-mono">
+          ${cfg.novelty_rate !== null && cfg.novelty_rate !== undefined
+            ? `<span style="color: var(--emerald-text); font-weight: 700;">${(cfg.novelty_rate * 100).toFixed(1)}%</span>`
+            : `<span class="val-na" title="Jeu d'entraînement non chargé localement" style="color: var(--text-subtle); font-style: italic;">N/A</span>`}
         </td>
         <td class="val-mono" style="color: var(--amber-text); font-weight: 700;">
           ${cfg.mean_gravy.toFixed(2)}

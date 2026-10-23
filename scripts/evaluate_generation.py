@@ -90,8 +90,8 @@ def load_model(model_id: str, device: str = "cpu"):
     return model
 
 
-def load_train_set() -> Set[str]:
-    """Load training sequences for novelty comparison if available."""
+def load_train_set() -> Optional[Set[str]]:
+    """Load training sequences for novelty comparison if available. Returns None if absent."""
     train_paths = [
         ROOT / "data" / "processed" / "SRR3544218" / "train.csv",
         ROOT / "data" / "train.csv",
@@ -102,8 +102,10 @@ def load_train_set() -> Set[str]:
             import csv
             with open(p, "r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
-                return {row["sequence"] for row in reader if "sequence" in row}
-    return set()
+                seqs = {row["sequence"] for row in reader if "sequence" in row}
+                if seqs:
+                    return seqs
+    return None
 
 
 def evaluate_model(
@@ -122,10 +124,10 @@ def evaluate_model(
 
     model = load_model(model_id, device=device)
     train_set = load_train_set()
-    if train_set:
+    if train_set is not None:
         print(f"📚 Jeu d'entraînement chargé : {len(train_set):,} séquences de référence.")
     else:
-        print("ℹ️ Jeu d'entraînement absent localement : Nouveauté = 100% (non pénalisée).")
+        print("ℹ️ Jeu d'entraînement absent localement : Nouveauté signalée comme 'Non disponible (N/A)'.")
 
     gen_dir = ROOT / "results" / "generated" / model_id
     gen_dir.mkdir(parents=True, exist_ok=True)
@@ -156,7 +158,7 @@ def evaluate_model(
         # Run evaluation metrics
         report = evaluate_sequences(
             sequences=seqs,
-            train_set=train_set if train_set else None,
+            train_set=train_set,
             ref_composition=SRR3544218_AA_FREQ,
             min_len=DEFAULT_MIN_LEN if "DEFAULT_MIN_LEN" in globals() else 100,
             max_len=max_len,
@@ -165,6 +167,16 @@ def evaluate_model(
         )
         report["sample_sequences"] = seqs[:3]
         report["fasta_file"] = str(fasta_path.relative_to(ROOT))
+        report["dataset_metadata"] = {
+            "dataset_id": "SRR3544218",
+            "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+            "split_evaluated": "generation_de_novo",
+            "reference_train_loaded": train_set is not None,
+            "n_reference_train": len(train_set) if train_set else 0,
+            "evaluation_n_sequences": n_seqs,
+            "seed_used": seed,
+            "is_heuristic_qc": True
+        }
         results[name] = report
 
         print(f"   ✓ Validité       : {report['validity_rate'] * 100:.1f}%")
@@ -172,7 +184,8 @@ def evaluate_model(
         print(f"   ✓ Levenshtein    : {report['levenshtein_diversity']:.3f}")
         print(f"   ✓ Jaccard 3-mers : {report['kmer_jaccard_similarity']:.3f}")
         print(f"   ✓ KL Divergence  : {report['kl_divergence']:.4f}")
-        print(f"   ✓ Nouveauté      : {report['novelty_rate'] * 100:.1f}%")
+        nov_display = f"{report['novelty_rate'] * 100:.1f}%" if report['novelty_rate'] is not None else "N/A (train.csv non chargé)"
+        print(f"   ✓ Nouveauté      : {nov_display}")
         print(f"   ✓ Hydropathie    : {report['mean_gravy']} (GRAVY Kyte-Doolittle)")
         print(f"   ✓ Cys Pont Disulf: {report['canonical_cysteine_rate'] * 100:.1f}%")
 
