@@ -1,0 +1,531 @@
+{
+  "exported_at": "2026-10-22T21:26:05.581419",
+  "models": [
+    {
+      "run_id": "lstm-notebook-srr",
+      "type": "neural",
+      "config": null,
+      "metrics": {
+        "best_epoch": 10,
+        "best_val_nats": 0.8126752174276235,
+        "best_val_ppl": 2.253929680376756,
+        "final_train_nats": 0.8035870382621024,
+        "final_train_ppl": 2.2335383639351667,
+        "epochs_run": 10,
+        "train_seconds": 501.97
+      },
+      "history": [
+        {
+          "epoch": 1.0,
+          "train_nats": 1.083295010139132,
+          "train_ppl": 2.9543983029426535,
+          "val_nats": 0.9644417258209159,
+          "val_ppl": 2.623322714258142,
+          "lr": 0.0009790132602486735,
+          "seconds": 48.19522047042847
+        },
+        {
+          "epoch": 2.0,
+          "train_nats": 0.9305451636203159,
+          "train_ppl": 2.5358912765176385,
+          "val_nats": 0.9049457909638863,
+          "val_ppl": 2.471797925642552,
+          "lr": 0.0009158272213227594,
+          "seconds": 49.24917769432068
+        },
+        {
+          "epoch": 3.0,
+          "train_nats": 0.8857167854855131,
+          "train_ppl": 2.424721774119933,
+          "val_nats": 0.872873490421614,
+          "val_ppl": 2.393779482743102,
+          "lr": 0.0008166436148474597,
+          "seconds": 50.711856842041016
+        },
+        {
+          "epoch": 4.0,
+          "train_nats": 0.8592495622072353,
+          "train_ppl": 2.361387953859545,
+          "val_nats": 0.8560385078833604,
+          "val_ppl": 2.3538175698219264,
+          "lr": 0.0006912221535116674,
+          "seconds": 52.06234407424927
+        },
+        {
+          "epoch": 5.0,
+          "train_nats": 0.8412416346118832,
+          "train_ppl": 2.319244844453618,
+          "val_nats": 0.8400968337803029,
+          "val_ppl": 2.3165912902124055,
+          "lr": 0.0005519043670415001,
+          "seconds": 50.736462116241455
+        },
+        {
+          "epoch": 6.0,
+          "train_nats": 0.8282415701700766,
+          "train_ppl": 2.289289643661796,
+          "val_nats": 0.8300408894650865,
+          "val_ppl": 2.2934125147579265,
+          "lr": 0.000412399189974845,
+          "seconds": 50.43602681159973
+        },
+        {
+          "epoch": 7.0,
+          "train_nats": 0.8186235808813531,
+          "train_ppl": 2.26737682792526,
+          "val_nats": 0.8226793226037118,
+          "val_ppl": 2.2765913960498865,
+          "lr": 0.00028643399617083663,
+          "seconds": 50.02092170715332
+        },
+        {
+          "epoch": 8.0,
+          "train_nats": 0.8114878275693459,
+          "train_ppl": 2.251254975406038,
+          "val_nats": 0.8179866337573253,
+          "val_ppl": 2.265933088617236,
+          "lr": 0.0001864038188816085,
+          "seconds": 50.25248122215271
+        },
+        {
+          "epoch": 9.0,
+          "train_nats": 0.8065828934763417,
+          "train_ppl": 2.240239754674997,
+          "val_nats": 0.8146023044786881,
+          "val_ppl": 2.2582773869368333,
+          "lr": 0.0001221516737551655,
+          "seconds": 50.02296257019043
+        },
+        {
+          "epoch": 10.0,
+          "train_nats": 0.8035870382621024,
+          "train_ppl": 2.2335383639351667,
+          "val_nats": 0.8126752174276235,
+          "val_ppl": 2.253929680376756,
+          "lr": 0.00010000000154924839,
+          "seconds": 50.28548812866211
+        }
+      ],
+      "test_metrics": null,
+      "model_type": "lstm",
+      "data_version": "real",
+      "n_params": 431104,
+      "sample_generations": []
+    },
+    {
+      "run_id": "transformer-notebook-srr",
+      "type": "neural",
+      "config": null,
+      "metrics": {
+        "best_epoch": 15,
+        "best_val_nats": 0.8015595920455599,
+        "best_val_ppl": 2.2290145724512698,
+        "final_train_nats": 0.8543421344953548,
+        "final_train_ppl": 2.3498280011920127,
+        "epochs_run": 15,
+        "train_seconds": 1192.87
+      },
+      "history": [
+        {
+          "epoch": 1.0,
+          "train_nats": 1.1070803757831982,
+          "train_ppl": 3.0255121283551123,
+          "val_nats": 0.9703690352023668,
+          "val_ppl": 2.6389181333704865,
+          "lr": 0.0005943889483157829,
+          "seconds": 77.84991717338562
+        },
+        {
+          "epoch": 2.0,
+          "train_nats": 0.9721141053510094,
+          "train_ppl": 2.6435272510769363,
+          "val_nats": 0.9161002267907354,
+          "val_ppl": 2.499523782653804,
+          "lr": 0.0005771864932592207,
+          "seconds": 79.14060401916504
+        },
+        {
+          "epoch": 3.0,
+          "train_nats": 0.9381250934007613,
+          "train_ppl": 2.5551861889824035,
+          "val_nats": 0.8858547775978431,
+          "val_ppl": 2.42505638968598,
+          "lr": 0.0005491428957487509,
+          "seconds": 79.6003360748291
+        },
+        {
+          "epoch": 4.0,
+          "train_nats": 0.9184581100971894,
+          "train_ppl": 2.5054243217125545,
+          "val_nats": 0.8685553408496776,
+          "val_ppl": 2.383465070509001,
+          "lr": 0.0005114880961080634,
+          "seconds": 79.66871237754822
+        },
+        {
+          "epoch": 5.0,
+          "train_nats": 0.9049236111155304,
+          "train_ppl": 2.4717431021473857,
+          "val_nats": 0.8539952227749358,
+          "val_ppl": 2.3490129596993277,
+          "lr": 0.00046587356421156603,
+          "seconds": 79.58496856689453
+        },
+        {
+          "epoch": 6.0,
+          "train_nats": 0.8946136969228398,
+          "train_ppl": 2.446390558700528,
+          "val_nats": 0.8429784052884624,
+          "val_ppl": 2.3232763407701906,
+          "lr": 0.00041429986906987853,
+          "seconds": 79.61519646644592
+        },
+        {
+          "epoch": 7.0,
+          "train_nats": 0.8861932978450696,
+          "train_ppl": 2.425877459341065,
+          "val_nats": 0.833956365802415,
+          "val_ppl": 2.302409920260467,
+          "lr": 0.0003590289375728296,
+          "seconds": 79.60029458999634
+        },
+        {
+          "epoch": 8.0,
+          "train_nats": 0.8791208112676205,
+          "train_ppl": 2.4087810020674016,
+          "val_nats": 0.8261681071703025,
+          "val_ppl": 2.2845478040033007,
+          "lr": 0.00030248485055921854,
+          "seconds": 79.4903244972229
+        },
+        {
+          "epoch": 9.0,
+          "train_nats": 0.8732633020846202,
+          "train_ppl": 2.3947127877989196,
+          "val_nats": 0.8205743267351984,
+          "val_ppl": 2.2718042208266094,
+          "lr": 0.00024714752711425944,
+          "seconds": 80.8833122253418
+        },
+        {
+          "epoch": 10.0,
+          "train_nats": 0.8680304878779135,
+          "train_ppl": 2.382214430013548,
+          "val_nats": 0.8155092134850427,
+          "val_ppl": 2.2603263680171533,
+          "lr": 0.00019544395990480338,
+          "seconds": 80.08159947395325
+        },
+        {
+          "epoch": 11.0,
+          "train_nats": 0.8638352797319653,
+          "train_ppl": 2.372241478561746,
+          "val_nats": 0.8107062081210923,
+          "val_ppl": 2.249496038233583,
+          "lr": 0.00014964177176938906,
+          "seconds": 79.5140609741211
+        },
+        {
+          "epoch": 12.0,
+          "train_nats": 0.8602964756044127,
+          "train_ppl": 2.3638614170693444,
+          "val_nats": 0.8069618694752579,
+          "val_ppl": 2.241088912668923,
+          "lr": 0.00011174976197422878,
+          "seconds": 79.5719964504242
+        },
+        {
+          "epoch": 13.0,
+          "train_nats": 0.8576686009420598,
+          "train_ppl": 2.357657640489887,
+          "val_nats": 0.8043799988474956,
+          "val_ppl": 2.23531017421875,
+          "lr": 8.342980399241473e-05,
+          "seconds": 79.36973905563354
+        },
+        {
+          "epoch": 14.0,
+          "train_nats": 0.8557346235880524,
+          "train_ppl": 2.3531023902998536,
+          "val_nats": 0.8027337622126659,
+          "val_ppl": 2.2316333520098315,
+          "lr": 6.592395880681609e-05,
+          "seconds": 79.47803258895874
+        },
+        {
+          "epoch": 15.0,
+          "train_nats": 0.8543421344953548,
+          "train_ppl": 2.3498280011920127,
+          "val_nats": 0.8015595920455599,
+          "val_ppl": 2.2290145724512698,
+          "lr": 6.000000041240639e-05,
+          "seconds": 79.41825556755066
+        }
+      ],
+      "test_metrics": null,
+      "model_type": "transformer",
+      "data_version": "real",
+      "n_params": 821888,
+      "sample_generations": []
+    }
+  ],
+  "baselines": [
+    {
+      "model": "bigram",
+      "data_version": "/content/drive/MyDrive/AI_Project_Shared/data/processed/SRR3544218",
+      "seed": 42,
+      "alpha": 1.0,
+      "n_params": 483,
+      "max_len": 160,
+      "n_train": 242891,
+      "n_val": 13493,
+      "val_nats": 2.4709155671653718,
+      "val_ppl": 11.833276052471955,
+      "sample_generations": [
+        "VPSTAYVSDPGWGTLKLESRQGYYWFRCAPLYEGQAAKERGTSGTVKGSDGASSTVQLGGSLRQMNSGDNEGTGEGGSPPGLVEAARGGQAQLQGSIDEWVSGYWLRFDTLKGRESVSLSQMDNAKGGGREVQGRAWGTAKGWGQFRLQASYCMDSGSTV",
+        "HWFAMLVTIYCLKTDCGYYTVTPESSIDTHWFESDGRSGGTYLGADFTAKNSGTTTCAVKGQMYCVAMQAAIYRVSLVAASVERLVQGKGSVQDGSVAAMFTIDVEGGGCADDSSKGQVTADGGRGDNRDTAVATVYWRNTCLRSLQMGGQHILQGKNIY",
+        "VQGRRPQLSGSGSVDSCRDVDYWGTVWFSCMGRLRLVSLS",
+        "HDDSLVSGVSGKGGGWGKPGWRILYTYCTQAMSAKPELQGWRDYYCTAYSRDTADFTFTRCAANTGTAS",
+        "VSVADFRQMYCREGS"
+      ],
+      "date_utc": "2026-10-19T19:33:06+00:00",
+      "run_id": "bigram_SRR3544218_a1",
+      "type": "baseline"
+    }
+  ],
+  "references": {
+    "uniform_ppl": 20.0,
+    "ln_23": 3.1355,
+    "bigram_val_ppl_real": 11.83
+  },
+  "generation_evaluations": {
+    "lstm-notebook-srr": {
+      "greedy": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 0.02,
+        "levenshtein_diversity": 0.0,
+        "kmer_jaccard_similarity": 1.0,
+        "kl_divergence": 0.0685,
+        "novelty_rate": null,
+        "mean_gravy": -0.456,
+        "mean_net_charge": -1.9,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 126.0,
+        "sample_sequences": [
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADPRPGGGSWYGGSCPDFGYWGQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\greedy.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "topk10_T08": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2941,
+        "kmer_jaccard_similarity": 0.3409,
+        "kl_divergence": 0.0338,
+        "novelty_rate": null,
+        "mean_gravy": -0.379,
+        "mean_net_charge": 0.28,
+        "canonical_cysteine_rate": 0.98,
+        "mean_length": 123.8,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCAASGYASSRYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPGYGDSWPEDHFDHWCRGRGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSGYCMGWFRQTPGKEREGVAAISSGGPATYYADSVKGRFTISRDNAKNTVYLQMNSLKSEDTALYYCATGYGSSSLSTPRGQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\topk10_T08.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "nucleus_p95_T10": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.3611,
+        "kmer_jaccard_similarity": 0.2609,
+        "kl_divergence": 0.0287,
+        "novelty_rate": null,
+        "mean_gravy": -0.376,
+        "mean_net_charge": -0.58,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.5,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCALSPYASSKRCMGWFRQAPGKERERVATILIDGSGTYYADSVKGRFTISQDSAKKTVYLEMNNLKPEDTAMYYCAADWHGADCDEGSWHFDHWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQPPGKEREGVAAVDSDGRTDFADSVKDRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRMATILTDASTFWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSGGPARYADSVKGRFTISRDNAKNTLYLQMNSLKAEDTAVYYCAAVESDPFLSLSGGRGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\nucleus_p95_T10.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "nucleus_p80_T12": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.3295,
+        "kmer_jaccard_similarity": 0.3071,
+        "kl_divergence": 0.0293,
+        "novelty_rate": null,
+        "mean_gravy": -0.386,
+        "mean_net_charge": -0.58,
+        "canonical_cysteine_rate": 0.98,
+        "mean_length": 125.3,
+        "sample_sequences": [
+          "VQLVESGGGSVQPGGSLRLSCVASGFRISSRCVAWFRQAPGKEREGVAVIDSDGTIKYADSVKGRFTISKDKAKDTVYLQMNSLKPEDTAMYSCKTFGRWRGYDCYEGSWCSDVGCRTRGPRSPSP",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGRTDFADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSVGRCRARGWVERPSVAAYDYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDRTYYTDAVKGRFTISRDNAKNTLYLQMNSLKPEDTAMYYCAAVESERLLGYSGSLYCGGRWYEYWGRGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\lstm-notebook-srr\\nucleus_p80_T12.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      }
+    },
+    "transformer-notebook-srr": {
+      "greedy": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 0.02,
+        "levenshtein_diversity": 0.0,
+        "kmer_jaccard_similarity": 1.0,
+        "kl_divergence": 0.051,
+        "novelty_rate": null,
+        "mean_gravy": -0.461,
+        "mean_net_charge": 0.2,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 122.0,
+        "sample_sequences": [
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAIDSDGSTSYADSVKGRFTISKDNAKNTLYLQMNSLKPEDTAMYYCAADPRPYGGSCPPHFGYWGQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\greedy.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "topk10_T08": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2677,
+        "kmer_jaccard_similarity": 0.3894,
+        "kl_divergence": 0.037,
+        "novelty_rate": null,
+        "mean_gravy": -0.378,
+        "mean_net_charge": -0.1,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 123.5,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCAASGYAYSSYCMGWFRQAPGKKREGVATIDSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADLWPLARDLVGSGPADVGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSSYCMGWFRQAPGKEREGVAAVDSDGSTSYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLCSSLTRDFGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMGWFRQAPGKEREGVAAISSGGPYTYYADSVKGRFTISQDNAKTTVYLQMNSLKPEDTAMYYCAADSRRYCSGGYCYTTVERGYWGQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\topk10_T08.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "nucleus_p95_T10": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.3091,
+        "kmer_jaccard_similarity": 0.3262,
+        "kl_divergence": 0.0297,
+        "novelty_rate": null,
+        "mean_gravy": -0.366,
+        "mean_net_charge": -0.52,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.4,
+        "sample_sequences": [
+          "DVQLVESGGGSVQAGGSLRLSCALSPRASSKNCMGWFRQAPGKERERVATILSDGSTTYVDSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAGRWIGYDCYSGSWSSDHGYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAVDSDGVTKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGYQYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSNYCMGWFRQTPGKEREGVASISSIDGSTYYADSVKGRFTISQDNAKTTVFLQMNSLKSEDTALYYCAVEGSGAYCSLRALPLGYWDQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\nucleus_p95_T10.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      },
+      "nucleus_p80_T12": {
+        "n_sequences": 50,
+        "validity_rate": 1.0,
+        "uniqueness_rate": 1.0,
+        "levenshtein_diversity": 0.2951,
+        "kmer_jaccard_similarity": 0.3528,
+        "kl_divergence": 0.0323,
+        "novelty_rate": null,
+        "mean_gravy": -0.368,
+        "mean_net_charge": 0.19,
+        "canonical_cysteine_rate": 1.0,
+        "mean_length": 124.5,
+        "sample_sequences": [
+          "VQLVESGGGSVQAGGSLRLSCVASGHRYSSYCMAWFRQVPGKEREGVAVIDSDGLAKYADSVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAAAPLWIGYTCLEGSDYNYWGQGTQVTVS",
+          "HVQLVESGGGSVQAGGSLRLSCTASGYTYSTYCMGWFRQAPGKEREGVAAIDSDGRTDYVASVKGRFTISQDNAKNTLYLQMNSLKPEDTAMYYCAADSWSRLATCLTRAGTFRYWGQGTQVTVS",
+          "HVQLVESGGGSVQTGGSLRLSCAASGVTYSGYCMGWFRQTPGKEREGVASISSSDGTTYYADSVKGRFTISQDNAKKSVFLQMNSLKSEDTALYYCAAEIPRLLELEGPYNYWGQGTQVTVS"
+        ],
+        "fasta_file": "C:\\Users\\GMI\\Desktop\\My_Projects\\reacherche_ai\\results\\generated\\transformer-notebook-srr\\nucleus_p80_T12.fasta",
+        "dataset_metadata": {
+          "dataset_id": "SRR3544218",
+          "corpus_description": "Camelid VHH nanobodies (NCBI SRA SRR3544218, 242k seqs)",
+          "split_evaluated": "generation_de_novo",
+          "reference_train_loaded": false,
+          "n_reference_train": 0,
+          "evaluation_n_sequences": 50,
+          "is_heuristic_qc": true
+        }
+      }
+    }
+  }
+}
