@@ -31,7 +31,7 @@ def filter_logits(logits: torch.Tensor, top_k: int = 0, top_p: float = 1.0) -> t
 
 @torch.no_grad()
 def generate(model, n, device, max_len=140, temperature=1.0, top_k=0, top_p=1.0,
-             greedy=False, seed=42, batch_size=250):
+             greedy=False, seed=42, batch_size=250, prompt: str = ""):
     """Retourne (séquences, terminées) ; terminée = un EOS a été produit avant max_len résidus."""
     if temperature <= 0:
         raise ValueError("temperature doit être > 0 (utiliser greedy=True pour l'argmax)")
@@ -42,12 +42,24 @@ def generate(model, n, device, max_len=140, temperature=1.0, top_k=0, top_p=1.0,
     model.eval()
     tok = AminoAcidTokenizer()
     seqs, done = [], []
+
+    # Encode prompt if provided
+    initial_ids = [BOS_ID]
+    if prompt:
+        clean_prompt = "".join(c for c in prompt.upper() if c in tok.aa_to_id)
+        if clean_prompt:
+            initial_ids = [BOS_ID] + [tok.aa_to_id[c] for c in clean_prompt]
+
+    prompt_len = len(initial_ids) - 1
+    steps_to_generate = max(0, max_len - prompt_len)
+
     for b, start in enumerate(range(0, n, batch_size)):
         bsz = min(batch_size, n - start)
         gen = torch.Generator(device=device).manual_seed(seed + b)      # une graine par batch
-        tokens = torch.full((bsz, 1), BOS_ID, dtype=torch.long, device=device)
+        tokens = torch.tensor([initial_ids] * bsz, dtype=torch.long, device=device)
         finished = torch.zeros(bsz, dtype=torch.bool, device=device)
-        for _ in range(max_len):
+
+        for _ in range(steps_to_generate):
             out = model(tokens)
             logits = (out[0] if isinstance(out, tuple) else out)[:, -1, :].float()
             logits[:, [PAD_ID, BOS_ID]] = float("-inf")                 # jamais PAD ni BOS
@@ -61,7 +73,9 @@ def generate(model, n, device, max_len=140, temperature=1.0, top_k=0, top_p=1.0,
             finished |= nxt.squeeze(1) == EOS_ID
             if finished.all():
                 break
+
         for row, fin in zip(tokens.cpu().tolist(), finished.cpu().tolist()):
             seqs.append(tok.decode(row))
             done.append(bool(fin))
     return seqs, done
+

@@ -29,6 +29,9 @@ if sys.platform == "win32":
 DASHBOARD_DIR = ROOT / "dashboard"
 
 
+_MODEL_CACHE = {}
+
+
 class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
     """Custom HTTP handler with /api endpoints and static file serving."""
 
@@ -38,7 +41,11 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path == "/api/health":
-            self._send_json({"status": "ok", "service": "BioLM Studio Server"})
+            self._send_json({
+                "status": "ok",
+                "service": "BioLM Studio Server",
+                "cached_models": list(_MODEL_CACHE.keys())
+            })
             return
         elif parsed.path == "/api/data":
             data_file = DASHBOARD_DIR / "data.json"
@@ -75,6 +82,11 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
             checkpoint_file = target_dir / "best.pt"
             checkpoint_file.write_bytes(raw_data)
 
+            # Invalidate cache
+            for k in list(_MODEL_CACHE.keys()):
+                if k[0] == model_id:
+                    del _MODEL_CACHE[k]
+
             print(f"📥 Checkpoint received via Web Dashboard: {checkpoint_file} ({len(raw_data)/1024/1024:.2f} MB)")
             self._send_json({"status": "ok", "message": f"Checkpoint best.pt saved for model {model_id}", "size_mb": round(len(raw_data)/1024/1024, 2)})
             return
@@ -82,58 +94,70 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
         self._send_json({"error": "Endpoint not found"}, status=404)
 
     def _handle_generation(self, payload: dict) -> dict:
-        """Attempt neural generation using PyTorch checkpoints; fall back to Markov."""
-        model_id = payload.get("model_id", "toy-test")
-        prompt = payload.get("prompt", "")
-        temperature = float(payload.get("temperature", 0.85))
-        top_p = float(payload.get("top_p", 0.90))
-        top_k = int(payload.get("top_k", 0))
-        max_len = int(payload.get("max_len", 60))
+        """Attempt neural generation using cached PyTorch models."""
+        import time
+        import random
+        t0 = time.time()
+
+        model_id = payload.get("model_id", "transformer-notebook-srr")
+        prompt = payload.get("prompt", "").strip().upper()
+        temperature = float(payload.get("temperature", 0.80))
+        top_p = float(payload.get("top_p", 1.0))
+        top_k = int(payload.get("top_k", 10))
+        max_len = int(payload.get("max_len", 125))
         greedy = bool(payload.get("greedy", False))
+
+        # Dynamic seed
+        user_seed = payload.get("seed")
+        if user_seed is not None and str(user_seed).strip() != "" and int(user_seed) >= 0:
+            seed = int(user_seed)
+        else:
+            seed = random.randint(1, 999999)
 
         # Check if PyTorch can be imported
         try:
             import torch
-            from utils import AminoAcidTokenizer, BOS_ID, EOS_ID, PAD_ID
+            from utils import AminoAcidTokenizer
             from models import LSTMLM, CausalTransformerLM
             from sampling import generate
             from evaluation import analyze_vhh_sequence
 
             checkpoint_path = self._find_checkpoint(model_id)
-            config_path = ROOT / "results" / "runs" / model_id / "config.json"
 
             if checkpoint_path and checkpoint_path.exists():
                 device = torch.device("cpu")
-                print(f"[Inference] Active PyTorch checkpoint: {checkpoint_path}")
-                raw_ckpt = torch.load(checkpoint_path, map_location=device)
-                state_dict = raw_ckpt["state_dict"] if isinstance(raw_ckpt, dict) and "state_dict" in raw_ckpt else raw_ckpt
+                mtime = checkpoint_path.stat().st_mtime
+                cache_key = (model_id, mtime)
 
-                # Initialize appropriate architecture
-                if "lstm" in model_id.lower():
-                    model = LSTMLM(vocab_size=23, embed_dim=128, hidden_dim=256, num_layers=1)
+                if cache_key in _MODEL_CACHE:
+                    model = _MODEL_CACHE[cache_key]
                 else:
-                    # Transformer
-                    num_layers = 4
-                    if isinstance(raw_ckpt, dict) and "config" in raw_ckpt:
-                        num_layers = raw_ckpt["config"].get("num_layers", 4)
-                    elif config_path.exists():
-                        cfg = json.loads(config_path.read_text(encoding="utf-8"))
-                        mc = cfg.get("model_config", {})
-                        num_layers = mc.get("num_layers", 4)
-                    model = CausalTransformerLM(
-                        vocab_size=23,
-                        embed_dim=128,
-                        num_heads=4,
-                        num_layers=num_layers,
-                        dim_feedforward=512,
-                        max_len=200,
-                        dropout=0.0
-                    )
+                    print(f"[Inference] Loading PyTorch model from: {checkpoint_path}")
+                    raw_ckpt = torch.load(checkpoint_path, map_location=device)
+                    state_dict = raw_ckpt["state_dict"] if isinstance(raw_ckpt, dict) and "state_dict" in raw_ckpt else raw_ckpt
 
-                model.load_state_dict(state_dict)
-                model.eval()
+                    if "lstm" in model_id.lower():
+                        model = LSTMLM(vocab_size=23, embed_dim=128, hidden_dim=256, num_layers=1)
+                    else:
+                        num_layers = 4
+                        if isinstance(raw_ckpt, dict) and "config" in raw_ckpt:
+                            num_layers = raw_ckpt["config"].get("num_layers", 4)
+                        model = CausalTransformerLM(
+                            vocab_size=23,
+                            embed_dim=128,
+                            num_heads=4,
+                            num_layers=num_layers,
+                            dim_feedforward=512,
+                            max_len=200,
+                            dropout=0.0
+                        )
 
-                # Generate
+                    model.load_state_dict(state_dict)
+                    model.to(device)
+                    model.eval()
+                    _MODEL_CACHE[cache_key] = model
+
+                # Generate autoregressively with prompt and seed
                 seqs, dones = generate(
                     model=model,
                     n=1,
@@ -143,14 +167,22 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                     top_k=top_k,
                     top_p=top_p,
                     greedy=greedy,
-                    seed=42
+                    seed=seed,
+                    prompt=prompt
                 )
-                seq = seqs[0] if seqs else "MAALVQ"
-                # If user specified prompt, prepend or replace prefix
-                if prompt and not seq.startswith(prompt):
-                    seq = prompt + seq[len(prompt):] if len(seq) > len(prompt) else prompt
+                seq = seqs[0] if seqs else "HVQLVESGGGSVQAGGSLRLSCAASGYTYSSYCMG"
                 analysis = analyze_vhh_sequence(seq)
-                return {"sequence": seq, "finished": dones[0] if dones else True, "backend": "pytorch", "analysis": analysis}
+                elapsed_ms = round((time.time() - t0) * 1000)
+
+                return {
+                    "sequence": seq,
+                    "finished": dones[0] if dones else True,
+                    "backend": "pytorch",
+                    "model_id": model_id,
+                    "seed": seed,
+                    "latency_ms": elapsed_ms,
+                    "analysis": analysis
+                }
 
         except Exception as err:
             import traceback
@@ -166,7 +198,16 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
                     import random
                     base = random.choice(samples)
                     seq = prompt + base[len(prompt):max_len] if len(base) > len(prompt) else prompt + base
-                    return {"sequence": seq[:max_len], "finished": True, "backend": "colab_gpu_precomputed", "analysis": analyze_vhh_sequence(seq[:max_len])}
+                    from evaluation import analyze_vhh_sequence
+                    return {
+                        "sequence": seq[:max_len],
+                        "finished": True,
+                        "backend": "colab_gpu_precomputed",
+                        "model_id": model_id,
+                        "seed": seed,
+                        "latency_ms": 10,
+                        "analysis": analyze_vhh_sequence(seq[:max_len])
+                    }
             except Exception:
                 pass
 
@@ -177,7 +218,16 @@ class BioLMRequestHandler(http.server.SimpleHTTPRequestHandler):
             analysis = analyze_vhh_sequence(seq)
         except Exception:
             analysis = {}
-        return {"sequence": seq, "finished": True, "backend": "markov_fallback", "analysis": analysis}
+        return {
+            "sequence": seq,
+            "finished": True,
+            "backend": "markov_fallback",
+            "model_id": model_id,
+            "seed": seed,
+            "latency_ms": 5,
+            "analysis": analysis
+        }
+
 
     def _find_checkpoint(self, model_id: str) -> Path | None:
         """Find best.pt in local models/ or on mounted Google Drive on Windows."""

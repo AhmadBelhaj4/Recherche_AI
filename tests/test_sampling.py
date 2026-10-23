@@ -53,3 +53,15 @@ def test_untrained_model_rarely_terminates():
     model = build_model(PRESETS["lstm"])
     seqs, done = generate(model, 10, CPU, max_len=15, seed=1)
     assert len(seqs) == len(done) == 10
+
+
+def test_generation_with_prompt():
+    torch.manual_seed(0)
+    model = build_model(PRESETS["lstm"])
+    prompt = "HVQLVESGG"
+    seqs, done = generate(model, 3, CPU, max_len=25, seed=42, prompt=prompt)
+    assert len(seqs) == 3
+    for s in seqs:
+        assert s.startswith(prompt), f"Sequence {s} should start with {prompt}"
+        assert len(s) <= 25
+

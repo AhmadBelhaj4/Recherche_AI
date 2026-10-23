@@ -396,14 +396,20 @@ def analyze_vhh_sequence(seq: str) -> Dict[str, any]:
         "length": len(seq),
         "is_valid": valid,
         "cys_positions": cys_positions,
+        "cysteine_positions": cys_positions,
+        "cysteine_count": len(cys_positions),
         "has_canonical_cysteines": has_canonical_cys,
+        "canonical_disulfide": has_canonical_cys,
         "has_fr2_hallmarks": has_fr2_hallmarks,
+        "fr2_hallmarks_present": has_fr2_hallmarks,
         "fr2_motif": fr2_motif,
         "cdr3_sequence": cdr3_seq,
         "cdr3_length": cdr3_len,
         "gravy_index": round(gravy, 3),
         "net_charge": round(charge, 2),
+        "net_charge_ph74": round(charge, 2),
         "vhh_quality_score": score,
         "solubility_status": "Highly Soluble (VHH Hallmark)" if has_fr2_hallmarks and gravy < -0.30 else "Standard",
     }
+
 
