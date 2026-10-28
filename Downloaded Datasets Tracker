@@ -1,0 +1,35 @@
+OAS-nano — Downloaded datasets tracker
+Project: VHH sequence generation
+Study: Wang et al. (2024)
+Species: Alpaca
+Download status: 4 datasets downloaded
+#	Individual	Isotype	Reported sequences	Status
+1	A605	IGHG2B	1,714,309	Downloaded
+2	A082	IGHG2C	1,197,607	Downloaded
+3	A062	IGHG2B	814,312	Downloaded
+4	A056	IGHG2C	808,955	Downloaded
+
+Exact data units
+1. A605 — IGHG2B
+
+SRR30246849_1_Heavy_IGHG2B.csv.gz
+
+https://oas-nano.opig.stats.ox.ac.uk/dataunit/?unit=Wang_2024/csv/SRR30246849_1_Heavy_IGHG2B.csv.gz
+
+2. A082 — IGHG2C
+
+SRR30246855_1_Heavy_IGHG2C.csv.gz
+
+https://oas-nano.opig.stats.ox.ac.uk/dataunit/?unit=Wang_2024/csv/SRR30246855_1_Heavy_IGHG2C.csv.gz
+
+3. A062 — IGHG2B
+
+SRR30246845_1_Heavy_IGHG2B.csv.gz
+
+https://oas-nano.opig.stats.ox.ac.uk/dataunit/?unit=Wang_2024/csv/SRR30246845_1_Heavy_IGHG2B.csv.gz
+
+4. A056 — IGHG2C
+
+SRR30246862_1_Heavy_IGHG2C.csv.gz
+
+https://oas-nano.opig.stats.ox.ac.uk/dataunit/?unit=Wang_2024/csv/SRR30246862_1_Heavy_IGHG2C.csv.gz
