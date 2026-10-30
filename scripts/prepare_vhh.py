@@ -278,10 +278,16 @@ def clean_chunk(
     stats["l6_rows"] += len(df)
     stats["l6_layout_match"] += int(expected_lengths.sum())
     if not expected_lengths.all():
-        notes.add(
-            "L6 skipped for rows whose FWR1/CDR1/FWR2/FWR3 lengths do not match "
-            "the professor's stated IMGT scaffold layout (25/8/17/38 residues)."
-        )
+        if getattr(args, "strict_layout", False):
+            notes.add(
+                "L6 strict layout: rows whose FWR1/CDR1/FWR2/FWR3 lengths do not match "
+                "the professor's stated IMGT scaffold layout (25/8/17/38 residues) were rejected."
+            )
+        else:
+            notes.add(
+                "L6 skipped for rows whose FWR1/CDR1/FWR2/FWR3 lengths do not match "
+                "the professor's stated IMGT scaffold layout (25/8/17/38 residues)."
+            )
 
     # Exact locations under that stated layout.
     cys23 = fwr1.str.len().eq(25) & fwr1.str[21].eq("C")
@@ -309,16 +315,18 @@ def clean_chunk(
     accepted_pattern = no_optional_pair | optional_pair
     valid_layout = expected_lengths
 
-    # Rows with unsupported region lengths are not filtered by an assumed
-    # positional mapping; they are retained and clearly reported for review.
-    cys_ok = (
-        (~valid_layout)
-        | (
-            canonical_pair
-            & accepted_pattern
-            & df["n_cys"].eq(expected_cys_count)
-        )
+    # Rows with unsupported region lengths:
+    # Under --strict-layout, rows must strictly match the stated layout and pass cysteine rules.
+    # Without --strict-layout, rows with non-matching layout are retained unchecked for review.
+    cys_rule = (
+        canonical_pair
+        & accepted_pattern
+        & df["n_cys"].eq(expected_cys_count)
     )
+    if getattr(args, "strict_layout", False):
+        cys_ok = valid_layout & cys_rule
+    else:
+        cys_ok = (~valid_layout) | cys_rule
 
     apply_filter(STEP_NAMES[5], cys_ok)
     return df
@@ -337,6 +345,8 @@ def main() -> None:
     parser.add_argument("--chunk", type=int, default=200_000)
     parser.add_argument("--no-dedup", action="store_true",
                         help="Keep exact duplicates (NB02 will refuse such a file).")
+    parser.add_argument("--strict-layout", action="store_true",
+                        help="Reject (instead of keep unchecked) rows whose FWR1/CDR1/FWR2/FWR3 lengths do not match 25/8/17/38.")
     args = parser.parse_args()
 
     if args.min_len < 1 or args.max_len < args.min_len:
@@ -523,6 +533,7 @@ def main() -> None:
             "max_rows_per_file": args.max_rows,
             "chunk_size": args.chunk,
             "deduplication": not args.no_dedup,
+            "strict_layout": getattr(args, "strict_layout", False),
             "n_rows_before_dedup": n_after_l6,
         },
         "inputs": input_info,
